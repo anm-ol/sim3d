@@ -139,7 +139,9 @@
     <ClCompile Include="src\renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\collision.h" />
     <ClInclude Include="src\particle.h" />
+    <ClInclude Include="src\PhysicsEngine.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

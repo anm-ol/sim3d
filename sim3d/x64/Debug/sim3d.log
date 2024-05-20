@@ -1,2 +1,8 @@
-﻿  main.cpp
-  sim3d.vcxproj -> C:\Users\anmol\projects\sim3d\x64\Debug\sim3d.exe
+﻿  collision.cpp
+  particle.cpp
+  PhysicsEngine.cpp
+  renderer.cpp
+C:\Users\anmol\projects\sim3d\sim3d\src\include\GLAD\glad.h(27,1): error C1189: #error:  OpenGL header already included, remove this include, glad already provides it
+  (compiling source file 'src/renderer.cpp')
+  
+  Generating Code...

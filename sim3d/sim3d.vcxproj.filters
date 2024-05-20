@@ -35,5 +35,11 @@
     <ClInclude Include="src\particle.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\collision.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PhysicsEngine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

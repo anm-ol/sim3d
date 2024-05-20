@@ -19,7 +19,13 @@ public:
 		velocity = v;
 	}
 
-	void update(float time) {
+	vec3 getPosition() 
+	{
+		return pos;
+	}
+   
+	void update(float time) 
+	{
 		pos += velocity * time;
 	}
 };
