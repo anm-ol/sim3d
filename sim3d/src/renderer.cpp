@@ -31,11 +31,39 @@ int render() {
 		std::cout << "Failed to initialize GLAD" << std::endl;
 		return -1;
 	}
+
+	std::vector<glm::vec3> vertices = generateSphereVertices();
+
+	//create and bind buffers
+	unsigned int VBO, VAO, EBO;
+	glGenBuffers(1, &VBO);
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &EBO);
+
+	glBindVertexArray(VAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
+
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_DYNAMIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, vertices.size() * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
 	//take world coordinates (3D) and
 	//  return perspective projection coordinates as seen by camera to be displayed on 2d screen
 
 	//display a static sphere at window center 
+	while (!glfwWindowShouldClose)
+	{
+		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
 
+
+
+		glfwSwapBuffers(window);
+	}
 	//NOTE: shader code will go in a different file and we will make a 
 	// "shaderReader" class to convert code to string and compile it
 
