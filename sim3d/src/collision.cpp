@@ -20,13 +20,13 @@ void resolveCollision(particle *p1, particle *p2)
 }
 
 // also need function to handle collision with wall
-void wallCollide(particle p)
+static void wallCollide(particle p)
 {
 
 	vec3 pos = p.pos;	 // getting the current position of the particle
 	float size = p.size; // getting the size of the particle
 
-	float xmin, xmax, ymin, ymax, zmin, zmax; // take values from engine
+	float xmin = 0.0, xmax{}, ymin = 0.0, ymax{}, zmin = 0.0, zmax{}; // take values from engine
 
 	// check is particle is outside bounds or intersecting
 	//  TODO: will also have to look at the particle's radius to determine whether it is outside bounds

@@ -1,2 +1,5 @@
-﻿  renderer.cpp
-  sim3d.vcxproj -> C:\Users\anmol\projects\sim3d\x64\Debug\sim3d.exe
+﻿  main.cpp
+C:\Users\Abhishek PC\OneDrive\Desktop\pajama.c\sim3d\sim3d\src\shader.h(36,40): warning C4101: 'e': unreferenced local variable
+  (compiling source file 'src/main.cpp')
+  
+C:\Users\Abhishek PC\OneDrive\Desktop\pajama.c\sim3d\sim3d\src\main.cpp(15,1): error C1075: '{': no matching token found

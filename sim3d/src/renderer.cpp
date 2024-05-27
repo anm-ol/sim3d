@@ -55,3 +55,11 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	glViewport(0, 0, width, height);
 
 }
+
+void processInput(GLFWwindow* window)
+{
+}
+
+void createSphere(std::vector<float>& vertices, std::vector<unsigned int>& indices, float radius, unsigned int rings, unsigned int sectors)
+{
+}
