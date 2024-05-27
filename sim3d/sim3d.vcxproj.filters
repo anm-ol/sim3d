@@ -44,12 +44,16 @@
     <ClInclude Include="src\PhysicsEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="shader.h">
+    <ClInclude Include="src\shader.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="vertexshader.sl" />
-    <None Include="fragshader.sl" />
+    <None Include="src\fragshader.sl">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="src\vertexshader.sl">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
