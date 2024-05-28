@@ -1,26 +1,24 @@
 #include <iostream>
 #include <glm/glm.hpp>
 
-using namespace glm;
-
 class particle 
 {
 public:
-	vec3 pos;
-	vec3 velocity;
+	glm::vec3 pos;
+	glm::vec3 velocity;
 	float size;
 
-	particle(vec3 posn,float s) {
+	particle(glm::vec3 posn,float s) {
 		pos = posn;
 		size = s; 
-		velocity = vec3(0);
+		velocity = glm::vec3(0);
 	}
 
-	void setVelocity(vec3 v) {
+	void setVelocity(glm::vec3 v) {
 		velocity = v;
 	}
 
-	vec3 getPosition() 
+	glm::vec3 getPosition() 
 	{
 		return pos;
 	}
