@@ -149,8 +149,18 @@
     <ClInclude Include="src\particle.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\fragshader.sl" />
-    <None Include="src\vertexshader.sl" />
+    <None Include="shader\basicfshader.glsl" />
+    <Text Include="shader\fshader.glsl">
+      <FileType>Document</FileType>
+    </Text>
+    <Text Include="shader\vshader.glsl">
+      <FileType>Document</FileType>
+    </Text>
+    <Text Include="shader\basicvshader.glsl">
+      <FileType>Document</FileType>
+    </Text>
+    <None Include="shader\fragshader.sl" />
+    <None Include="shader\vertexshader.sl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -52,11 +52,21 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\fragshader.sl">
+    <None Include="shader\fragshader.sl">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="src\vertexshader.sl">
+    <None Include="shader\vertexshader.sl">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="shader\basicfshader.glsl">
+      <Filter>Source Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="shader\basicvshader.glsl">
+      <Filter>Source Files</Filter>
+    </Text>
+    <Text Include="shader\fshader.glsl" />
+    <Text Include="shader\vshader.glsl" />
   </ItemGroup>
 </Project>

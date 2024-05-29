@@ -90,12 +90,13 @@ int render() {
 	//defining model,view,projection matrices
 	glm::mat4 model = mat4(1.0f);
 	//moves cube model in the direction 2,2,2
-	model = translate(model, vec3(2));
+	model = translate(model, vec3(0,0,2));
+	model = scale(model, vec3(10));
 	glm::mat4 view = mat4(1.0f);
 	glm::mat4 proj = glm::perspective(radians(45.0f),1.0f,0.1f,500.0f);
 
 	//initialising shader.h to load, compile and link shaders
-	Shader sh = Shader("basicvshader", "basicfshader");
+	Shader sh = Shader("shader/basicvshader.glsl", "shader/basicfshader.glsl");
 	
 	//might change later to pass all matrices indivually since mat multiply is faster on gpu
 	mat4 mvp = proj * view * model;
@@ -130,13 +131,13 @@ int render() {
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
+		glBindVertexArray(VAO);
 		sh.use();
 
-
-		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		glfwSwapBuffers(window);
+		glfwPollEvents();
 	}
 
 	return 0;
