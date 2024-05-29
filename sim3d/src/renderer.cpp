@@ -100,7 +100,9 @@ int render() {
 	//might change later to pass all matrices indivually since mat multiply is faster on gpu
 	mat4 mvp = proj * view * model;
 	//set mvp matrix as uniform
-	sh.setMatrix4f("mvp", mvp);
+	sh.setMatrix4f("model", model);
+	sh.setMatrix4f("view", view);
+	sh.setMatrix4f("projection", proj);
 
 	//create and bind buffers
 	unsigned int VBO, VAO, EBO;

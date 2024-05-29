@@ -1,13 +1,12 @@
 #include <iostream>
 #include <glm/glm.hpp>
-
-
-using namespace glm;
+#include "renderer.h"
 
 int main() {
 	//call updatefunction here idk
-	std::cout << "hello" << std::endl;
+	// 
 	//rendering after that
-
+	if (render())
+		std::cout << "Error" << std::endl;
 	return 0;
 }

@@ -143,6 +143,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Engine.h" />
+    <ClInclude Include="src\renderer.h" />
     <ClInclude Include="src\shader.h" />
     <ClInclude Include="src\collision.h" />
     <ClInclude Include="src\particle.h" />
