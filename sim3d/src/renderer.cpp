@@ -95,7 +95,7 @@ int render() {
 	glm::mat4 proj = glm::perspective(radians(45.0f),1.0f,0.1f,500.0f);
 
 	//initialising shader.h to load, compile and link shaders
-	Shader sh = Shader("vertexshader.sl", "fragshader.sl");
+	Shader sh = Shader("basicvshader", "basicfshader");
 	
 	//might change later to pass all matrices indivually since mat multiply is faster on gpu
 	mat4 mvp = proj * view * model;
@@ -113,7 +113,7 @@ int render() {
 	glBindVertexArray(VAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices[0], GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
 
 	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_DYNAMIC_DRAW);

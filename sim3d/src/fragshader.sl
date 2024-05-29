@@ -1,3 +1,5 @@
+//NOT USING THIS SHADER RN
+
 #version 330 core
 
 out vec4 FragColor;
