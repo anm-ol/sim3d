@@ -1,10 +1,7 @@
+#pragma once
 #include <glm/glm.hpp>
 #include <vector>
-#ifndef PARTICLE_H
-#define PARTICLE_H
 #include "particle.h"
-#endif
-
 
 class Engine {
 public:

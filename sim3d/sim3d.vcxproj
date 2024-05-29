@@ -146,7 +146,6 @@
     <ClInclude Include="src\shader.h" />
     <ClInclude Include="src\collision.h" />
     <ClInclude Include="src\particle.h" />
-    <ClInclude Include="src\PhysicsEngine.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\fragshader.sl" />

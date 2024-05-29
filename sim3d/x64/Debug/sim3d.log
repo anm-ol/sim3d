@@ -1,3 +1,5 @@
-﻿Engine.obj : error LNK2019: unresolved external symbol "public: void __cdecl particle::setVelocity(struct glm::vec<3,float,0>)" (?setVelocity@particle@@QEAAXU?$vec@$02M$0A@@glm@@@Z) referenced in function "void __cdecl wallCollide(class Engine &)" (?wallCollide@@YAXAEAVEngine@@@Z)
-renderer.obj : error LNK2019: unresolved external symbol "public: __cdecl Engine::Engine(float,float,float)" (??0Engine@@QEAA@MMM@Z) referenced in function "int __cdecl render(void)" (?render@@YAHXZ)
-C:\Users\anmol\projects\sim3d\x64\Debug\sim3d.exe : fatal error LNK1120: 2 unresolved externals
+﻿  collision.cpp
+  Engine.cpp
+  renderer.cpp
+  Generating Code...
+  sim3d.vcxproj -> C:\Users\anmol\projects\sim3d\x64\Debug\sim3d.exe
