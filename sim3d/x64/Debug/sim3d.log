@@ -1,2 +1,5 @@
-﻿  renderer.cpp
+﻿  collision.cpp
+  Engine.cpp
+  renderer.cpp
+  Generating Code...
   sim3d.vcxproj -> C:\Users\anmol\projects\sim3d\x64\Debug\sim3d.exe

@@ -1,38 +1,57 @@
 #include <glm/glm.hpp>
-#include "particle.h"
 #include <iostream>
+#include "particle.h"
+#include "Engine.h"
 
-using namespace glm;
-
-bool isCollision(particle *p1, particle *p2) // should this function handle both particle/wall collision?
+bool isCollision(particle& p1, particle& p2) // should this function handle both particle/wall collision?
 {
-	return false;
-	// need to write collision handling for two spherical particles here.
+	float distance = glm::distance(p1.pos, p2.pos);
+	return distance <= p1.size;	// if euclidian distance b/w two particles is less than their combined radius, means they are colliding
 }
 
-void resolveCollision(particle *p1, particle *p2)
+void resolveCollision(particle& p1, particle& p2)
 {
 	// if collision true then make the spheres "un-interesect"
-	if(isCollision(p1, p2)){
+	if (isCollision(p1, p2)) {
 		// TODO: make them "un-intersect"
 	}
 	// update position of p1 and p2
 }
 
-// also need function to handle collision with wall
-void wallCollide(particle p)
+// takes engine reference as input
+void wallCollide(Engine& engine)
 {
-
-	vec3 pos = p.pos;	 // getting the current position of the particle
-	float size = p.size; // getting the size of the particle
-
-	float xmin, xmax, ymin, ymax, zmin, zmax; // take values from engine
-
 	// check is particle is outside bounds or intersecting
 	//  TODO: will also have to look at the particle's radius to determine whether it is outside bounds
-	if (pos.x >= xmax || pos.x <= xmin || pos.y >= ymax || pos.y <= ymin || pos.z >= zmax || pos.z <= zmin)
+	for (int i = 0; i < engine.particles.size(); i++)
 	{
-		// the particle is colliding with the wall
-		p.setVelocity(-p.velocity); // reverse the velocity of the particle. This might have to be changed later.
+		particle& p = engine.particles[i];
+		glm::vec3 pos = p.pos;	 // getting the current position of the particle
+		float radius = p.size / 2; // getting the radius of the particle
+
+		/*
+			check is particle is outside bounds or intersecting
+			we also include the particle's radius in the eqn
+			based on which co-ordinate of the particle is out of bounds,
+			velocity will be reversed in that direction only
+		*/
+		glm::vec3 newVel = p.velocity;
+		if (pos.x + radius >= engine.xmax || pos.x - radius <= engine.xmin)
+		{
+			newVel.x = -newVel.x;
+			p.setVelocity(newVel);	// reverse vel in x axis
+		}
+		if (pos.y + radius >= engine.ymax || pos.y - radius <= engine.ymin)
+		{
+			newVel.y = -newVel.y;
+			p.setVelocity(newVel);	// reverse vel in y axis
+		}
+		if (pos.z + radius >= engine.zmax || pos.z - radius <= engine.zmin)
+		{
+			newVel.z = -newVel.z;
+			p.setVelocity(newVel);	// reverse vel in z axis
+		}
 	}
 }
+
+
