@@ -1,11 +1,11 @@
-#include "Engine.h"
-#include "shader.h"
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
+#include "engine.h"
+#include "shader.h"
 
 using namespace std;
 using namespace glm;
@@ -39,7 +39,7 @@ int render() {
 	}
 
 	//init engine with max coordinates i.e wall location
-	Engine engine = Engine(500.0f, 500.0f, 500.0f);
+	Engine engine = Engine(500, 500, 500);
 
 	//std::vector<glm::vec3> vertices = generateSphereVertices(vec3(0.f),0.1f,1);
 	//temporary cube coords
@@ -92,7 +92,7 @@ int render() {
 	//moves cube model in the direction 2,2,2
 	model = translate(model, vec3(2));
 	glm::mat4 view = mat4(1.0f);
-	glm::mat4 proj = glm::perspective(radians(45.0f),1.0f,0.1f,500.0f);
+	glm::mat4 proj = glm::perspective(radians(45.0f),1.0f,0.1f,engine.zmax);
 
 	//initialising shader.h to load, compile and link shaders
 	Shader sh = Shader("vertexshader.sl", "fragshader.sl");
@@ -123,7 +123,7 @@ int render() {
 	//  return perspective projection coordinates as seen by camera to be displayed on 2d screen
 
 	//display a static sphere at window center 
-	while (!glfwWindowShouldClose(window))
+	while (!glfwWindowShouldClose)
 	{
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);

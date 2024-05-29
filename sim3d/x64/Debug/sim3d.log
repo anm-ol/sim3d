@@ -1,3 +1,2 @@
 ﻿  renderer.cpp
-renderer.obj : error LNK2019: unresolved external symbol "public: __cdecl Engine::Engine(float,float,float)" (??0Engine@@QEAA@MMM@Z) referenced in function "int __cdecl render(void)" (?render@@YAHXZ)
-C:\Users\anmol\projects\sim3d\x64\Debug\sim3d.exe : fatal error LNK1120: 1 unresolved externals
+  sim3d.vcxproj -> C:\Users\anmol\projects\sim3d\x64\Debug\sim3d.exe

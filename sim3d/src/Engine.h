@@ -1,18 +1,15 @@
+#pragma once
 #include <glm/glm.hpp>
-#include <vector>
-#ifndef PARTICLE_H
-#define PARTICLE_H
 #include "particle.h"
-#endif
-
+#include "collision.h"
+#include <vector>
 
 class Engine {
 public:
 	std::vector<particle> particles;
 	float tconst;
-	float xmax, xmin, ymax, ymin, zmin, zmax;
+	float xmax, xmin, ymax, ymin, ymax, zmin, zmax;
 
 	Engine(float xm, float ym, float zm);
-
 	void updateall();
 };
