@@ -88,42 +88,43 @@ int render() {
 	std::vector<vec3> vertices1;
 	std::vector<unsigned int> indices;
 	std::vector<vec3> normals;
-	generateSphereVertices(vertices1, indices, 1.0f/2, 25, 25);
 
+	generateSphereVertices(vertices1, indices, 1.0f/2, 10, 10);
+	//normals = generateNormal(indices, vertices1);
+
+	glEnable(GL_DEPTH_TEST);
 	//initialising shader.h to load, compile and link shaders
-	Shader sh = Shader("shader/basicvshader.glsl", "shader/basicfshader.glsl");
+	Shader sh = Shader("shader/lightvshader.glsl", "shader/lightfshader.glsl");
 	
 	//create and bind buffers
-	unsigned int VBO, VAO, EBO;
-	glGenBuffers(1, &VBO);
-	glGenVertexArrays(1, &VAO);
+	unsigned int vbo1, vao1, EBO, vbo2,vao2;
+	glGenBuffers(1, &vbo1);
+	glGenVertexArrays(1, &vao1);
 	glGenBuffers(1, &EBO);
 
-	glBindVertexArray(VAO);
+	glGenBuffers(1, &vbo2);
 
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBindVertexArray(vao1);
+
+	glBindBuffer(GL_ARRAY_BUFFER, vbo1);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vec3)*vertices1.size(), &vertices1[0], GL_STATIC_DRAW);
 	//glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices[0], GL_STATIC_DRAW);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int)*indices.size(), &indices[0], GL_STATIC_DRAW);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int)*indices.size(), &indices[0], GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
-	//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-	//glEnableVertexAttribArray(1);
-
-
-	//take world coordinates (3D) and
-	//  return perspective projection coordinates as seen by camera to be displayed on 2d screen
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(9 * sizeof(float)));
+	glEnableVertexAttribArray(1);
 
 	//display a static sphere at window center 
 	while (!glfwWindowShouldClose(window))
 	{
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glBindVertexArray(VAO);
+		glBindVertexArray(vao1);
 		sh.use();
 		//defining model,view,projection matrices
 		glm::mat4 model = mat4(1.0f);
@@ -132,17 +133,24 @@ int render() {
 		//moves cube model in the direction 2,2,2
 		//model = translate(model, vec3(0,0,2));
 		//model = scale(model, vec3(3.0f));
-		model = rotate(model, (float)glfwGetTime(), vec3(1, 1, 0));
-		model = rotate(model, sin((float)glfwGetTime()), vec3(0, 1, 1));
+
+		vec3 center = vec3(0);
+		model = rotate(model, (float)glfwGetTime()*0.2f, vec3(1, 1, 0));
+		model = rotate(model, sin((float)glfwGetTime()*0.2f), vec3(0, 1, 1));
 		view = translate(view, glm::vec3(0, 0, -3));
 		proj = glm::perspective(radians(45.0f), (float)screen_width / (float)screen_height, 0.1f, 100.0f);
 		//set mvp matrix as uniform
+
+		center = view * model * vec4(center,1.0);
+		center = vec3(center.x, center.y, center.z);
+		sh.setVec3f("center", center);
 		sh.setMatrix4f("model", model);
 		sh.setMatrix4f("view", view);
 		sh.setMatrix4f("projection", proj);
 
-		//glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, indices.size(),GL_UNSIGNED_INT, 0 );
+		//glBindVertexArray(vao1);
+		//glDrawElements(GL_TRIANGLES, indices.size(),GL_UNSIGNED_INT, 0 );
+		glDrawArrays(GL_TRIANGLES, 0, vertices1.size());
 
 		glfwSwapBuffers(window); 
 		glfwPollEvents();
@@ -157,44 +165,74 @@ void generateSphereVertices(std::vector<vec3>& vertices, std::vector<unsigned in
 {
 	float hstep = radians(180.f / hres);
 	float vstep = radians(360.0f / vres);
-
-	//std::vector <vec3> vertices;
-	vertices.push_back(vec3(0));
-	//std::vector <unsigned int> indices;
-	for (int i = 1; i <= hres; i++) 
+	vec3 v1, v2, v3, normal;
+	for (int i = 1; i <= hres; i++)
 	{
-		for (int j = 1; j <= vres; j++) {
+		for (int j = 0; j <vres; j++) {
 			float theta = j*vstep;
 			float phi= i*hstep;
-			vec3 vertex = vec3(size * sin(phi) * cos(theta), size * sin(phi) * sin(theta), size * cos(phi));
-			vertices.push_back(vertex);
 
-			if (i == 0) {
-				if (j <= hres) {
-					indices.push_back(0);
-					indices.push_back(j);
-					indices.push_back((j + 1));
+			//first layer
+			if (i == 1) 
+			{
+				if (j < vres) {
+					v1 = vertexthetaphi(size, 0.0f, 0.0f);
+					v2 = vertexthetaphi(size, (j)*vstep, hstep);
+					v3 = vertexthetaphi(size, (j + 1) * vstep, hstep);
+					vertices.push_back(v1); //north pole point
+					vertices.push_back(v2); 
+					vertices.push_back(v3); 	
+
+					normal = glm::cross(v2 - v1, v3);
+					vertices.push_back(normal);
+					vertices.push_back(normal);
+					vertices.push_back(normal);
+
+
 				}
 			}
 			else
 			{
-				indices.push_back( i * (hres - 1) + j - 1);
-				indices.push_back( i * (hres - 1) + j);
-				indices.push_back((i + 1) * (hres - 1) +j-1);
-				indices.push_back((i + 1) * (hres - 1) + j);
-				indices.push_back( i * (hres - 1) + j);
-				indices.push_back((i + 1) * (hres - 1) + j - 1);
+				//first triangle
+				v1 = vertexthetaphi(size, (j)*vstep, (i - 1) * hstep);
+				v2 = vertexthetaphi(size, (j)*vstep, (i)*hstep);
+				v3 = vertexthetaphi(size, (j + 1) * vstep, (i - 1) * hstep);
+				vertices.push_back(v1);
+				vertices.push_back(v2);
+				vertices.push_back(v3);
+
+				normal = glm::cross(v2 - v1, v3);
+				vertices.push_back(normal);
+				vertices.push_back(normal);
+				vertices.push_back(normal);
+
+				//second triangle
+				v1 = vertexthetaphi(size, (j + 1) * vstep, (i - 1) * hstep);
+				v2 = vertexthetaphi(size, (j)*vstep, (i)*hstep);
+				v3 = vertexthetaphi(size, (j + 1) * vstep, (i)*hstep);
+				vertices.push_back(v1);
+				vertices.push_back(v2);
+				vertices.push_back(v3);
+
+				normal = glm::cross(v2 - v1, v3);
+				vertices.push_back(normal);
+				vertices.push_back(normal);
+				vertices.push_back(normal);
 			}
 		}
 	}
 }
 
+vec3 vertexthetaphi(float size, float theta, float phi) {
+	return vec3(size * sin(phi) * cos(theta), size * sin(phi) * sin(theta), size * cos(phi));
+}
+
 std::vector<vec3> generateNormal(std::vector<unsigned int>& indices, std::vector<vec3>& vertices)
 {
 	std::vector<vec3> norms;
-	for (int i = 0; i < indices.size(); i += 3) {
+	for (int i = 0; i < vertices.size(); i += 3) {
 		vec3 vertex1 = vertices[i];
-		vec3 vertex2 = vertices[i];
+		vec3 vertex2 = vertices[i + 1];
 		vec3 vertex3 = vertices[i + 2];
 		vec3 normal = glm::cross((vertex1 - vertex2), vertex3);
 		norms.push_back(normal);

@@ -61,6 +61,8 @@
     <None Include="shader\basicfshader.glsl">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="shader\lightvshader.glsl" />
+    <None Include="shader\lightfshader.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="shader\basicvshader.glsl">

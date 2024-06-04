@@ -160,6 +160,8 @@
       <FileType>Document</FileType>
     </Text>
     <None Include="shader\fragshader.sl" />
+    <None Include="shader\lightfshader.glsl" />
+    <None Include="shader\lightvshader.glsl" />
     <None Include="shader\vertexshader.sl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
