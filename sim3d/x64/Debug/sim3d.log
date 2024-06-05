@@ -1,1 +1,5 @@
-﻿  sim3d.vcxproj -> C:\Users\anmol\projects\sim3d\x64\Debug\sim3d.exe
+﻿  renderer.cpp
+C:\Users\anmol\projects\sim3d\sim3d\src\renderer.cpp(151,47): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+C:\Users\anmol\projects\sim3d\sim3d\src\renderer.cpp(103,27): warning C4101: 'EBO': unreferenced local variable
+C:\Users\anmol\projects\sim3d\sim3d\src\renderer.cpp(103,32): warning C4101: 'vbo2': unreferenced local variable
+  sim3d.vcxproj -> C:\Users\anmol\projects\sim3d\x64\Debug\sim3d.exe

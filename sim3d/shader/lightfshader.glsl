@@ -9,13 +9,14 @@ uniform vec3 center;
 void main()
 {
     // ambient
-    float ambientStrength = 0.1;
+    float ambientStrength = 0.0;
+    vec3 ambient = vec3(ambientStrength);
   	
     // diffuse 
     vec3 norm = normalize(Normal);
-    vec3 lightDir = normalize(- FragPos);
+    vec3 lightDir = normalize(FragPos);
     float diff = max(dot(norm, lightDir), 0.0);
-    vec3 diffuse = diff * vec3(1.0f,0.5f,0.1f);
+    vec3 diffuse = diff * vec3(1.0f,0.5f,0.1f) + ambient;
             
     FragColor = vec4(diffuse, 1.0);
 } 
