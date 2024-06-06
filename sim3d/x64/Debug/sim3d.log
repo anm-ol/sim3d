@@ -1,2 +1,5 @@
 ﻿  renderer.cpp
+C:\Users\anmol\projects\sim3d\sim3d\src\renderer.cpp(188,15): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\anmol\projects\sim3d\sim3d\src\renderer.cpp(355,35): warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\Users\anmol\projects\sim3d\sim3d\src\renderer.cpp(357,36): warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
   sim3d.vcxproj -> C:\Users\anmol\projects\sim3d\x64\Debug\sim3d.exe
