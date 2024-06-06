@@ -12,6 +12,7 @@ std::vector<glm::vec3> generateNormal(std::vector<unsigned int>& indices, std::v
 void generateSphereMesh(std::vector<float>& vertices, glm::vec3 center, float size, int hres, int vres);
 void generateAll(Engine& engine, std::vector<float>& vertices);
 void generateWallvertices(Engine& engine, std::vector<glm::vec3>& vertices);
+void pushVertex(std::vector<float>& v, glm::vec3 vertex);
 
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);

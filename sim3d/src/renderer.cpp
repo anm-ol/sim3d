@@ -23,8 +23,10 @@ bool firstMouse = true;
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
 
-const int VRES = 50;
-const int HRES = 50;
+const int VRES = 3;
+const int HRES = 2;
+
+unsigned int SPHERE_VERT_COUNT, WALL_VERT_COUNT;
 
 int render(Engine& engine) {
 
@@ -117,7 +119,7 @@ int render(Engine& engine) {
 	Shader sh = Shader("shader/lightvshader.glsl", "shader/lightfshader.glsl");
 	
 	//create and bind buffers
-	unsigned int vbo1, vao1, EBO, vbo2;
+	unsigned int vbo1, vao1;
 	glGenBuffers(1, &vbo1);
 	glGenVertexArrays(1, &vao1);
 	//glGenBuffers(1, &EBO);
@@ -154,6 +156,7 @@ int render(Engine& engine) {
 		glBindVertexArray(vao1);
 		sh.use();
 		//defining model,view,projection matrices
+		glm::mat4 model = mat4(1.0f);
 		glm::mat4 view = mat4(1.0f);
 		glm::mat4 proj = mat4(1.0f);
 
@@ -170,7 +173,7 @@ int render(Engine& engine) {
 		
 		for (int i = 0; i < engine.particles.size(); i++) 
 		{
-			glm::mat4 model = mat4(1.0f);
+			model = mat4(1.0f);
 
 			particle particlei = engine.particles[i];
 			model = glm::scale(model, vec3(particlei.size));
@@ -180,10 +183,15 @@ int render(Engine& engine) {
 			//model = rotate(model, sin((float)glfwGetTime() * 0.7f), vec3(0, 1, 1));
 			
 			sh.setMatrix4f("model", model);
-			glDrawArrays(GL_TRIANGLES, 0, vertices1.size());
+			glDrawArrays(GL_TRIANGLES, 0, SPHERE_VERT_COUNT/6);
 		}
+		float light = 0.3;
+		sh.setFloat("light", light);
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, vec3(-engine.xmax / 2, -engine.ymax / 2, -engine.zmax / 2));
+		sh.setMatrix4f("model", model);
+		glDrawArrays(GL_TRIANGLES, SPHERE_VERT_COUNT/6, WALL_VERT_COUNT/6);
 		//set mvp matrix as uniform
-
 
 		glfwSwapBuffers(window); 
 		glfwPollEvents();
@@ -279,17 +287,74 @@ vec3 vertexthetaphi(float size, float theta, float phi) {
 
 void generateWallvertices(Engine& engine, std::vector<float> &vertices) 
 {
+	float xmax = engine.xmax, ymax = engine.ymax, zmax = engine.zmax;
+	vec3 v1, v2, v3, v4, normal;
+	//first face
+	v1 = vec3(0); v2 = vec3(xmax, 0, 0); v3 = vec3(0, ymax, 0); v4 = vec3(xmax, ymax,0);
+	normal = glm::cross(v2 - v1, v3 - v2);
+	pushVertex(vertices, v1); pushVertex(vertices,normal); pushVertex(vertices, v2);
+	pushVertex(vertices, normal); pushVertex(vertices, v3); pushVertex(vertices, normal);
+	pushVertex(vertices, v4); pushVertex(vertices, normal); pushVertex(vertices, v2);
+	pushVertex(vertices, normal); pushVertex(vertices, v3); pushVertex(vertices, normal);
 
+	//second face
+	v1 = vec3(0,0,zmax); v2 = vec3(xmax, 0, zmax); v3 = vec3(0, ymax, zmax); v4 = vec3(xmax, ymax, zmax);
+	normal = glm::cross(v2 - v1, v3 - v2);
+	pushVertex(vertices, v1); pushVertex(vertices, normal); pushVertex(vertices, v2);
+	pushVertex(vertices, normal); pushVertex(vertices, v3); pushVertex(vertices, normal);
+	pushVertex(vertices, v4); pushVertex(vertices, normal); pushVertex(vertices, v2);
+	pushVertex(vertices, normal); pushVertex(vertices, v3); pushVertex(vertices, normal);
+
+	//third face
+	v2 = vec3(0, 0, 0); v1 = vec3(0, 0, zmax); v3 = vec3(0, ymax, zmax); v4 = vec3(0, ymax, 0);
+	normal = glm::cross(v2 - v1, v3 - v2);
+	pushVertex(vertices, v1); pushVertex(vertices, normal); pushVertex(vertices, v2);
+	pushVertex(vertices, normal); pushVertex(vertices, v3); pushVertex(vertices, normal);
+	pushVertex(vertices, v4); pushVertex(vertices, normal); pushVertex(vertices, v2);
+	pushVertex(vertices, normal); pushVertex(vertices, v3); pushVertex(vertices, normal);
+
+	//fourth face
+	v2= vec3(xmax, 0, 0); v1 = vec3(0, 0, 0); v3 = vec3(0, 0, zmax); v4 = vec3(xmax, 0, zmax);
+	normal = glm::cross(v2 - v1, v3 - v2);
+	pushVertex(vertices, v1); pushVertex(vertices, normal); pushVertex(vertices, v2);
+	pushVertex(vertices, normal); pushVertex(vertices, v3); pushVertex(vertices, normal);
+	pushVertex(vertices, v4); pushVertex(vertices, normal); pushVertex(vertices, v2);
+	pushVertex(vertices, normal); pushVertex(vertices, v3); pushVertex(vertices, normal);
+
+	//5th face
+	v1 = vec3(xmax, 0, 0); v2 = vec3(xmax, ymax, 0); v3 = vec3(xmax, 0, zmax); v4 = vec3(xmax, ymax, zmax);
+	normal = glm::cross(v2 - v1, v3 - v2);
+	pushVertex(vertices, v1); pushVertex(vertices, normal); pushVertex(vertices, v2);
+	pushVertex(vertices, normal); pushVertex(vertices, v3); pushVertex(vertices, normal);
+	pushVertex(vertices, v4); pushVertex(vertices, normal); pushVertex(vertices, v2);
+	pushVertex(vertices, normal); pushVertex(vertices, v3); pushVertex(vertices, normal);
+
+	//6th face
+	v2 = vec3(xmax, ymax, 0); v1 = vec3(0, ymax, 0); v3 = vec3(0, ymax, zmax); v4 = vec3(xmax, ymax, zmax);
+	normal = glm::cross(v2 - v1, v3 - v2);
+	pushVertex(vertices, v1); pushVertex(vertices, normal); pushVertex(vertices, v2);
+	pushVertex(vertices, normal); pushVertex(vertices, v3); pushVertex(vertices, normal);
+	pushVertex(vertices, v4); pushVertex(vertices, normal); pushVertex(vertices, v2);
+	pushVertex(vertices, normal); pushVertex(vertices, v3); pushVertex(vertices, normal);
+
+	
+}
+
+void pushVertex(std::vector<float>& vertices, vec3 vertex) {
+	vertices.push_back(vertex.x);
+	vertices.push_back(vertex.y);
+	vertices.push_back(vertex.z);
 }
 
 //generate meshes for all particles and walls
 void generateAll(Engine& engine, std::vector<float>& vertices)
 {	
 	vertices.clear();
-		particle p = engine.particles[0];
-		generateSphereMesh(vertices, vec3(0), 1.0f, HRES, VRES);
-		generateWallvertices(engine, vertices);
-
+	particle p = engine.particles[0];
+	generateSphereMesh(vertices, vec3(0), 1.0f, HRES, VRES);
+	SPHERE_VERT_COUNT = vertices.size();
+	generateWallvertices(engine, vertices);
+	WALL_VERT_COUNT = vertices.size() - SPHERE_VERT_COUNT;
 }
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
@@ -307,6 +372,8 @@ void processInput(GLFWwindow* window)
 		camera.ProcessKeyboard(LEFT, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		camera.ProcessKeyboard(RIGHT, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+		camera.ProcessKeyboard(UP, deltaTime);
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
