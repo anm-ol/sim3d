@@ -142,6 +142,7 @@
     <ClCompile Include="src\renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\camera.h" />
     <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\renderer.h" />
     <ClInclude Include="src\shader.h" />
