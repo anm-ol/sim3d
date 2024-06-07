@@ -15,7 +15,18 @@ Engine::Engine(float xm, float ym, float zm)
 	zmax = zm;
 	tconst = 1.0f;
 }
-
+Engine::Engine()
+{
+	xmin = 0;
+	ymin = 0;
+	zmin = 0;
+	tconst = 1.0f;
+}
+void Engine::setWall(glm::vec3 diag1, glm::vec3 diag2)
+{
+	walldiagonal1 = diag1;
+	walldiagonal2 = diag2;
+}
 void Engine::updateall() //this is the main function that gets called in infinite loop
 {
 	particles.push_back(particle(glm::vec3(1), 1.0f));
