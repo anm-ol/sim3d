@@ -24,13 +24,13 @@
     <ClCompile Include="src\collision.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\PhysicsEngine.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\glad.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -41,15 +41,37 @@
     <ClInclude Include="src\collision.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\PhysicsEngine.h">
+    <ClInclude Include="src\shader.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="shader.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="src\renderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\camera.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="vertexshader.sl" />
-    <None Include="fragshader.sl" />
+    <None Include="shader\fragshader.sl">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="shader\vertexshader.sl">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="shader\basicfshader.glsl">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="shader\lightvshader.glsl" />
+    <None Include="shader\lightfshader.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="shader\basicvshader.glsl">
+      <Filter>Source Files</Filter>
+    </Text>
+    <Text Include="shader\fshader.glsl" />
+    <Text Include="shader\vshader.glsl" />
   </ItemGroup>
 </Project>

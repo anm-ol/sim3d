@@ -1,5 +1,6 @@
-#pragma once
+#include "particle.h"
+#include "Engine.h"
 
-//delcaration of functions global var, and classes (if any)
-
-void updateposition();
+bool isCollision(particle& p1, particle& p2);
+void resolveCollision(particle& p1, particle& p2);
+void wallCollide(Engine& engine);

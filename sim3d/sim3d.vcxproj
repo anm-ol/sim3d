@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -138,18 +138,32 @@
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\particle.cpp" />
-    <ClCompile Include="src\PhysicsEngine.cpp" />
+    <ClCompile Include="src\Engine.cpp" />
     <ClCompile Include="src\renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="shader.h" />
+    <ClInclude Include="src\camera.h" />
+    <ClInclude Include="src\Engine.h" />
+    <ClInclude Include="src\renderer.h" />
+    <ClInclude Include="src\shader.h" />
     <ClInclude Include="src\collision.h" />
     <ClInclude Include="src\particle.h" />
-    <ClInclude Include="src\PhysicsEngine.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="fragshader.sl" />
-    <None Include="vertexshader.sl" />
+    <None Include="shader\basicfshader.glsl" />
+    <Text Include="shader\fshader.glsl">
+      <FileType>Document</FileType>
+    </Text>
+    <Text Include="shader\vshader.glsl">
+      <FileType>Document</FileType>
+    </Text>
+    <Text Include="shader\basicvshader.glsl">
+      <FileType>Document</FileType>
+    </Text>
+    <None Include="shader\fragshader.sl" />
+    <None Include="shader\lightfshader.glsl" />
+    <None Include="shader\lightvshader.glsl" />
+    <None Include="shader\vertexshader.sl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

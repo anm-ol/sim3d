@@ -8,5 +8,6 @@ public:
 
 	particle(glm::vec3 posn, float size);
 	void setVelocity(glm::vec3 v);
-    void update(float time);
+	glm::vec3 getPosition();
+	void update(float time);
 };
