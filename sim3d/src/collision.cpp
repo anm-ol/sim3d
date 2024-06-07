@@ -6,15 +6,13 @@
 bool isCollision(particle& p1, particle& p2) // should this function handle both particle/wall collision?
 {
 	float distance = glm::distance(p1.pos, p2.pos);
-	return distance <= p1.size;	// if euclidian distance b/w two particles is less than their combined radius, means they are colliding
+	return distance <= p1.size + p2.size;	// if euclidian distance b/w two particles is less than their combined radius, means they are colliding
 }
 
 void resolveCollision(particle& p1, particle& p2)
 {
 	// if collision true then make the spheres "un-interesect"
-	if (isCollision(p1, p2)) {
-		// TODO: make them "un-intersect"
-	}
+	// TODO: make them "un-intersect"
 	// update position of p1 and p2
 }
 
@@ -22,7 +20,6 @@ void resolveCollision(particle& p1, particle& p2)
 void wallCollide(Engine& engine)
 {
 	// check is particle is outside bounds or intersecting
-	//  TODO: will also have to look at the particle's radius to determine whether it is outside bounds
 	for (int i = 0; i < engine.particles.size(); i++)
 	{
 		particle& p = engine.particles[i];
