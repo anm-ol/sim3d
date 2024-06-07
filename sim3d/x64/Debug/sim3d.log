@@ -1,7 +1,2 @@
 ﻿  main.cpp
-C:\Users\anmol\projects\sim3d\sim3d\src\main.cpp(21,39): warning C4305: 'argument': truncation from 'double' to 'T'
-C:\Users\anmol\projects\sim3d\sim3d\src\main.cpp(21,39): warning C4305:         with
-C:\Users\anmol\projects\sim3d\sim3d\src\main.cpp(21,39): warning C4305:         [
-C:\Users\anmol\projects\sim3d\sim3d\src\main.cpp(21,39): warning C4305:             T=float
-C:\Users\anmol\projects\sim3d\sim3d\src\main.cpp(21,39): warning C4305:         ]
   sim3d.vcxproj -> C:\Users\anmol\projects\sim3d\x64\Debug\sim3d.exe

@@ -27,7 +27,7 @@ void wallCollide(Engine& engine)
 	{
 		particle& p = engine.particles[i];
 		glm::vec3 pos = p.pos;	 // getting the current position of the particle
-		float radius = p.size / 2; // getting the radius of the particle
+		float radius = p.size; // getting the radius of the particle
 
 		/*
 			check is particle is outside bounds or intersecting
@@ -36,18 +36,39 @@ void wallCollide(Engine& engine)
 			velocity will be reversed in that direction only
 		*/
 		glm::vec3 newVel = p.velocity;
-		if (pos.x + radius >= engine.xmax || pos.x - radius <= engine.xmin)
+		if (pos.x - radius <= engine.xmin)
 		{
+			//p.pos.x += radius - p.pos.x;
 			newVel.x = -newVel.x;
 			p.setVelocity(newVel);	// reverse vel in x axis
 		}
-		if (pos.y + radius >= engine.ymax || pos.y - radius <= engine.ymin)
+		if ( pos.x + radius >= engine.xmax)
 		{
+			//p.pos.x += -radius - p.pos.x;
+			newVel.x = -newVel.x;
+			p.setVelocity(newVel);	// reverse vel in x axis
+		}
+		if (pos.y - radius <= engine.ymin)
+		{
+			//p.pos.y += radius - p.pos.y;
 			newVel.y = -newVel.y;
 			p.setVelocity(newVel);	// reverse vel in y axis
 		}
-		if (pos.z + radius >= engine.zmax || pos.z - radius <= engine.zmin)
+		if (pos.y + radius >= engine.ymax)
 		{
+			//p.pos.y += -radius - p.pos.y;
+			newVel.y = -newVel.y;
+			p.setVelocity(newVel);	// reverse vel in y axis
+		}
+		if (pos.z - radius <= engine.zmin)
+		{
+			//p.pos.z += radius - p.pos.z;
+			newVel.z = -newVel.z;
+			p.setVelocity(newVel);	// reverse vel in z axis
+		}
+		if (pos.z + radius >= engine.zmax)
+		{
+			//p.pos.z += -radius - p.pos.z;
 			newVel.z = -newVel.z;
 			p.setVelocity(newVel);	// reverse vel in z axis
 		}

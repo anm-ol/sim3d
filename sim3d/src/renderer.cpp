@@ -1,6 +1,7 @@
 #include "Engine.h"
 #include "shader.h"
 #include "renderer.h"
+#include "collision.h"
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -122,8 +123,8 @@ int render(Engine& engine) {
 			model = mat4(1.0f);
 
 			particle particlei = engine.particles[i];
- 			model = glm::scale(model, vec3(particlei.size));
 			model = translate(model, particlei.pos);
+			model = glm::scale(model, vec3(particlei.size));
 
 			//model = rotate(model, (float)glfwGetTime() * 1.0f, vec3(1, 1, 0));
 			//model = rotate(model, sin((float)glfwGetTime() * 0.7f), vec3(0, 1, 1));
@@ -141,7 +142,8 @@ int render(Engine& engine) {
 		glDrawArrays(GL_TRIANGLES, SPHERE_VERT_COUNT/6, WALL_VERT_COUNT/6);
 		//set mvp matrix as uniform
 
-		//engine.updateall();
+		wallCollide(engine);
+		engine.updateall();
 		glfwSwapBuffers(window); 
 		glfwPollEvents();
 	}
@@ -234,61 +236,7 @@ vec3 vertexthetaphi(float size, float theta, float phi) {
 	return vec3(size * sin(phi) * cos(theta), size * sin(phi) * sin(theta), size * cos(phi));
 }
 
-void generateWallvertices1(Engine& engine, std::vector<float> &vertices) 
-{
-	float xmax = engine.xmax, ymax = engine.ymax, zmax = engine.zmax;
-	vec3 v1, v2, v3, v4, normal;
-	//first face
-	v1 = vec3(0); v2 = vec3(xmax, 0, 0); v3 = vec3(0, ymax, 0); v4 = vec3(xmax, ymax,0);
-	normal = glm::cross(v2 - v1, v3 - v2);
-	pushVertex(vertices, v1); pushVertex(vertices,normal); pushVertex(vertices, v2);
-	pushVertex(vertices, normal); pushVertex(vertices, v3); pushVertex(vertices, normal);
-	pushVertex(vertices, v4); pushVertex(vertices, normal); pushVertex(vertices, v2);
-	pushVertex(vertices, normal); pushVertex(vertices, v3); pushVertex(vertices, normal);
-
-	//second face
-	v1 = vec3(0,0,zmax); v2 = vec3(xmax, 0, zmax); v3 = vec3(0, ymax, zmax); v4 = vec3(xmax, ymax, zmax);
-	normal = glm::cross(v2 - v1, v3 - v2);
-	pushVertex(vertices, v1); pushVertex(vertices, normal); pushVertex(vertices, v2);
-	pushVertex(vertices, normal); pushVertex(vertices, v3); pushVertex(vertices, normal);
-	pushVertex(vertices, v4); pushVertex(vertices, normal); pushVertex(vertices, v2);
-	pushVertex(vertices, normal); pushVertex(vertices, v3); pushVertex(vertices, normal);
-
-	//third face
-	v2 = vec3(0, 0, 0); v1 = vec3(0, 0, zmax); v3 = vec3(0, ymax, zmax); v4 = vec3(0, ymax, 0);
-	normal = glm::cross(v2 - v1, v3 - v2);
-	pushVertex(vertices, v1); pushVertex(vertices, normal); pushVertex(vertices, v2);
-	pushVertex(vertices, normal); pushVertex(vertices, v3); pushVertex(vertices, normal);
-	pushVertex(vertices, v4); pushVertex(vertices, normal); pushVertex(vertices, v2);
-	pushVertex(vertices, normal); pushVertex(vertices, v3); pushVertex(vertices, normal);
-
-	//fourth face
-	v2= vec3(xmax, 0, 0); v1 = vec3(0, 0, 0); v3 = vec3(0, 0, zmax); v4 = vec3(xmax, 0, zmax);
-	normal = glm::cross(v2 - v1, v3 - v2);
-	pushVertex(vertices, v1); pushVertex(vertices, normal); pushVertex(vertices, v2);
-	pushVertex(vertices, normal); pushVertex(vertices, v3); pushVertex(vertices, normal);
-	pushVertex(vertices, v4); pushVertex(vertices, normal); pushVertex(vertices, v2);
-	pushVertex(vertices, normal); pushVertex(vertices, v3); pushVertex(vertices, normal);
-
-	//5th face
-	v1 = vec3(xmax, 0, 0); v2 = vec3(xmax, ymax, 0); v3 = vec3(xmax, 0, zmax); v4 = vec3(xmax, ymax, zmax);
-	normal = glm::cross(v2 - v1, v3 - v2);
-	pushVertex(vertices, v1); pushVertex(vertices, normal); pushVertex(vertices, v2);
-	pushVertex(vertices, normal); pushVertex(vertices, v3); pushVertex(vertices, normal);
-	pushVertex(vertices, v4); pushVertex(vertices, normal); pushVertex(vertices, v2);
-	pushVertex(vertices, normal); pushVertex(vertices, v3); pushVertex(vertices, normal);
-
-	//6th face
-	v2 = vec3(xmax, ymax, 0); v1 = vec3(0, ymax, 0); v3 = vec3(0, ymax, zmax); v4 = vec3(xmax, ymax, zmax);
-	normal = glm::cross(v2 - v1, v3 - v2);
-	pushVertex(vertices, v1); pushVertex(vertices, normal); pushVertex(vertices, v2);
-	pushVertex(vertices, normal); pushVertex(vertices, v3); pushVertex(vertices, normal);
-	pushVertex(vertices, v4); pushVertex(vertices, normal); pushVertex(vertices, v2);
-	pushVertex(vertices, normal); pushVertex(vertices, v3); pushVertex(vertices, normal);
-
-	
-}
-
+//Adds the vertices and normal of a unit cube which will be offset and resized by the model matrix later 
 void generateWallvertices(Engine& engine, std::vector<float>& vertices)
 {
 	float vert[] = {
@@ -342,6 +290,10 @@ void generateWallvertices(Engine& engine, std::vector<float>& vertices)
 
 }
 
+void generateGridVertices(Engine& engine, vec3 spacing)
+{
+
+}
 void pushVertex(std::vector<float>& vertices, vec3 vertex) {
 	vertices.push_back(vertex.x);
 	vertices.push_back(vertex.y);
