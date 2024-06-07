@@ -1,6 +1,7 @@
 #include "Engine.h"
 #include "shader.h"
 #include "renderer.h"
+#include "collision.h"
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -14,7 +15,7 @@ using namespace glm;
 
 int screen_height = 800, screen_width = 1200;
 // camera
-Camera camera(glm::vec3(0.0f, 0.0f, 30.0f));
+Camera camera(glm::vec3(0.0f, 0.0f, -30.0f));
 float lastX = screen_width / 2.0f;
 float lastY = screen_height / 2.0f;
 bool firstMouse = true;
@@ -23,8 +24,8 @@ bool firstMouse = true;
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
 
-const int VRES = 3;
-const int HRES = 2;
+const int VRES = 30;
+const int HRES = 20;
 
 unsigned int SPHERE_VERT_COUNT, WALL_VERT_COUNT;
 
@@ -58,84 +59,28 @@ int render(Engine& engine) {
 		return -1;
 	}
 
-	//init engine with max coordinates i.e wall location
-	//Engine engine = Engine(500.0f, 500.0f, 500.0f);
-
 	//temporary cube coords
-	float vertices[] = {
-	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-	 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-	-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-	};
-	std::vector<float> vertices1;
-	std::vector<unsigned int> indices;
-	std::vector<vec3> normals;
-
-	//uncomment this if you want to see something on screen
-	//generateSphereMesh(vertices1, vec3(0), 1.0f, HRES, VRES);
-
-	/*currently not working, comment this out if you want to see smth*/generateAll(engine, vertices1);
+	std::vector<float> vertices;
+	
+	generateAll(engine, vertices);
 
 	glEnable(GL_DEPTH_TEST);
 	//initialising shader.h to load, compile and link shaders
 	Shader sh = Shader("shader/lightvshader.glsl", "shader/lightfshader.glsl");
 	
 	//create and bind buffers
-	unsigned int vbo1, vao1;
-	glGenBuffers(1, &vbo1);
-	glGenVertexArrays(1, &vao1);
-	//glGenBuffers(1, &EBO);
+	unsigned int VBO, VAO;
+	glGenBuffers(1, &VBO);
+	glGenVertexArrays(1, &VAO);
 
+	glBindVertexArray(VAO);
 
-	glBindVertexArray(vao1);
-
-	glBindBuffer(GL_ARRAY_BUFFER, vbo1);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices1.size(), &vertices1[0], GL_STATIC_DRAW);
-
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int)*indices.size(), &indices[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)0);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)(9 * sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 
 	//display a static sphere at window center 
@@ -153,7 +98,7 @@ int render(Engine& engine) {
 
 		processInput(window);
 
-		glBindVertexArray(vao1);
+		glBindVertexArray(VAO);
 		sh.use();
 		//defining model,view,projection matrices
 		glm::mat4 model = mat4(1.0f);
@@ -173,11 +118,13 @@ int render(Engine& engine) {
 		
 		for (int i = 0; i < engine.particles.size(); i++) 
 		{
+			float ModelColor = 0.9;
+			sh.setFloat("light", ModelColor);
 			model = mat4(1.0f);
 
 			particle particlei = engine.particles[i];
-			model = glm::scale(model, vec3(particlei.size));
 			model = translate(model, particlei.pos);
+			model = glm::scale(model, vec3(particlei.size));
 
 			//model = rotate(model, (float)glfwGetTime() * 1.0f, vec3(1, 1, 0));
 			//model = rotate(model, sin((float)glfwGetTime() * 0.7f), vec3(0, 1, 1));
@@ -185,14 +132,18 @@ int render(Engine& engine) {
 			sh.setMatrix4f("model", model);
 			glDrawArrays(GL_TRIANGLES, 0, SPHERE_VERT_COUNT/6);
 		}
-		float light = 0.3;
-		sh.setFloat("light", light);
+		float ModelColor = 1.0f;
+		sh.setFloat("light", ModelColor);
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, vec3(-engine.xmax / 2, -engine.ymax / 2, -engine.zmax / 2));
+		model = translate(model, (engine.walldiagonal1 + engine.walldiagonal2) / 2.0f);
+		model = scale(model, engine.walldiagonal2 - engine.walldiagonal1);
+		//model = glm::translate(model, vec3(-engine.xmax / 2, -engine.ymax / 2, -engine.zmax / 2));
 		sh.setMatrix4f("model", model);
 		glDrawArrays(GL_TRIANGLES, SPHERE_VERT_COUNT/6, WALL_VERT_COUNT/6);
 		//set mvp matrix as uniform
 
+		wallCollide(engine);
+		engine.updateall();
 		glfwSwapBuffers(window); 
 		glfwPollEvents();
 	}
@@ -285,61 +236,64 @@ vec3 vertexthetaphi(float size, float theta, float phi) {
 	return vec3(size * sin(phi) * cos(theta), size * sin(phi) * sin(theta), size * cos(phi));
 }
 
-void generateWallvertices(Engine& engine, std::vector<float> &vertices) 
+//Adds the vertices and normal of a unit cube which will be offset and resized by the model matrix later 
+void generateWallvertices(Engine& engine, std::vector<float>& vertices)
 {
-	float xmax = engine.xmax, ymax = engine.ymax, zmax = engine.zmax;
-	vec3 v1, v2, v3, v4, normal;
-	//first face
-	v1 = vec3(0); v2 = vec3(xmax, 0, 0); v3 = vec3(0, ymax, 0); v4 = vec3(xmax, ymax,0);
-	normal = glm::cross(v2 - v1, v3 - v2);
-	pushVertex(vertices, v1); pushVertex(vertices,normal); pushVertex(vertices, v2);
-	pushVertex(vertices, normal); pushVertex(vertices, v3); pushVertex(vertices, normal);
-	pushVertex(vertices, v4); pushVertex(vertices, normal); pushVertex(vertices, v2);
-	pushVertex(vertices, normal); pushVertex(vertices, v3); pushVertex(vertices, normal);
+	float vert[] = {
+	-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, 1.0f,
+	 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, 1.0f,
+	 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, 1.0f,
+	-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, 1.0f,
 
-	//second face
-	v1 = vec3(0,0,zmax); v2 = vec3(xmax, 0, zmax); v3 = vec3(0, ymax, zmax); v4 = vec3(xmax, ymax, zmax);
-	normal = glm::cross(v2 - v1, v3 - v2);
-	pushVertex(vertices, v1); pushVertex(vertices, normal); pushVertex(vertices, v2);
-	pushVertex(vertices, normal); pushVertex(vertices, v3); pushVertex(vertices, normal);
-	pushVertex(vertices, v4); pushVertex(vertices, normal); pushVertex(vertices, v2);
-	pushVertex(vertices, normal); pushVertex(vertices, v3); pushVertex(vertices, normal);
+	-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, -1.0f,
+	 0.5f, -0.5f,  0.5f,  0.0f,  0.0f, -1.0f,
+	 0.5f,  0.5f,  0.5f,  0.0f,  0.0f, -1.0f,
+	 0.5f,  0.5f,  0.5f,  0.0f,  0.0f, -1.0f,
+	-0.5f,  0.5f,  0.5f,  0.0f,  0.0f, -1.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, -1.0f,
 
-	//third face
-	v2 = vec3(0, 0, 0); v1 = vec3(0, 0, zmax); v3 = vec3(0, ymax, zmax); v4 = vec3(0, ymax, 0);
-	normal = glm::cross(v2 - v1, v3 - v2);
-	pushVertex(vertices, v1); pushVertex(vertices, normal); pushVertex(vertices, v2);
-	pushVertex(vertices, normal); pushVertex(vertices, v3); pushVertex(vertices, normal);
-	pushVertex(vertices, v4); pushVertex(vertices, normal); pushVertex(vertices, v2);
-	pushVertex(vertices, normal); pushVertex(vertices, v3); pushVertex(vertices, normal);
+	-0.5f,  0.5f,  0.5f, 1.0f,  0.0f,  0.0f,
+	-0.5f,  0.5f, -0.5f, 1.0f,  0.0f,  0.0f,
+	-0.5f, -0.5f, -0.5f, 1.0f,  0.0f,  0.0f,
+	-0.5f, -0.5f, -0.5f, 1.0f,  0.0f,  0.0f,
+	-0.5f, -0.5f,  0.5f, 1.0f,  0.0f,  0.0f,
+	-0.5f,  0.5f,  0.5f, 1.0f,  0.0f,  0.0f,
 
-	//fourth face
-	v2= vec3(xmax, 0, 0); v1 = vec3(0, 0, 0); v3 = vec3(0, 0, zmax); v4 = vec3(xmax, 0, zmax);
-	normal = glm::cross(v2 - v1, v3 - v2);
-	pushVertex(vertices, v1); pushVertex(vertices, normal); pushVertex(vertices, v2);
-	pushVertex(vertices, normal); pushVertex(vertices, v3); pushVertex(vertices, normal);
-	pushVertex(vertices, v4); pushVertex(vertices, normal); pushVertex(vertices, v2);
-	pushVertex(vertices, normal); pushVertex(vertices, v3); pushVertex(vertices, normal);
+	 0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+	 0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+	 0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+	 0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+	 0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+	 0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
 
-	//5th face
-	v1 = vec3(xmax, 0, 0); v2 = vec3(xmax, ymax, 0); v3 = vec3(xmax, 0, zmax); v4 = vec3(xmax, ymax, zmax);
-	normal = glm::cross(v2 - v1, v3 - v2);
-	pushVertex(vertices, v1); pushVertex(vertices, normal); pushVertex(vertices, v2);
-	pushVertex(vertices, normal); pushVertex(vertices, v3); pushVertex(vertices, normal);
-	pushVertex(vertices, v4); pushVertex(vertices, normal); pushVertex(vertices, v2);
-	pushVertex(vertices, normal); pushVertex(vertices, v3); pushVertex(vertices, normal);
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  0.0f,
+	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  0.0f,
+	 0.5f, -0.5f,  0.5f,  0.0f, 1.0f,  0.0f,
+	 0.5f, -0.5f,  0.5f,  0.0f, 1.0f,  0.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, 1.0f,  0.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  0.0f,
 
-	//6th face
-	v2 = vec3(xmax, ymax, 0); v1 = vec3(0, ymax, 0); v3 = vec3(0, ymax, zmax); v4 = vec3(xmax, ymax, zmax);
-	normal = glm::cross(v2 - v1, v3 - v2);
-	pushVertex(vertices, v1); pushVertex(vertices, normal); pushVertex(vertices, v2);
-	pushVertex(vertices, normal); pushVertex(vertices, v3); pushVertex(vertices, normal);
-	pushVertex(vertices, v4); pushVertex(vertices, normal); pushVertex(vertices, v2);
-	pushVertex(vertices, normal); pushVertex(vertices, v3); pushVertex(vertices, normal);
-
+	-0.5f,  0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+	 0.5f,  0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+	 0.5f,  0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+	 0.5f,  0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+	-0.5f,  0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+	-0.5f,  0.5f, -0.5f,  0.0f, -1.0f,  0.0f
+	};
 	
+	for (int i = 0; i < sizeof(vert) / sizeof(float); i++) 
+	{
+		vertices.push_back(vert[i]);
+	}
+
 }
 
+void generateGridVertices(Engine& engine, vec3 spacing)
+{
+
+}
 void pushVertex(std::vector<float>& vertices, vec3 vertex) {
 	vertices.push_back(vertex.x);
 	vertices.push_back(vertex.y);
@@ -374,6 +328,8 @@ void processInput(GLFWwindow* window)
 		camera.ProcessKeyboard(RIGHT, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
 		camera.ProcessKeyboard(UP, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+		camera.ProcessKeyboard(DOWN, deltaTime);
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes

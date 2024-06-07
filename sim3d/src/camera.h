@@ -32,6 +32,7 @@ public:
     glm::vec3 Up;
     glm::vec3 Right;
     glm::vec3 WorldUp;
+    glm::vec3 WorldDown;
     // euler Angles
     float Yaw;
     float Pitch;
@@ -45,6 +46,7 @@ public:
     {
         Position = position;
         WorldUp = up;
+        WorldDown = -up;
         Yaw = yaw;
         Pitch = pitch;
         updateCameraVectors();
@@ -79,6 +81,9 @@ public:
             Position += Right * velocity;
         if (direction == UP)
             Position += WorldUp * velocity;
+        if (direction == DOWN)
+            Position += WorldDown * velocity;
+
 
     }
 
