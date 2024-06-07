@@ -125,9 +125,6 @@ int render(Engine& engine) {
 			particle particlei = engine.particles[i];
 			model = translate(model, particlei.pos);
 			model = glm::scale(model, vec3(particlei.size));
-
-			//model = rotate(model, (float)glfwGetTime() * 1.0f, vec3(1, 1, 0));
-			//model = rotate(model, sin((float)glfwGetTime() * 0.7f), vec3(0, 1, 1));
 			
 			sh.setMatrix4f("model", model);
 			glDrawArrays(GL_TRIANGLES, 0, SPHERE_VERT_COUNT/6);
@@ -290,9 +287,39 @@ void generateWallvertices(Engine& engine, std::vector<float>& vertices)
 
 }
 
-void generateGridVertices(Engine& engine, vec3 spacing)
+void generateGridVertices(std::vector<float> &vertices, vec3 spacing, vec3 diag1, vec3 diag2)
 {
+	vec3 count = (diag1 - diag2) / spacing;
+	float xcount = count.x, ycount = count.y, zcount = count.z;
+	for (int i = 0; i <= xcount; i++) 
+	{
+		pushVertex(vertices, vec3(diag1.x+ i * spacing.x, 0, 0));
+		pushVertex(vertices, vec3(0));
+		pushVertex(vertices, vec3(diag1.x + i * spacing.x, diag2.y, 0));
+		pushVertex(vertices, vec3(0));
+	}
+	for (int j = 0; j <= ycount; j++)
+	{
+		pushVertex(vertices, vec3(0, diag1.y + j * spacing.y, 0));
+		pushVertex(vertices, vec3(0));
+		pushVertex(vertices, vec3(diag2.x, diag1.y + j * spacing.y, 0));
+		pushVertex(vertices, vec3(0));
+	}
+}
 
+void renderGrid(std::vector<float>& vertices, vec3 spacing, vec3 diag1, vec3 diag2)
+{
+	mat4 model = mat4(1);
+	float zcount = ((diag2 - diag1) / spacing).z;
+	int size_before = vertices.size();
+	generateGridVertices(vertices, spacing, diag1, diag2);
+	int XY_PLANE_COUNT = vertices.size() - size_before;
+	for (int i = 0; i <= zcount; i++)
+	{
+		model = translate(model, vec3(0, 0,spacing.z));
+		//
+
+	}
 }
 void pushVertex(std::vector<float>& vertices, vec3 vertex) {
 	vertices.push_back(vertex.x);
