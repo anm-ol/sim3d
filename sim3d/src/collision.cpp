@@ -25,9 +25,9 @@ void wallCollide(Engine& engine)
 	//  TODO: will also have to look at the particle's radius to determine whether it is outside bounds
 	for (int i = 0; i < engine.particles.size(); i++)
 	{
-		particle& p = engine.particles[i];
-		glm::vec3 pos = p.pos;	 // getting the current position of the particle
-		float radius = p.size; // getting the radius of the particle
+		particle& particlei = engine.particles[i];
+		glm::vec3 pos = particlei.pos;	 // getting the current position of the particle
+		float radius = particlei.size; // getting the radius of the particle
 
 		/*
 			check is particle is outside bounds or intersecting
@@ -35,42 +35,42 @@ void wallCollide(Engine& engine)
 			based on which co-ordinate of the particle is out of bounds,
 			velocity will be reversed in that direction only
 		*/
-		glm::vec3 newVel = p.velocity;
+		glm::vec3 newVel = particlei.velocity;
 		if (pos.x - radius <= engine.xmin)
 		{
-			//p.pos.x += radius - p.pos.x;
+			//particlei.pos.x += radius - particlei.pos.x;
 			newVel.x = -newVel.x;
-			p.setVelocity(newVel);	// reverse vel in x axis
+			particlei.setVelocity(newVel);	// reverse vel in x axis
 		}
 		if ( pos.x + radius >= engine.xmax)
 		{
-			//p.pos.x += -radius - p.pos.x;
+			//particlei.pos.x += -radius - particlei.pos.x;
 			newVel.x = -newVel.x;
-			p.setVelocity(newVel);	// reverse vel in x axis
+			particlei.setVelocity(newVel);	// reverse vel in x axis
 		}
 		if (pos.y - radius <= engine.ymin)
 		{
-			//p.pos.y += radius - p.pos.y;
+			//particlei.pos.y += radius - particlei.pos.y;
 			newVel.y = -newVel.y;
-			p.setVelocity(newVel);	// reverse vel in y axis
+			particlei.setVelocity(newVel);	// reverse vel in y axis
 		}
 		if (pos.y + radius >= engine.ymax)
 		{
-			//p.pos.y += -radius - p.pos.y;
+			//particlei.pos.y += -radius - particlei.pos.y;
 			newVel.y = -newVel.y;
-			p.setVelocity(newVel);	// reverse vel in y axis
+			particlei.setVelocity(newVel);	// reverse vel in y axis
 		}
 		if (pos.z - radius <= engine.zmin)
 		{
-			//p.pos.z += radius - p.pos.z;
+			//particlei.pos.z += radius - particlei.pos.z;
 			newVel.z = -newVel.z;
-			p.setVelocity(newVel);	// reverse vel in z axis
+			particlei.setVelocity(newVel);	// reverse vel in z axis
 		}
 		if (pos.z + radius >= engine.zmax)
 		{
-			//p.pos.z += -radius - p.pos.z;
+			//particlei.pos.z += -radius - particlei.pos.z;
 			newVel.z = -newVel.z;
-			p.setVelocity(newVel);	// reverse vel in z axis
+			particlei.setVelocity(newVel);	// reverse vel in z axis
 		}
 	}
 }

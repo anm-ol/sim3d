@@ -1,3 +1,14 @@
-﻿  Engine.cpp
-D:\Projects\sim3d\sim3d\src\Engine.cpp(46,20): warning C4018: '<': signed/unsigned mismatch
-  sim3d.vcxproj -> D:\Projects\sim3d\x64\Debug\sim3d.exe
+﻿  collision.cpp
+  main.cpp
+  particle.cpp
+  Engine.cpp
+C:\Users\anmol\projects\sim3d\sim3d\src\Engine.cpp(46,20): warning C4018: '<': signed/unsigned mismatch
+  renderer.cpp
+C:\Users\anmol\projects\sim3d\sim3d\src\renderer.cpp(121,21): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\anmol\projects\sim3d\sim3d\src\renderer.cpp(314,18): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\anmol\projects\sim3d\sim3d\src\renderer.cpp(316,21): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\anmol\projects\sim3d\sim3d\src\renderer.cpp(336,35): warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\Users\anmol\projects\sim3d\sim3d\src\renderer.cpp(338,36): warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
+  Generating Code...
+  glad.c
+  sim3d.vcxproj -> C:\Users\anmol\projects\sim3d\x64\Debug\sim3d.exe
