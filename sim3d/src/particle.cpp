@@ -4,7 +4,7 @@
 
 particle::particle(glm::vec3 posn, float s) {
     pos = posn;
-    size = s;
+    size = s;   // radius
     velocity = glm::vec3(0);
 }
 

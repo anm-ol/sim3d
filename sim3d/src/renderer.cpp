@@ -1,7 +1,6 @@
 #include "Engine.h"
 #include "shader.h"
 #include "renderer.h"
-#include "collision.h"
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -142,7 +141,6 @@ int render(Engine& engine) {
 		glDrawArrays(GL_TRIANGLES, SPHERE_VERT_COUNT/6, WALL_VERT_COUNT/6);
 		//set mvp matrix as uniform
 
-		wallCollide(engine);
 		engine.updateall();
 		glfwSwapBuffers(window); 
 		glfwPollEvents();
@@ -324,6 +322,7 @@ void renderGrid(std::vector<float>& vertices, vec3 spacing, vec3 diag1, vec3 dia
 
 	}
 }
+
 void pushVertex(std::vector<float>& vertices, vec3 vertex) {
 	vertices.push_back(vertex.x);
 	vertices.push_back(vertex.y);

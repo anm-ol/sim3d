@@ -8,6 +8,7 @@ public:
 	std::vector<particle> particles;
 	glm::vec3 globalAcc;
 	glm::vec3 walldiagonal1, walldiagonal2;
+	int n;
 	
 	float Elasticity;
 	float tconst;

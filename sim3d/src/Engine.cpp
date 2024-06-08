@@ -10,8 +10,7 @@
 
 using namespace glm;
 
-vec3 randomPos(vec3 min, vec3 max);
-float randomSize(float maxSize);
+vec3 randomVec3(vec3 min, vec3 max);
 
 Engine::Engine(float xm, float ym, float zm)
 {
@@ -23,6 +22,7 @@ Engine::Engine(float xm, float ym, float zm)
 	zmax = zm;
 	tconst = 1.0f;
 	Elasticity = 1.0f;
+	n = 0;
 }
 Engine::Engine()
 {
@@ -43,11 +43,11 @@ void Engine::setWall(vec3 diag1, vec3 diag2)
 
 // create particles randomly from numParticles and maxSize
 // TODO: particles overlap with wall and each other
-void Engine::createParticles(unsigned int numParticles, float maxSize, bool Rand_velocity)
+void Engine::createParticles(int numParticles, float size, float maxVel, bool Rand_velocity)
 {
 	for (int i = 0; i < numParticles; i++)
 	{
-		particle p = particle(randomPos(walldiagonal1, walldiagonal2), randomSize(maxSize));
+		particle p = particle(randomPos(walldiagonal1 + size, walldiagonal2 - size), randomSize(maxSize));
 		if (Rand_velocity)
 			p.setVelocity(randomPos(-vec3(-.5), vec3(0.5)));
 		else
@@ -55,7 +55,7 @@ void Engine::createParticles(unsigned int numParticles, float maxSize, bool Rand
 		particles.push_back(p);
 	}
 }
-
+	
 void Engine::setAccelaration(vec3 acc) {
 	globalAcc = acc;
 }
@@ -66,18 +66,34 @@ void Engine::updateall() //this is the main function that gets called in infinit
 	for (int i = 0; i < particles.size(); i++)
 	{
 		particles[i].update(tconst);
+
+		//update velocity according to force/accelaration (if any)
 		particles[i].velocity += globalAcc;
 	}
 
-	//update velocity according to force/accelaration (if any)
-
 	//call collision handling functions after updation
+	wallCollide(*this);
+
+	// inter particle collision
+	for (int i = 0; i < particles.size(); i++)
+	{
+		for (int j = i + 1; j < particles.size(); j++)
+		{
+			if (isCollision(particles[i], particles[j]))
+			{
+				n++;
+				std::cout << n << std::endl;
+				resolveCollision(particles[i], particles[j]);
+			}
+		}
+	}
+
 
 
 }
 
 // Function to generate a random vec3 position within a range
-vec3 randomPos(vec3 min, vec3 max)
+vec3 randomVec3(vec3 min, vec3 max)
 {
 	std::random_device rd;
 	std::mt19937 gen(rd());
@@ -90,13 +106,4 @@ vec3 randomPos(vec3 min, vec3 max)
 		posn[i] = dist(gen);
 	}
 	return posn;
-}
-
-float randomSize(float maxSize)
-{
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_real_distribution<float> dist(0.0f, maxSize);
-	
-	return dist(gen);
 }
