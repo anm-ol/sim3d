@@ -28,6 +28,9 @@ const int HRES = 60;
 
 unsigned int SPHERE_VERT_COUNT, WALL_VERT_COUNT;
 
+double lastTime = glfwGetTime();
+int numFrames = 0;
+
 int render(Engine& engine) {
 
 
@@ -88,7 +91,7 @@ int render(Engine& engine) {
 
 		// per-frame time logic
 		// --------------------
-		float currentFrame = static_cast<float>(glfwGetTime());
+		float currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 
@@ -141,7 +144,10 @@ int render(Engine& engine) {
 		glDrawArrays(GL_TRIANGLES, SPHERE_VERT_COUNT/6, WALL_VERT_COUNT/6);
 		//set mvp matrix as uniform
 
-		engine.updateall();
+		// display frame rate
+		calcFrameRate();
+
+		engine.updateall(deltaTime);
 		glfwSwapBuffers(window); 
 		glfwPollEvents();
 	}
@@ -399,4 +405,18 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
 	camera.ProcessMouseScroll(static_cast<float>(yoffset));
+}
+
+void calcFrameRate()
+{
+	// measure speed
+	double currentTime = glfwGetTime();
+	numFrames++;
+
+	if (currentTime - lastTime >= 1.0)
+	{
+		//cout << numFrames << endl;
+		numFrames = 0;
+		lastTime += 1.0;
+	}
 }

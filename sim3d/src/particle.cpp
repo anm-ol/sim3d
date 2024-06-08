@@ -2,9 +2,10 @@
 #include <glm/glm.hpp>
 #include "particle.h"
 
-particle::particle(glm::vec3 posn, float s) {
+particle::particle(glm::vec3 posn, float s, float m) {
     pos = posn;
     size = s;   // radius
+    mass = m;
     velocity = glm::vec3(0);
 }
 

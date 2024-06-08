@@ -1,2 +1,8 @@
+<<<<<<< HEAD
+﻿  Engine.cpp
+D:\Projects\sim3d\sim3d\src\Engine.cpp(61,11): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  sim3d.vcxproj -> D:\Projects\sim3d\x64\Debug\sim3d.exe
+=======
 ﻿  main.cpp
   sim3d.vcxproj -> C:\Users\anmol\projects\sim3d\x64\Debug\sim3d.exe
+>>>>>>> development

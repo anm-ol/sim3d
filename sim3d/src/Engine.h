@@ -18,7 +18,9 @@ public:
 	Engine(float xm, float ym, float zm);
 	Engine();
 	void setWall(glm::vec3 diag1, glm::vec3 diag2);
-	void createParticles(int numParticles, float maxSize, float maxVel,bool random_velocity);
-	void updateall();
+	void updateall(float dt);
 	void setAccelaration(glm::vec3);
+
+	void createParticles(int numParticles, float size, float mass, glm::vec3 maxVel);
+	void createParticle(float size, float mass, glm::vec3 maxVel);
 };
