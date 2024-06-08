@@ -1,8 +1,3 @@
-﻿  main.cpp
-  Engine.cpp
-  renderer.cpp
-D:\Projects\sim3d\sim3d\src\renderer.cpp(120,21): warning C4305: 'initializing': truncation from 'double' to 'float'
-D:\Projects\sim3d\sim3d\src\renderer.cpp(308,35): warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
-D:\Projects\sim3d\sim3d\src\renderer.cpp(310,36): warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
-  Generating Code...
+﻿  Engine.cpp
+D:\Projects\sim3d\sim3d\src\Engine.cpp(61,11): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
   sim3d.vcxproj -> D:\Projects\sim3d\x64\Debug\sim3d.exe
