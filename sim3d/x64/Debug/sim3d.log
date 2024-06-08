@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 <<<<<<< HEAD
 ﻿  Engine.cpp
 D:\Projects\sim3d\sim3d\src\Engine.cpp(61,11): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
@@ -6,3 +7,10 @@ D:\Projects\sim3d\sim3d\src\Engine.cpp(61,11): warning C4267: 'initializing': co
 ﻿  main.cpp
   sim3d.vcxproj -> C:\Users\anmol\projects\sim3d\x64\Debug\sim3d.exe
 >>>>>>> development
+=======
+﻿  imgui_impl_opengl3.cpp
+  imgui_tables.cpp
+  imgui_widgets.cpp
+  Generating Code...
+  sim3d.vcxproj -> C:\Users\anmol\projects\sim3d\x64\Debug\sim3d.exe
+>>>>>>> Stashed changes

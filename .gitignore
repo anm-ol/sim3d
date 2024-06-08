@@ -4,3 +4,9 @@
 
 /.vs/sim3d
 /.vscode
+/sim3d/x64/Debug
+/sim3d/src/gui.cpp
+/sim3d/x64/Debug/sim3d.tlog/Cl.items.tlog
+/sim3d/x64/Debug/sim3d.tlog/link.command.1.tlog
+/sim3d/x64/Debug/sim3d.tlog/link.secondary.1.tlog
+/sim3d/x64/Debug/sim3d.tlog/link.write.1.tlog
