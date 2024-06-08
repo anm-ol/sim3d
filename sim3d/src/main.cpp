@@ -13,17 +13,17 @@ int main() {
 	engine.setWall(vec3(-100,-30,-100), vec3(100,40,100));
 
 	// particle parameters
-	const int numParticles = 1000;
+	const int numParticles = 200;
 	const float size = 5.0f;
 	const float mass = size;
 	const vec3 maxVel = vec3(1.0f);
 
-	engine.wallElasticity = 0.9f;
-	engine.particleElasticity = 0.95f;
-	engine.NumSteps = 30;
+	engine.wallElasticity = 0.0f;
+	engine.particleElasticity = 0.8f;
+	engine.NumSteps = 10;
 
 	engine.createParticles(numParticles, size, mass, maxVel, true);
-	engine.setAccelaration(vec3(0, -.00f, 0));
+	engine.setAccelaration(vec3(0, -.002f, 0));
 	if(render(engine))
 		std::cout << "Error" << std::endl;
 	return 0;

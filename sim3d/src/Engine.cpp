@@ -15,12 +15,10 @@ vec3 randomVec3(vec3 min, vec3 max);
 
 Engine::Engine()
 {
-	xmin = 0;
-	ymin = 0;
-	zmin = 0;
 	tconst = 1.0f;
 	wallElasticity = 1.0f;
 	particleElasticity = 1.0f;
+	friction = 1;
 	globalAcc = vec3(0);
 	NumSteps = 1;
 }

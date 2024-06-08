@@ -11,6 +11,7 @@ public:
 	glm::vec3 walldiagonal1, walldiagonal2;
 	
 	float particleElasticity, wallElasticity;
+	float friction;
 	float tconst;
 	float xmax, xmin, ymax, ymin, zmin, zmax;
 
