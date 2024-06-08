@@ -3,14 +3,17 @@
 #include <vector>
 #include "particle.h"
 
+using namespace glm;
 class Engine {
 public:
 	std::vector<particle> particles;
-	float tconst;
 	glm::vec3 globalAcc;
-	float xmax, xmin, ymax, ymin, zmin, zmax;
 	glm::vec3 walldiagonal1, walldiagonal2;
 	int n;
+	
+	float Elasticity;
+	float tconst;
+	float xmax, xmin, ymax, ymin, zmin, zmax;
 
 	Engine(float xm, float ym, float zm);
 	Engine();
