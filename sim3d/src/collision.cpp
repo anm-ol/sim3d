@@ -85,7 +85,7 @@ void wallCollide(Engine& engine)
 		{
 			//shift particle to be inside left wall
 			pos.x = engine.xmin + radius;
-			newVel.x = -engine.wallElasticity * newVel.x; // reverse vel in x axis
+			newVel = newVel * vec3(-engine.wallElasticity, engine.friction, engine.friction); // reverse vel in x axis
 			if (glm::abs(p.velocity.x) < velocitymin) 
 			{
 				//if velocity is lesser than threshold then round it off to zero
@@ -98,7 +98,7 @@ void wallCollide(Engine& engine)
 		if (pos.x + radius > engine.xmax)
 		{
 			pos.x = engine.xmax - radius;
-			newVel.x = -engine.wallElasticity * newVel.x;
+			newVel = newVel * vec3(-engine.wallElasticity, engine.friction, engine.friction); // reverse vel in x axis
 			if (glm::abs(p.velocity.x) < velocitymin)
 			{
 				newVel.x = 0;
@@ -108,7 +108,8 @@ void wallCollide(Engine& engine)
 		if (pos.y - radius < engine.ymin)
 		{
 			pos.y = engine.ymin + radius;
-			newVel.y = -engine.wallElasticity * newVel.y;
+			// reverse vel in y axis
+			newVel = newVel * vec3(engine.friction, -engine.wallElasticity, engine.friction); 
 			if (glm::abs(p.velocity.y) < velocitymin)
 			{
 				newVel.y = 0;
@@ -118,7 +119,7 @@ void wallCollide(Engine& engine)
 		if (pos.y + radius > engine.ymax)
 		{
 			pos.y = engine.ymax - radius;
-			newVel.y = -engine.wallElasticity * newVel.y;
+			newVel = newVel * vec3(engine.friction, -engine.wallElasticity, engine.friction);
 			if (glm::abs(p.velocity.y) < velocitymin)
 			{
 				newVel.y = 0;
@@ -128,7 +129,7 @@ void wallCollide(Engine& engine)
 		if (pos.z - radius < engine.zmin)
 		{
 			pos.z = engine.zmin + radius;
-			newVel.z = -engine.wallElasticity * newVel.z;
+			newVel = newVel * vec3(engine.friction, engine.friction, -engine.wallElasticity);
 			if (glm::abs(p.velocity.z) < velocitymin)
 			{
 				newVel.z = 0;
@@ -138,7 +139,7 @@ void wallCollide(Engine& engine)
 		if (pos.z + radius > engine.zmax)
 		{
 			pos.z = engine.zmax - radius;
-			newVel.z = -engine.wallElasticity * newVel.z;
+			newVel = newVel * vec3(engine.friction, engine.friction, -engine.wallElasticity);
 			if (glm::abs(p.velocity.z) < velocitymin)
 			{
 				newVel.z = 0;

@@ -18,12 +18,13 @@ int main() {
 	const float mass = size;
 	const vec3 maxVel = vec3(1.0f);
 
-	engine.wallElasticity = 0.0f;
+	engine.wallElasticity = 0.8f;
 	engine.particleElasticity = 0.8f;
+	engine.friction = 0.98f;
 	engine.NumSteps = 10;
 
 	engine.createParticles(numParticles, size, mass, maxVel, true);
-	engine.setAccelaration(vec3(0, -.002f, 0));
+	engine.setAccelaration(vec3(0, -.02f, 0));
 	if(render(engine))
 		std::cout << "Error" << std::endl;
 	return 0;
