@@ -136,6 +136,7 @@
   <ItemGroup>
     <ClCompile Include="src\collision.cpp" />
     <ClCompile Include="src\glad.c" />
+    <ClCompile Include="src\gui.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\particle.cpp" />
     <ClCompile Include="src\Engine.cpp" />

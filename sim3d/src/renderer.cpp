@@ -23,8 +23,8 @@ bool firstMouse = true;
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
 
-const int VRES = 80;
-const int HRES = 60;
+const int VRES = 20;
+const int HRES = 15;
 
 unsigned int SPHERE_VERT_COUNT, WALL_VERT_COUNT;
 

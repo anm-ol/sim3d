@@ -12,18 +12,7 @@ using namespace glm;
 
 vec3 randomVec3(vec3 min, vec3 max);
 
-Engine::Engine(float xm, float ym, float zm)
-{
-	xmin = 0;
-	ymin = 0;
-	zmin = 0;
-	xmax = xm;
-	ymax = ym;
-	zmax = zm;
-	tconst = 1.0f;
-	wallElasticity = 1.0f;
-	particleElasticity = 1.0f;
-}
+
 Engine::Engine()
 {
 	xmin = 0;
@@ -33,6 +22,7 @@ Engine::Engine()
 	wallElasticity = 1.0f;
 	particleElasticity = 1.0f;
 	globalAcc = vec3(0);
+	NumSteps = 1;
 }
 void Engine::setWall(vec3 diag1, vec3 diag2)
 {
@@ -48,18 +38,30 @@ void Engine::setAccelaration(vec3 acc) {
 
 void Engine::updateall(float dt) //this is the main function that gets called in infinite loop
 {
-	for (auto& p : particles)
-	{
-		//call particle.update() for every element in array
-		p.update(tconst);
-		p.velocity += globalAcc;
-	}
+	runSubsteps(NumSteps, dt); //more numsteps --> more accuracy
+}
 
-	//call collision handling functions after updation
-	// handling wall collisions
-	wallCollide(*this);
-	// handling inter-particle collisions
-	particleCollide(*this);
+//Betweem each frame we update position/velocity, handle collision multiple times
+void Engine::runSubsteps(int numstep, float dt) 
+{
+	for (int i = 1; i <= numstep; i++)
+	{
+		//one "sub-step"
+		for (auto& p : particles)
+		{
+			//updates position for each particle
+			// T_const may be replaced with dt in the future
+			p.update(tconst / numstep);
+			//update velocity according to gravity
+			p.velocity += (globalAcc * tconst) / (float)numstep;
+		}
+
+		//call collision handling functions after updation
+		// handling wall collisions
+		wallCollide(*this);
+		// handling inter-particle collisions
+		particleCollide(*this);
+	}
 }
 
 // create particles randomly from numParticles, size and maxVel

@@ -64,59 +64,86 @@ void particleCollide(Engine& engine)
 }
 
 // wall collision
-// take engine reference as input
 void wallCollide(Engine& engine)
 {
 	//minimum velocity under which the particle.component will be rounded to zero
-	float velocitymin = 0;
+	float velocitymin = 0.1;
 
 	// check is particle is outside bounds or intersecting
-	for (auto& particlei : engine.particles)
+	for (auto& p : engine.particles)
 	{
-		vec3 pos = particlei.pos;	 // getting the current position of the particle
-		float radius = particlei.size; // getting the radius of the particle
+		vec3 &pos = p.pos;	 // reference to current position of the particle
+		float radius = p.size; // getting the radius of the particle
 		/*
 			check if particle is outside bounds or intersecting
 			we also include the particle's radius in the eqn
 			based on which co-ordinate of the particle is out of bounds,
 			velocity will be reversed in that direction only
 		*/
-		vec3 newVel = particlei.velocity;
-		if (pos.x - radius <= engine.xmin)
+		vec3 newVel = p.velocity;
+		if (pos.x - radius < engine.xmin)
 		{
-			particlei.pos.x += engine.xmin + radius - particlei.pos.x;
+			//shift particle to be inside left wall
+			pos.x = engine.xmin + radius;
+			newVel.x = -engine.wallElasticity * newVel.x; // reverse vel in x axis
+			if (glm::abs(p.velocity.x) < velocitymin) 
+			{
+				//if velocity is lesser than threshold then round it off to zero
+				newVel.x = 0;
+			}
+			p.setVelocity(newVel);	
+		}
+
+		//same but for right wall
+		if (pos.x + radius > engine.xmax)
+		{
+			pos.x = engine.xmax - radius;
 			newVel.x = -engine.wallElasticity * newVel.x;
-			particlei.setVelocity(newVel);	// reverse vel in x axis
+			if (glm::abs(p.velocity.x) < velocitymin)
+			{
+				newVel.x = 0;
+			}
+			p.setVelocity(newVel);	// reverse vel in x axis
 		}
-		if (pos.x + radius >= engine.xmax)
+		if (pos.y - radius < engine.ymin)
 		{
-			particlei.pos.x += engine.xmax - radius - particlei.pos.x;
-			newVel.x = -engine.wallElasticity * newVel.x;
-			particlei.setVelocity(newVel);	// reverse vel in x axis
-		}
-		if (pos.y - radius <= engine.ymin)
-		{
-			particlei.pos.y += engine.ymin + radius - particlei.pos.y;
+			pos.y = engine.ymin + radius;
 			newVel.y = -engine.wallElasticity * newVel.y;
-			particlei.setVelocity(newVel);	// reverse vel in y axis
+			if (glm::abs(p.velocity.y) < velocitymin)
+			{
+				newVel.y = 0;
+			}
+			p.setVelocity(newVel);	// reverse vel in y axis
 		}
-		if (pos.y + radius >= engine.ymax)
+		if (pos.y + radius > engine.ymax)
 		{
-			particlei.pos.y += engine.ymax - radius - particlei.pos.y;
+			pos.y = engine.ymax - radius;
 			newVel.y = -engine.wallElasticity * newVel.y;
-			particlei.setVelocity(newVel);	// reverse vel in y axis
+			if (glm::abs(p.velocity.y) < velocitymin)
+			{
+				newVel.y = 0;
+			}
+			p.setVelocity(newVel);	// reverse vel in y axis
 		}
-		if (pos.z - radius <= engine.zmin)
+		if (pos.z - radius < engine.zmin)
 		{
-			particlei.pos.z += engine.zmin + radius - particlei.pos.z;
+			pos.z = engine.zmin + radius;
 			newVel.z = -engine.wallElasticity * newVel.z;
-			particlei.setVelocity(newVel);	// reverse vel in z axis
+			if (glm::abs(p.velocity.z) < velocitymin)
+			{
+				newVel.z = 0;
+			}
+			p.setVelocity(newVel);	// reverse vel in z axis
 		}
-		if (pos.z + radius >= engine.zmax)
+		if (pos.z + radius > engine.zmax)
 		{
-			particlei.pos.z += engine.zmax - radius - particlei.pos.z;
+			pos.z = engine.zmax - radius;
 			newVel.z = -engine.wallElasticity * newVel.z;
-			particlei.setVelocity(newVel);	// reverse vel in z axis
+			if (glm::abs(p.velocity.z) < velocitymin)
+			{
+				newVel.z = 0;
+			}
+			p.setVelocity(newVel);	// reverse vel in z axis
 		}
 	}
 }
