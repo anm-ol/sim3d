@@ -21,6 +21,7 @@ Engine::Engine(float xm, float ym, float zm)
 	ymax = ym;
 	zmax = zm;
 	tconst = 1.0f;
+	Elasticity = 1.0f;
 	n = 0;
 }
 Engine::Engine()
@@ -29,6 +30,7 @@ Engine::Engine()
 	ymin = 0;
 	zmin = 0;
 	tconst = 1.0f;
+	Elasticity = 1.0f;
 	globalAcc = vec3(0);
 }
 void Engine::setWall(vec3 diag1, vec3 diag2)

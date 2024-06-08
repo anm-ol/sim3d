@@ -10,7 +10,7 @@ int main() {
 	
 	//rendering after that
 	Engine engine = Engine();
-	engine.setWall(vec3(-100), vec3(100));
+	engine.setWall(vec3(-200,-30,-200), vec3(100));
 
 	// particle parameters
 	const int numParticles = 300;
@@ -20,6 +20,7 @@ int main() {
 
 	engine.createParticles(numParticles, size, mass, maxVel);
 	engine.setAccelaration(vec3(0, -0.00, 0));
+	engine.Elasticity = 0.8f;
 	if(render(engine))
 		std::cout << "Error" << std::endl;
 	return 0;
