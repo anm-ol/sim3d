@@ -39,7 +39,7 @@ void resolveCollision(particle& p1, particle& p2)
 void wallCollide(Engine& engine)
 {
 	//minimum velocity under which the particle.component will be rounded to zero
-	float velocitymin = 1;
+	float velocitymin = 0;
 
 	// check is particle is outside bounds or intersecting
 	for (auto& particlei : engine.particles)

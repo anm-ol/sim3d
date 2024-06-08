@@ -14,13 +14,13 @@ int main() {
 
 	// particle parameters
 	const int numParticles = 30;
-	const float size = 5.0f;
+	const float size = 10.0f;
 	const float mass = size;
 	const vec3 maxVel = vec3(1.0f);
 
 	engine.createParticles(numParticles, size, mass, maxVel);
 	engine.setAccelaration(vec3(0, -2, 0));
-	engine.Elasticity = 0.5f;
+	engine.Elasticity = 0.8f;
 	if(render(engine))
 		std::cout << "Error" << std::endl;
 	return 0;
