@@ -24,8 +24,8 @@ bool firstMouse = true;
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
 
-const int VRES = 30;
-const int HRES = 20;
+const int VRES = 80;
+const int HRES = 60;
 
 unsigned int SPHERE_VERT_COUNT, WALL_VERT_COUNT;
 
@@ -127,6 +127,8 @@ int render(Engine& engine) {
 			model = glm::scale(model, vec3(particlei.size));
 			
 			sh.setMatrix4f("model", model);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
 			glDrawArrays(GL_TRIANGLES, 0, SPHERE_VERT_COUNT/6);
 		}
 		float ModelColor = 1.0f;
@@ -136,6 +138,7 @@ int render(Engine& engine) {
 		model = scale(model, engine.walldiagonal2 - engine.walldiagonal1);
 		//model = glm::translate(model, vec3(-engine.xmax / 2, -engine.ymax / 2, -engine.zmax / 2));
 		sh.setMatrix4f("model", model);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINES);
 		glDrawArrays(GL_TRIANGLES, SPHERE_VERT_COUNT/6, WALL_VERT_COUNT/6);
 		//set mvp matrix as uniform
 

@@ -38,38 +38,38 @@ void wallCollide(Engine& engine)
 		glm::vec3 newVel = particlei.velocity;
 		if (pos.x - radius <= engine.xmin)
 		{
-			//particlei.pos.x += radius - particlei.pos.x;
-			newVel.x = -newVel.x;
+			particlei.pos.x += engine.xmin + radius - particlei.pos.x;
+			newVel.x = - engine.Elasticity * newVel.x;
 			particlei.setVelocity(newVel);	// reverse vel in x axis
 		}
 		if ( pos.x + radius >= engine.xmax)
 		{
-			//particlei.pos.x += -radius - particlei.pos.x;
-			newVel.x = -newVel.x;
+			particlei.pos.x += engine.xmax-radius - particlei.pos.x;
+			newVel.x = - engine.Elasticity * newVel.x;
 			particlei.setVelocity(newVel);	// reverse vel in x axis
 		}
 		if (pos.y - radius <= engine.ymin)
 		{
-			//particlei.pos.y += radius - particlei.pos.y;
-			newVel.y = -newVel.y;
+			particlei.pos.y += engine.ymin + radius - particlei.pos.y;
+			newVel.y = - engine.Elasticity * newVel.y;
 			particlei.setVelocity(newVel);	// reverse vel in y axis
 		}
 		if (pos.y + radius >= engine.ymax)
 		{
-			//particlei.pos.y += -radius - particlei.pos.y;
-			newVel.y = -newVel.y;
+			particlei.pos.y += engine.ymax -radius - particlei.pos.y;
+			newVel.y = - engine.Elasticity * newVel.y;
 			particlei.setVelocity(newVel);	// reverse vel in y axis
 		}
 		if (pos.z - radius <= engine.zmin)
 		{
-			//particlei.pos.z += radius - particlei.pos.z;
-			newVel.z = -newVel.z;
+			particlei.pos.z += engine.zmin + radius - particlei.pos.z;
+			newVel.z = - engine.Elasticity * newVel.z;
 			particlei.setVelocity(newVel);	// reverse vel in z axis
 		}
 		if (pos.z + radius >= engine.zmax)
 		{
-			//particlei.pos.z += -radius - particlei.pos.z;
-			newVel.z = -newVel.z;
+			particlei.pos.z += engine.zmax - radius - particlei.pos.z;
+			newVel.z = - engine.Elasticity * newVel.z;
 			particlei.setVelocity(newVel);	// reverse vel in z axis
 		}
 	}

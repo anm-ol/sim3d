@@ -22,6 +22,7 @@ Engine::Engine(float xm, float ym, float zm)
 	ymax = ym;
 	zmax = zm;
 	tconst = 1.0f;
+	Elasticity = 1.0f;
 }
 Engine::Engine()
 {
@@ -29,6 +30,7 @@ Engine::Engine()
 	ymin = 0;
 	zmin = 0;
 	tconst = 1.0f;
+	Elasticity = 1.0f;
 	globalAcc = vec3(0);
 }
 void Engine::setWall(vec3 diag1, vec3 diag2)
@@ -41,12 +43,15 @@ void Engine::setWall(vec3 diag1, vec3 diag2)
 
 // create particles randomly from numParticles and maxSize
 // TODO: particles overlap with wall and each other
-void Engine::createParticles(unsigned int numParticles, float maxSize)
+void Engine::createParticles(unsigned int numParticles, float maxSize, bool Rand_velocity)
 {
 	for (int i = 0; i < numParticles; i++)
 	{
 		particle p = particle(randomPos(walldiagonal1, walldiagonal2), randomSize(maxSize));
-		p.setVelocity(vec3(0));
+		if (Rand_velocity)
+			p.setVelocity(randomPos(-vec3(-.5), vec3(0.5)));
+		else
+			p.setVelocity(vec3(0));
 		particles.push_back(p);
 	}
 }
@@ -57,14 +62,11 @@ void Engine::setAccelaration(vec3 acc) {
 
 void Engine::updateall() //this is the main function that gets called in infinite loop
 {
-	//particles.push_back(particle(vec3(1), 1.0f));
-
-
 	//call particle.update() for every element in array
 	for (int i = 0; i < particles.size(); i++)
 	{
-		//particles[i].update(tconst);
-		//particles[i].velocity += globalAcc;
+		particles[i].update(tconst);
+		particles[i].velocity += globalAcc;
 	}
 
 	//update velocity according to force/accelaration (if any)
