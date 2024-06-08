@@ -10,7 +10,6 @@
 
 using namespace glm;
 
-vec3 randomVec3(vec3 min, vec3 max);
 
 Engine::Engine(float xm, float ym, float zm)
 {
