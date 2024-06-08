@@ -4,4 +4,5 @@
 
 /.vs/sim3d
 /.vscode
-/sim3d/x64
+/sim3d/x64/
+/sim3d/x64/Debug/
