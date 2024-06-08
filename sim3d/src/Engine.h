@@ -3,6 +3,7 @@
 #include <vector>
 #include "particle.h"
 
+using namespace glm;
 class Engine {
 public:
 	std::vector<particle> particles;
@@ -17,7 +18,7 @@ public:
 	Engine(float xm, float ym, float zm);
 	Engine();
 	void setWall(glm::vec3 diag1, glm::vec3 diag2);
-	void createParticles(unsigned int numParticles, float maxSize,bool random_velocity);
+	void createParticles(int numParticles, float maxSize, float maxVel,bool random_velocity);
 	void updateall();
 	void setAccelaration(glm::vec3);
 };

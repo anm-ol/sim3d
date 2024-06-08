@@ -14,10 +14,12 @@ int main() {
 
 	// number of particles
 	const int numParticles = 300;
-	const float maxSize = 10;
+	const float maxSize = 1;
+	const float maxVel = 1.0f;
 
-	engine.createParticles(numParticles, maxSize);
+	engine.createParticles(numParticles, maxSize, maxVel, true);
 	engine.setAccelaration(vec3(0, -0.008, 0));
+	engine.Elasticity = 0.8f;
 	if(render(engine))
 		std::cout << "Error" << std::endl;
 	return 0;

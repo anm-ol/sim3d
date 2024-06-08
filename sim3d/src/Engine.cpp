@@ -47,9 +47,9 @@ void Engine::createParticles(int numParticles, float size, float maxVel, bool Ra
 {
 	for (int i = 0; i < numParticles; i++)
 	{
-		particle p = particle(randomPos(walldiagonal1 + size, walldiagonal2 - size), randomSize(maxSize));
+		particle p = particle(randomVec3(walldiagonal1 + size, walldiagonal2 - size), size);
 		if (Rand_velocity)
-			p.setVelocity(randomPos(-vec3(-.5), vec3(0.5)));
+			p.setVelocity(randomVec3(-vec3(-.5), vec3(0.5)));
 		else
 			p.setVelocity(vec3(0));
 		particles.push_back(p);
