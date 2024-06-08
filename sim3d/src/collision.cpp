@@ -42,6 +42,7 @@ void wallCollide(Engine& engine)
 	for (auto& particlei : engine.particles)
 	{
 		vec3 pos = particlei.pos;	 // getting the current position of the particle
+		vec3 vel = particlei.velocity;
 		float radius = particlei.size; // getting the radius of the particle
 
 		/*
@@ -54,37 +55,49 @@ void wallCollide(Engine& engine)
 		if (pos.x - radius <= engine.xmin)
 		{
 			particlei.pos.x += engine.xmin + radius - particlei.pos.x;
-			newVel.x = - engine.Elasticity * newVel.x;
+			newVel.x = -engine.Elasticity * newVel.x;
+			if (vel.x < 0.1)
+				newVel.x = 0;
 			particlei.setVelocity(newVel);	// reverse vel in x axis
 		}
 		if ( pos.x + radius >= engine.xmax)
 		{
 			particlei.pos.x += engine.xmax-radius - particlei.pos.x;
 			newVel.x = - engine.Elasticity * newVel.x;
+			if (vel.x < 0.1)
+				newVel.x = 0;
 			particlei.setVelocity(newVel);	// reverse vel in x axis
 		}
 		if (pos.y - radius <= engine.ymin)
 		{
 			particlei.pos.y += engine.ymin + radius - particlei.pos.y;
 			newVel.y = - engine.Elasticity * newVel.y;
+			if (vel.y < 0.1)
+				newVel.y = 0;
 			particlei.setVelocity(newVel);	// reverse vel in y axis
 		}
 		if (pos.y + radius >= engine.ymax)
 		{
 			particlei.pos.y += engine.ymax -radius - particlei.pos.y;
 			newVel.y = - engine.Elasticity * newVel.y;
+			if (vel.y < 0.1)
+				newVel.y = 0;
 			particlei.setVelocity(newVel);	// reverse vel in y axis
 		}
 		if (pos.z - radius <= engine.zmin)
 		{
 			particlei.pos.z += engine.zmin + radius - particlei.pos.z;
 			newVel.z = - engine.Elasticity * newVel.z;
+			if (vel.z < 0.1)
+				newVel.z = 0;
 			particlei.setVelocity(newVel);	// reverse vel in z axis
 		}
 		if (pos.z + radius >= engine.zmax)
 		{
 			particlei.pos.z += engine.zmax - radius - particlei.pos.z;
 			newVel.z = - engine.Elasticity * newVel.z;
+			if (vel.z < 0.1)
+				newVel.z = 0;
 			particlei.setVelocity(newVel);	// reverse vel in z axis
 		}
 	}
