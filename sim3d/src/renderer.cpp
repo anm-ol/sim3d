@@ -23,10 +23,13 @@ bool firstMouse = true;
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
 
-const int VRES = 30;
-const int HRES = 20;
+const int VRES = 80;
+const int HRES = 60;
 
 unsigned int SPHERE_VERT_COUNT, WALL_VERT_COUNT;
+
+double lastTime = glfwGetTime();
+int numFrames = 0;
 
 int render(Engine& engine) {
 
@@ -88,7 +91,7 @@ int render(Engine& engine) {
 
 		// per-frame time logic
 		// --------------------
-		float currentFrame = static_cast<float>(glfwGetTime());
+		float currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 
@@ -124,11 +127,10 @@ int render(Engine& engine) {
 			particle particlei = engine.particles[i];
 			model = translate(model, particlei.pos);
 			model = glm::scale(model, vec3(particlei.size));
-
-			//model = rotate(model, (float)glfwGetTime() * 1.0f, vec3(1, 1, 0));
-			//model = rotate(model, sin((float)glfwGetTime() * 0.7f), vec3(0, 1, 1));
 			
 			sh.setMatrix4f("model", model);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
 			glDrawArrays(GL_TRIANGLES, 0, SPHERE_VERT_COUNT/6);
 		}
 		float ModelColor = 1.0f;
@@ -138,10 +140,14 @@ int render(Engine& engine) {
 		model = scale(model, engine.walldiagonal2 - engine.walldiagonal1);
 		//model = glm::translate(model, vec3(-engine.xmax / 2, -engine.ymax / 2, -engine.zmax / 2));
 		sh.setMatrix4f("model", model);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINES);
 		glDrawArrays(GL_TRIANGLES, SPHERE_VERT_COUNT/6, WALL_VERT_COUNT/6);
 		//set mvp matrix as uniform
 
-		engine.updateall();
+		// display frame rate
+		calcFrameRate();
+
+		engine.updateall(deltaTime);
 		glfwSwapBuffers(window); 
 		glfwPollEvents();
 	}
@@ -288,9 +294,39 @@ void generateWallvertices(Engine& engine, std::vector<float>& vertices)
 
 }
 
-void generateGridVertices(Engine& engine, vec3 spacing)
+void generateGridVertices(std::vector<float> &vertices, vec3 spacing, vec3 diag1, vec3 diag2)
 {
+	vec3 count = (diag1 - diag2) / spacing;
+	float xcount = count.x, ycount = count.y, zcount = count.z;
+	for (int i = 0; i <= xcount; i++) 
+	{
+		pushVertex(vertices, vec3(diag1.x+ i * spacing.x, 0, 0));
+		pushVertex(vertices, vec3(0));
+		pushVertex(vertices, vec3(diag1.x + i * spacing.x, diag2.y, 0));
+		pushVertex(vertices, vec3(0));
+	}
+	for (int j = 0; j <= ycount; j++)
+	{
+		pushVertex(vertices, vec3(0, diag1.y + j * spacing.y, 0));
+		pushVertex(vertices, vec3(0));
+		pushVertex(vertices, vec3(diag2.x, diag1.y + j * spacing.y, 0));
+		pushVertex(vertices, vec3(0));
+	}
+}
 
+void renderGrid(std::vector<float>& vertices, vec3 spacing, vec3 diag1, vec3 diag2)
+{
+	mat4 model = mat4(1);
+	float zcount = ((diag2 - diag1) / spacing).z;
+	int size_before = vertices.size();
+	generateGridVertices(vertices, spacing, diag1, diag2);
+	int XY_PLANE_COUNT = vertices.size() - size_before;
+	for (int i = 0; i <= zcount; i++)
+	{
+		model = translate(model, vec3(0, 0,spacing.z));
+		//
+
+	}
 }
 
 void pushVertex(std::vector<float>& vertices, vec3 vertex) {
@@ -369,4 +405,18 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
 	camera.ProcessMouseScroll(static_cast<float>(yoffset));
+}
+
+void calcFrameRate()
+{
+	// measure speed
+	double currentTime = glfwGetTime();
+	numFrames++;
+
+	if (currentTime - lastTime >= 1.0)
+	{
+		//cout << numFrames << endl;
+		numFrames = 0;
+		lastTime += 1.0;
+	}
 }
