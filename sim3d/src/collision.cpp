@@ -45,7 +45,7 @@ void wallCollide(Engine& engine)
 		float radius = particlei.size; // getting the radius of the particle
 
 		/*
-			check is particle is outside bounds or intersecting
+			check if particle is outside bounds or intersecting
 			we also include the particle's radius in the eqn
 			based on which co-ordinate of the particle is out of bounds,
 			velocity will be reversed in that direction only

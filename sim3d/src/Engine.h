@@ -4,6 +4,10 @@
 #include "particle.h"
 
 using namespace glm;
+
+
+vec3 randomVec3(vec3 min, vec3 max);
+
 class Engine {
 public:
 	std::vector<particle> particles;
