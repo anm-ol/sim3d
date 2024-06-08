@@ -48,14 +48,12 @@ void Engine::updateall(float dt) //this is the main function that gets called in
 	for (auto& p : particles)
 	{
 		//call particle.update() for every element in array
-		p.update(dt);
+		p.update(tconst);
 		p.velocity += globalAcc;
 	}
 
 	//call collision handling functions after updation
 	wallCollide(*this);
-
-	//std::cout << particles[0].velocity.x << std::endl;
 
 	// inter particle collision
 	int size = particles.size();
@@ -66,28 +64,26 @@ void Engine::updateall(float dt) //this is the main function that gets called in
 			if (isCollision(particles[i], particles[j])) {
 				// resolve collisions
 				resolveCollision(particles[i], particles[j]);
-				n++;
 			}
 		}
 	}
-	//std::cout << "collisions: " << n << std::endl;
 }
 
 // create particles randomly from numParticles, size and maxVel
 void Engine::createParticles(int numParticles, float size, float mass, vec3 maxVel)
 {
-	particle p1 = particle(vec3(10), size, mass);
-	p1.setVelocity(vec3(1, 1, 1));
-	particle p2 = particle(vec3(40), size, mass);
-	p2.setVelocity(vec3(-1, -1, -1));
+	//particle p1 = particle(vec3(10), size, mass);
+	//p1.setVelocity(vec3(1, 1, 1));
+	//particle p2 = particle(vec3(40), size, mass);
+	//p2.setVelocity(vec3(-1, -1, -1));
+	
+	//particles.push_back(p1);
+	//particles.push_back(p2);
 
-	particles.push_back(p1);
-	particles.push_back(p2);
-
-	//for (int i = 0; i < numParticles; i++)
-	//{
-	//	createParticle(size, mass, maxVel);
-	//}
+	for (int i = 0; i < numParticles; i++)
+	{
+		createParticle(size, mass, maxVel);
+	}
 }
 
 // both mass and size are fixed. may make them random later!
