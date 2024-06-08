@@ -38,10 +38,14 @@ void resolveCollision(particle& p1, particle& p2)
 // takes engine reference as input
 void wallCollide(Engine& engine)
 {
+	//minimum velocity under which the particle.component will be rounded to zero
+	float velocitymin = 0;
+
 	// check is particle is outside bounds or intersecting
 	for (auto& particlei : engine.particles)
 	{
 		vec3 pos = particlei.pos;	 // getting the current position of the particle
+		vec3 vel = particlei.velocity;
 		float radius = particlei.size; // getting the radius of the particle
 
 		/*
@@ -54,37 +58,49 @@ void wallCollide(Engine& engine)
 		if (pos.x - radius <= engine.xmin)
 		{
 			particlei.pos.x += engine.xmin + radius - particlei.pos.x;
-			newVel.x = - engine.Elasticity * newVel.x;
+			newVel.x = -engine.Elasticity * newVel.x;
+			if (glm::abs(vel.x) < velocitymin)
+				newVel.x = 0;
 			particlei.setVelocity(newVel);	// reverse vel in x axis
 		}
 		if ( pos.x + radius >= engine.xmax)
 		{
 			particlei.pos.x += engine.xmax-radius - particlei.pos.x;
 			newVel.x = - engine.Elasticity * newVel.x;
+			if (glm::abs(vel.x) < velocitymin)
+				newVel.x = 0;
 			particlei.setVelocity(newVel);	// reverse vel in x axis
 		}
 		if (pos.y - radius <= engine.ymin)
 		{
 			particlei.pos.y += engine.ymin + radius - particlei.pos.y;
 			newVel.y = - engine.Elasticity * newVel.y;
+			if (glm::abs(vel.y) < velocitymin)
+				newVel.y = 0;
 			particlei.setVelocity(newVel);	// reverse vel in y axis
 		}
 		if (pos.y + radius >= engine.ymax)
 		{
 			particlei.pos.y += engine.ymax -radius - particlei.pos.y;
 			newVel.y = - engine.Elasticity * newVel.y;
+			if (glm::abs(vel.y) < velocitymin)
+				newVel.y = 0;
 			particlei.setVelocity(newVel);	// reverse vel in y axis
 		}
 		if (pos.z - radius <= engine.zmin)
 		{
 			particlei.pos.z += engine.zmin + radius - particlei.pos.z;
 			newVel.z = - engine.Elasticity * newVel.z;
+			if (glm::abs(vel.z) < velocitymin)
+				newVel.z = 0;
 			particlei.setVelocity(newVel);	// reverse vel in z axis
 		}
 		if (pos.z + radius >= engine.zmax)
 		{
 			particlei.pos.z += engine.zmax - radius - particlei.pos.z;
 			newVel.z = - engine.Elasticity * newVel.z;
+			if (glm::abs(vel.z) < velocitymin)
+				newVel.z = 0;
 			particlei.setVelocity(newVel);	// reverse vel in z axis
 		}
 	}
