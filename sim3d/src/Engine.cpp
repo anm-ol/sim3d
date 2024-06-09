@@ -12,7 +12,6 @@ using namespace glm;
 
 vec3 randomVec3(vec3 min, vec3 max);
 
-
 Engine::Engine()
 {
 	xmin = 0;
@@ -30,10 +29,17 @@ void Engine::setWall(vec3 diag1, vec3 diag2)
 	walldiagonal2 = diag2;
 	xmin = walldiagonal1.x; ymin = walldiagonal1.y; zmin = walldiagonal1.z;
 	xmax = walldiagonal2.x; ymax = walldiagonal2.y; zmax = walldiagonal2.z;
+
+	setCollisionGrid();
 }
 	
 void Engine::setAccelaration(vec3 acc) {
 	globalAcc = acc;
+}
+
+void Engine::setCollisionGrid()
+{
+	rootNode = new OctreeNode(walldiagonal1, walldiagonal2);
 }
 
 void Engine::updateall(float dt) //this is the main function that gets called in infinite loop
@@ -61,6 +67,7 @@ void Engine::runSubsteps(int numstep, float dt)
 		wallCollide(*this);
 		// handling inter-particle collisions
 		particleCollide(*this);
+		rootNode->update();
 	}
 }
 
@@ -94,6 +101,7 @@ void Engine::createParticle(float size, float mass, vec3 maxVel, bool randVeloci
 	else {
 		p.setVelocity(randVelocity ? randomVec3(-maxVel, maxVel) : maxVel);
 		particles.push_back(p);
+		rootNode->insertParticle(p);
 	}
 }
 

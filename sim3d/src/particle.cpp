@@ -20,3 +20,8 @@ glm::vec3 particle::getPosition() {
 void particle::update(float time) {
     pos += velocity * time;
 }
+
+bool particle::operator==(const particle& other) const
+{
+    return pos == other.pos;
+}

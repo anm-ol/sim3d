@@ -11,4 +11,6 @@ public:
 	void setVelocity(glm::vec3 v);
 	glm::vec3 getPosition();
 	void update(float time);
+
+	bool operator==(const particle& other) const;
 };

@@ -134,6 +134,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\OctreeNode.cpp" />
     <ClCompile Include="src\collision.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\gui.cpp" />
@@ -143,6 +144,7 @@
     <ClCompile Include="src\renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\OctreeNode.h" />
     <ClInclude Include="src\camera.h" />
     <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\renderer.h" />
