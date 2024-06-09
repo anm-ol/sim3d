@@ -22,6 +22,8 @@ Engine::Engine(float xm, float ym, float zm)
 	tconst = 1.0f;
 	Elasticity = 1.0f;
 	n = 0;
+
+	pause = false;
 }
 Engine::Engine()
 {
@@ -46,25 +48,28 @@ void Engine::setAccelaration(vec3 acc) {
 
 void Engine::updateall(float dt) //this is the main function that gets called in infinite loop
 {
-	for (auto& p : particles)
+	if (!pause)
 	{
-		//call particle.update() for every element in array
-		p.update(tconst);
-		p.velocity += globalAcc;
-	}
-
-	//call collision handling functions after updation
-	wallCollide(*this);
-
-	// inter particle collision
-	int size = particles.size();
-	for (int i = 0; i < size; i++)
-	{
-		for (int j = i + 1; j < size; j++)
+		for (auto& p : particles)
 		{
-			if (isCollision(particles[i], particles[j])) {
-				// resolve collisions
-				resolveCollision(particles[i], particles[j]);
+			//call particle.update() for every element in array
+			p.update(tconst);
+			p.velocity += globalAcc;
+		}
+
+		//call collision handling functions after updation
+		wallCollide(*this);
+
+		// inter particle collision
+		int size = particles.size();
+		for (int i = 0; i < size; i++)
+		{
+			for (int j = i + 1; j < size; j++)
+			{
+				if (isCollision(particles[i], particles[j])) {
+					// resolve collisions
+					resolveCollision(particles[i], particles[j]);
+				}
 			}
 		}
 	}

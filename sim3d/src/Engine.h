@@ -13,8 +13,11 @@ public:
 	std::vector<particle> particles;
 	glm::vec3 globalAcc;
 	glm::vec3 walldiagonal1, walldiagonal2;
+
 	int n;
 	
+	bool pause;
+
 	float Elasticity;
 	float tconst;
 	float xmax, xmin, ymax, ymin, zmin, zmax;

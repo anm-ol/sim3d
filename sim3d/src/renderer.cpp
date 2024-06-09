@@ -1,16 +1,20 @@
-#include "Engine.h"
-#include "shader.h"
-#include "renderer.h"
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
+
+#include "Engine.h"
+#include "shader.h"
+#include "renderer.h"
 #include "camera.h"
+#include "gui.h"
 
 using namespace std;
 using namespace glm;
+
+GLFWwindow* window;
 
 int screen_height = 800, screen_width = 1200;
 // camera
@@ -18,7 +22,7 @@ Camera camera(glm::vec3(0.0f, 0.0f, -30.0f));
 float lastX = screen_width / 2.0f;
 float lastY = screen_height / 2.0f;
 bool firstMouse = true;
-
+bool cursorVisible = false;
 // timing
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
@@ -40,7 +44,8 @@ int render(Engine& engine) {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	GLFWwindow* window = glfwCreateWindow(screen_width, screen_height, "Sim3D", NULL, NULL);
+	window = glfwCreateWindow(screen_width, screen_height, "Sim3D", NULL, NULL);
+
 	if (window == NULL)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -52,6 +57,8 @@ int render(Engine& engine) {
 	glfwSetCursorPosCallback(window, mouse_callback);
 	glfwSetScrollCallback(window, scroll_callback);
 
+	GUI demoGUI = GUI(engine, window);
+	
 	// tell GLFW to capture our mouse
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
@@ -94,10 +101,13 @@ int render(Engine& engine) {
 		float currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
+		
+		glfwPollEvents();
 
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		demoGUI.InitFrame();
 		processInput(window);
 
 		glBindVertexArray(VAO);
@@ -148,10 +158,12 @@ int render(Engine& engine) {
 		calcFrameRate();
 
 		engine.updateall(deltaTime);
-		glfwSwapBuffers(window); 
-		glfwPollEvents();
-	}
 
+		demoGUI.render();
+
+		glfwSwapBuffers(window); 
+	}
+	demoGUI.shutdown();
 	return 0;
 }
 
@@ -353,18 +365,31 @@ void processInput(GLFWwindow* window)
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		camera.ProcessKeyboard(FORWARD, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		camera.ProcessKeyboard(BACKWARD, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		camera.ProcessKeyboard(LEFT, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		camera.ProcessKeyboard(RIGHT, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-		camera.ProcessKeyboard(UP, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
-		camera.ProcessKeyboard(DOWN, deltaTime);
+	if (!cursorVisible)
+	{
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+			camera.ProcessKeyboard(FORWARD, deltaTime);
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+			camera.ProcessKeyboard(BACKWARD, deltaTime);
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+			camera.ProcessKeyboard(LEFT, deltaTime);
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+			camera.ProcessKeyboard(RIGHT, deltaTime);
+		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+			camera.ProcessKeyboard(UP, deltaTime);
+		if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+			camera.ProcessKeyboard(DOWN, deltaTime);
+	}
+	else
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	if (glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS)
+		cursorVisible = true;
+	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+		cursorVisible = false;
+
+	
+
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
