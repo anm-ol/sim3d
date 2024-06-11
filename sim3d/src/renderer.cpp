@@ -19,8 +19,8 @@ bool firstMouse = true;
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
 
-const int VRES = 20;
-const int HRES = 15;
+const int VRES = 25;
+const int HRES = 20;
 
 
 double lastTime = glfwGetTime();
@@ -94,6 +94,8 @@ int Renderer::render(Engine& engine) {
 		center = view * vec4(center, 1.0);
 		center = vec3(center.x, center.y, center.z);
 		sh.setVec3f("center", center);
+
+		sh.setVec3f("cameraPos", camera.Position);
 		
 		for (int i = 0; i < engine.particles.size(); i++) 
 		{
@@ -166,11 +168,11 @@ void Renderer::generateSphereMesh(std::vector<float>& vertices, float size, int 
 
 
 				pushVec3(vertices, v1); //north pole point
-				pushVec3(vertices, normal);
+				pushVec3(vertices, v1);
 				pushVec3(vertices, v2);
-				pushVec3(vertices, normal);
+				pushVec3(vertices, v2);
 				pushVec3(vertices, v3);
-				pushVec3(vertices, normal);
+				pushVec3(vertices, v3);
 
 				//std::cout << v1.x << v1.y << v1.z;
 				//std::cout << v2.x, v2.y, v2.z;
@@ -184,11 +186,11 @@ void Renderer::generateSphereMesh(std::vector<float>& vertices, float size, int 
 				normal = normalize(glm::cross(v2 - v1, v3 - v2));
 
 				pushVec3(vertices, v1); //south pole point
-				pushVec3(vertices, normal);
+				pushVec3(vertices, v1);
 				pushVec3(vertices, v2);
-				pushVec3(vertices, normal);
+				pushVec3(vertices, v2);
 				pushVec3(vertices, v3);
-				pushVec3(vertices, normal);
+				pushVec3(vertices, v3);
 
 			}
 			else
@@ -200,11 +202,11 @@ void Renderer::generateSphereMesh(std::vector<float>& vertices, float size, int 
 				normal = normalize(glm::cross(v2 - v1, v3 - v2));
 
 				pushVec3(vertices, v1); // point
-				pushVec3(vertices, normal);
+				pushVec3(vertices, v1);
 				pushVec3(vertices, v2);
-				pushVec3(vertices, normal);
+				pushVec3(vertices, v2);
 				pushVec3(vertices, v3);
-				pushVec3(vertices, normal);
+				pushVec3(vertices, v3);
 
 
 				//second triangle
@@ -214,11 +216,11 @@ void Renderer::generateSphereMesh(std::vector<float>& vertices, float size, int 
 				normal = normalize(glm::cross(v2 - v1, v3 - v2));
 
 				pushVec3(vertices, v1); // point
-				pushVec3(vertices, normal);
+				pushVec3(vertices, v1);
 				pushVec3(vertices, v2);
-				pushVec3(vertices, normal);
+				pushVec3(vertices, v2);
 				pushVec3(vertices, v3);
-				pushVec3(vertices, normal);
+				pushVec3(vertices, v3);
 
 			}
 		}

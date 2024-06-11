@@ -69,7 +69,7 @@ public:
 	void generateWallvertices(Engine& engine, std::vector<float>& vertices);
 	void generateGridVertices(std::vector<float>& vertices, vec3 spacing, vec3 diag1, vec3 diag2);
 	
-	void renderGrid(std::vector<float>& vertices, vec3 spacing, vec3 diag1, vec3 diag2
+	void renderGrid(std::vector<float>& vertices, vec3 spacing, vec3 diag1, vec3 diag2);
 	
 	void generateAll(Engine& engine, std::vector<float>& vertices);
 };
