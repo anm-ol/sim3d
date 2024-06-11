@@ -5,6 +5,8 @@
 #include <GLFW/glfw3.h>
 #include "Engine.h"
 #include "camera.h"
+#include "GraphicObjects.h"
+#include "shader.h"
 
 using namespace glm;
 
@@ -20,7 +22,8 @@ public:
 	Camera camera;
 	Engine& engineRef;
 	GLFWwindow* window;
-
+	
+	pointLight ourlight;
 	unsigned int SPHERE_VERT_COUNT, WALL_VERT_COUNT;
 
 	int screen_height, screen_width;
@@ -39,11 +42,41 @@ public:
 		//Creates a GLFW window
 		createWindow(screen_width, screen_height);
 		glfwSetWindowUserPointer(window, this);
-		Renderer::camera = Camera(glm::vec3(0.0f, 0.0f, -30.0f));
 
+		Renderer::camera = Camera(glm::vec3(0.0f, 0.0f, -30.0f));
+		ourlight = pointLight(); 
 	}
 	
-	void createWindow(int WIDTH, int HEIGHT) 
+	
+	void processInput(GLFWwindow* window);
+
+	void generateSphereMesh(std::vector<float>& vertices, float size, int hres, int vres);
+	void generateWallvertices(Engine& engine, std::vector<float>& vertices);
+	void generateGridVertices(std::vector<float>& vertices, vec3 spacing, vec3 diag1, vec3 diag2);
+	
+	void renderGrid(std::vector<float>& vertices, vec3 spacing, vec3 diag1, vec3 diag2);
+	
+	void generateAll(Engine& engine, std::vector<float>& vertices);
+
+	void drawLight()
+	{
+		Shader lightShader = Shader("shader/lightsourceV.glsl", "shader/lightsourceF.glsl");
+		lightShader.use();
+		//defining model,view,projection matrices
+		glm::mat4 model = mat4(1.0f);
+
+		mat4 view = camera.GetViewMatrix();
+		mat4 proj = perspective(radians(45.0f), (float)screen_width / (float)screen_height, 0.1f, 1000.0f);
+		lightShader.setMatrix4f("view", view);
+		lightShader.setMatrix4f("projection", proj);
+		model = translate(model, ourlight.pos);
+
+		lightShader.setMatrix4f("model", model);
+		lightShader.setVec3f("color", ourlight.color);
+
+		glDrawArrays(GL_TRIANGLES, 0, SPHERE_VERT_COUNT / 6);
+	}
+	void createWindow(int WIDTH, int HEIGHT)
 	{
 		//intialize glfw and make a basic window
 		glfwInit();
@@ -63,15 +96,6 @@ public:
 		glfwSetScrollCallback(window, scroll_callback);
 
 	};
-	void processInput(GLFWwindow* window);
-
-	void generateSphereMesh(std::vector<float>& vertices, float size, int hres, int vres);
-	void generateWallvertices(Engine& engine, std::vector<float>& vertices);
-	void generateGridVertices(std::vector<float>& vertices, vec3 spacing, vec3 diag1, vec3 diag2);
-	
-	void renderGrid(std::vector<float>& vertices, vec3 spacing, vec3 diag1, vec3 diag2);
-	
-	void generateAll(Engine& engine, std::vector<float>& vertices);
 };
 
 void pushVec3(std::vector<float>& v, glm::vec3 vertex);

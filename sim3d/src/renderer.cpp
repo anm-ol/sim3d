@@ -44,9 +44,9 @@ int Renderer::render(Engine& engine) {
 	generateAll(engine, vertices);
 
 	glEnable(GL_DEPTH_TEST);
-	//initialising shader.h to load, compile and link shaders
-	Shader sh = Shader("shader/lightvshader.glsl", "shader/lightfshader.glsl");
-	
+	//initialising to load, compile and link shaders
+	Shader particleShader = Shader("shader/LightingV.glsl", "shader/LightingF.glsl");
+
 	//create and bind buffers
 	unsigned int VBO, VAO;
 	glGenBuffers(1, &VBO);
@@ -62,7 +62,7 @@ int Renderer::render(Engine& engine) {
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 
-	//display a static sphere at window center 
+	//rendering loop
 	while (!glfwWindowShouldClose(window))
 	{
 
@@ -78,47 +78,46 @@ int Renderer::render(Engine& engine) {
 		processInput(window);
 
 		glBindVertexArray(VAO);
-		sh.use();
+		
+		drawLight(); //render point light sources
+
+		particleShader.use();
 		//defining model,view,projection matrices
 		glm::mat4 model = mat4(1.0f);
 		glm::mat4 view = mat4(1.0f);
 		glm::mat4 proj = mat4(1.0f);
 
-		vec3 center = vec3(0);
 		view = camera.GetViewMatrix();
-		sh.setMatrix4f("view", view);
+		particleShader.setMatrix4f("view", view);
 
 		proj = glm::perspective(radians(45.0f), (float)screen_width / (float)screen_height, 0.1f, 1000.0f);
-		sh.setMatrix4f("projection", proj);
+		particleShader.setMatrix4f("projection", proj);
 
-		center = view * vec4(center, 1.0);
-		center = vec3(center.x, center.y, center.z);
-		sh.setVec3f("center", center);
-
-		sh.setVec3f("cameraPos", camera.Position);
-		
+		particleShader.setVec3f("cameraPos", camera.Position);
+		particleShader.setPointLight("ourlight", ourlight);
+			
 		for (int i = 0; i < engine.particles.size(); i++) 
 		{
 			float ModelColor = 0.9;
-			sh.setFloat("light", ModelColor);
+			particleShader.setFloat("light", ModelColor);
 			model = mat4(1.0f);
 
 			particle particlei = engine.particles[i];
 			model = translate(model, particlei.pos);
 			model = glm::scale(model, vec3(particlei.size));
 			
-			sh.setMatrix4f("model", model);
+			particleShader.setMatrix4f("model", model);
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 			glDrawArrays(GL_TRIANGLES, 0, SPHERE_VERT_COUNT/6);
 		}
 		float ModelColor = 1.0f;
-		sh.setFloat("light", ModelColor);
+		particleShader.setFloat("light", ModelColor);
 		model = glm::mat4(1.0f);
 		model = translate(model, (engine.walldiagonal1 + engine.walldiagonal2) / 2.0f);
 		model = scale(model, engine.walldiagonal2 - engine.walldiagonal1);
 		//model = glm::translate(model, vec3(-engine.xmax / 2, -engine.ymax / 2, -engine.zmax / 2));
-		sh.setMatrix4f("model", model);
+		particleShader.setMatrix4f("model", model);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINES);
 		glDrawArrays(GL_TRIANGLES, SPHERE_VERT_COUNT/6, WALL_VERT_COUNT/6);
 		//set mvp matrix as uniform
