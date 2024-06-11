@@ -162,6 +162,7 @@
     <ClInclude Include="src\include\imgui\imstb_rectpack.h" />
     <ClInclude Include="src\include\imgui\imstb_textedit.h" />
     <ClInclude Include="src\include\imgui\imstb_truetype.h" />
+    <ClInclude Include="src\GraphicObjects.h" />
     <ClInclude Include="src\renderer.h" />
     <ClInclude Include="src\shader.h" />
     <ClInclude Include="src\collision.h" />
@@ -169,19 +170,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="shader\basicfshader.glsl" />
-    <Text Include="shader\fshader.glsl">
-      <FileType>Document</FileType>
-    </Text>
-    <Text Include="shader\vshader.glsl">
-      <FileType>Document</FileType>
-    </Text>
     <Text Include="shader\basicvshader.glsl">
       <FileType>Document</FileType>
     </Text>
-    <None Include="shader\fragshader.sl" />
-    <None Include="shader\lightfshader.glsl" />
-    <None Include="shader\lightvshader.glsl" />
-    <None Include="shader\vertexshader.sl" />
+    <None Include="shader\lightsourceF.glsl" />
+    <None Include="shader\lightsourceV.glsl" />
+    <None Include="shader\LightingF.glsl" />
+    <None Include="shader\LightingV.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

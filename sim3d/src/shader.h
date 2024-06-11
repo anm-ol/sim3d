@@ -7,6 +7,8 @@
 #include <sstream>
 #include <iostream>
 
+#include "GraphicObjects.h"
+
  //code to read shaders from sl file goes here'
 
 class Shader
@@ -100,6 +102,13 @@ public:
     void setMatrix4f(const std::string& name, glm::mat4& matrix)
     {
         glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, glm::value_ptr(matrix));
+    }
+
+    void setPointLight(const std::string& name, pointLight& light)
+    {
+        glUniform3f(glGetUniformLocation(ID, (name + ".pos").c_str()), light.pos.x, light.pos.y, light.pos.z);
+        glUniform3f(glGetUniformLocation(ID, (name + ".color").c_str()), light.color.x, light.color.y, light.color.z);
+        glUniform1f(glGetUniformLocation(ID, (name + ".intensity").c_str()), light.intensity);
     }
 
 private:
