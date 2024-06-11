@@ -33,6 +33,9 @@
     <ClCompile Include="src\Engine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\gui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\particle.h">
@@ -53,25 +56,22 @@
     <ClInclude Include="src\camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\GraphicObjects.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shader\fragshader.sl">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="shader\vertexshader.sl">
-      <Filter>Source Files</Filter>
-    </None>
     <None Include="shader\basicfshader.glsl">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="shader\lightvshader.glsl" />
-    <None Include="shader\lightfshader.glsl" />
+    <None Include="shader\LightingV.glsl" />
+    <None Include="shader\LightingF.glsl" />
+    <None Include="shader\lightsourceV.glsl" />
+    <None Include="shader\lightsourceF.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="shader\basicvshader.glsl">
       <Filter>Source Files</Filter>
     </Text>
-    <Text Include="shader\fshader.glsl" />
-    <Text Include="shader\vshader.glsl" />
   </ItemGroup>
 </Project>
