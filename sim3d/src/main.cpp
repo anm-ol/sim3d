@@ -10,6 +10,9 @@ int main() {
 	
 	//rendering after that
 	Engine engine = Engine();
+
+	Renderer renderer = Renderer(engine);
+	
 	engine.setWall(vec3(-100,-30,-100), vec3(100,40,100));
 
 	// particle parameters
@@ -25,7 +28,8 @@ int main() {
 
 	engine.createParticles(numParticles, size, mass, maxVel, true);
 	engine.setAccelaration(vec3(0, -.02f, 0));
-	if(render(engine))
+
+	if(renderer.render(engine))
 		std::cout << "Error" << std::endl;
 	return 0;
 }

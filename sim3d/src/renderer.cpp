@@ -7,16 +7,12 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
-#include "camera.h"
 
 using namespace std;
 using namespace glm;
 
-int screen_height = 800, screen_width = 1200;
-// camera
-Camera camera(glm::vec3(0.0f, 0.0f, -30.0f));
-float lastX = screen_width / 2.0f;
-float lastY = screen_height / 2.0f;
+
+
 bool firstMouse = true;
 
 // timing
@@ -26,31 +22,12 @@ float lastFrame = 0.0f;
 const int VRES = 20;
 const int HRES = 15;
 
-unsigned int SPHERE_VERT_COUNT, WALL_VERT_COUNT;
 
 double lastTime = glfwGetTime();
 int numFrames = 0;
 
-int render(Engine& engine) {
+int Renderer::render(Engine& engine) {
 
-
-	//intialize glfw and make a basic window
-	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-	GLFWwindow* window = glfwCreateWindow(screen_width, screen_height, "Sim3D", NULL, NULL);
-	if (window == NULL)
-	{
-		std::cout << "Failed to create GLFW window" << std::endl;
-		glfwTerminate();
-		return -1;
-	}
-	glfwMakeContextCurrent(window);
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-	glfwSetCursorPosCallback(window, mouse_callback);
-	glfwSetScrollCallback(window, scroll_callback);
 
 	// tell GLFW to capture our mouse
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -155,9 +132,20 @@ int render(Engine& engine) {
 	return 0;
 }
 
+//generate meshes for all particles and walls
+void Renderer::generateAll(Engine& engine, std::vector<float>& vertices)
+{
+	vertices.clear();
+	particle p = engine.particles[0];
+	generateSphereMesh(vertices, 1.0f, HRES, VRES);
+	SPHERE_VERT_COUNT = vertices.size();
+	generateWallvertices(engine, vertices);
+	WALL_VERT_COUNT = vertices.size() - SPHERE_VERT_COUNT;
+}
+
 //generate set of 3d vertices for sphere to be rendered with triangles
 //takes references of target vertex and index array as input
-void generateSphereMesh(std::vector<float>& vertices, vec3 center, float size, int hres, int vres)
+void Renderer::generateSphereMesh(std::vector<float>& vertices, float size, int hres, int vres)
 {
 	float hstep = radians(180.f / hres);
 	float vstep = radians(360.0f / vres);
@@ -171,17 +159,18 @@ void generateSphereMesh(std::vector<float>& vertices, vec3 center, float size, i
 			//first layer
 			if (i == 1)
 			{
-				v1 = center + vertexthetaphi(size, 0.0f, 0.0f);
-				v2 = center + vertexthetaphi(size, (j)*vstep, hstep);
-				v3 = center + vertexthetaphi(size, (j + 1) * vstep, hstep);
+				v1 = vertexthetaphi(size, 0.0f, 0.0f);
+				v2 = vertexthetaphi(size, (j)*vstep, hstep);
+				v3 = vertexthetaphi(size, (j + 1) * vstep, hstep);
 				normal = normalize(glm::cross(v2 - v1, v3 - v2));
 
-				vertices.push_back(v1.x); vertices.push_back(v1.y); vertices.push_back(v1.z); //north pole point
-				vertices.push_back(normal.x); vertices.push_back(normal.y); vertices.push_back(normal.z);
-				vertices.push_back(v2.x); vertices.push_back(v2.y); vertices.push_back(v2.z);
-				vertices.push_back(normal.x); vertices.push_back(normal.y); vertices.push_back(normal.z);
-				vertices.push_back(v3.x); vertices.push_back(v3.y); vertices.push_back(v3.z);
-				vertices.push_back(normal.x); vertices.push_back(normal.y); vertices.push_back(normal.z);
+
+				pushVec3(vertices, v1); //north pole point
+				pushVec3(vertices, normal);
+				pushVec3(vertices, v2);
+				pushVec3(vertices, normal);
+				pushVec3(vertices, v3);
+				pushVec3(vertices, normal);
 
 				//std::cout << v1.x << v1.y << v1.z;
 				//std::cout << v2.x, v2.y, v2.z;
@@ -189,47 +178,47 @@ void generateSphereMesh(std::vector<float>& vertices, vec3 center, float size, i
 			}
 
 			else if (i == hres) {
-				v1 = center + vertexthetaphi(size, 0.0f, i * hstep);
-				v2 = center + vertexthetaphi(size, (j)*vstep, (i - 1) * hstep);
-				v3 = center + vertexthetaphi(size, (j + 1) * vstep, (i - 1) * hstep);
+				v1 = vertexthetaphi(size, 0.0f, i * hstep);
+				v2 = vertexthetaphi(size, (j)*vstep, (i - 1) * hstep);
+				v3 = vertexthetaphi(size, (j + 1) * vstep, (i - 1) * hstep);
 				normal = normalize(glm::cross(v2 - v1, v3 - v2));
 
-				vertices.push_back(v1.x); vertices.push_back(v1.y); vertices.push_back(v1.z); //south pole point
-				vertices.push_back(normal.x); vertices.push_back(normal.y); vertices.push_back(normal.z);
-				vertices.push_back(v2.x); vertices.push_back(v2.y); vertices.push_back(v2.z);
-				vertices.push_back(normal.x); vertices.push_back(normal.y); vertices.push_back(normal.z);
-				vertices.push_back(v3.x); vertices.push_back(v3.y); vertices.push_back(v3.z);
-				vertices.push_back(normal.x); vertices.push_back(normal.y); vertices.push_back(normal.z);
+				pushVec3(vertices, v1); //south pole point
+				pushVec3(vertices, normal);
+				pushVec3(vertices, v2);
+				pushVec3(vertices, normal);
+				pushVec3(vertices, v3);
+				pushVec3(vertices, normal);
 
 			}
 			else
 			{
 				//first triangle
-				v1 = center + vertexthetaphi(size, (j)*vstep, (i - 1) * hstep);
-				v2 = center + vertexthetaphi(size, (j)*vstep, (i)*hstep);
-				v3 = center + vertexthetaphi(size, (j + 1) * vstep, (i - 1) * hstep);
+				v1 = vertexthetaphi(size, (j)*vstep, (i - 1) * hstep);
+				v2 = vertexthetaphi(size, (j)*vstep, (i)*hstep);
+				v3 = vertexthetaphi(size, (j + 1) * vstep, (i - 1) * hstep);
 				normal = normalize(glm::cross(v2 - v1, v3 - v2));
 
-				vertices.push_back(v1.x); vertices.push_back(v1.y); vertices.push_back(v1.z); // point
-				vertices.push_back(normal.x); vertices.push_back(normal.y); vertices.push_back(normal.z);
-				vertices.push_back(v2.x); vertices.push_back(v2.y); vertices.push_back(v2.z);
-				vertices.push_back(normal.x); vertices.push_back(normal.y); vertices.push_back(normal.z);
-				vertices.push_back(v3.x); vertices.push_back(v3.y); vertices.push_back(v3.z);
-				vertices.push_back(normal.x); vertices.push_back(normal.y); vertices.push_back(normal.z);
+				pushVec3(vertices, v1); // point
+				pushVec3(vertices, normal);
+				pushVec3(vertices, v2);
+				pushVec3(vertices, normal);
+				pushVec3(vertices, v3);
+				pushVec3(vertices, normal);
 
 
 				//second triangle
-				v1 = center + vertexthetaphi(size, (j + 1) * vstep, (i - 1) * hstep);
-				v2 = center + vertexthetaphi(size, (j)*vstep, (i)*hstep);
-				v3 = center + vertexthetaphi(size, (j + 1) * vstep, (i)*hstep);
+				v1 = vertexthetaphi(size, (j + 1) * vstep, (i - 1) * hstep);
+				v2 = vertexthetaphi(size, (j)*vstep, (i)*hstep);
+				v3 = vertexthetaphi(size, (j + 1) * vstep, (i)*hstep);
 				normal = normalize(glm::cross(v2 - v1, v3 - v2));
 
-				vertices.push_back(v1.x); vertices.push_back(v1.y); vertices.push_back(v1.z); // point
-				vertices.push_back(normal.x); vertices.push_back(normal.y); vertices.push_back(normal.z);
-				vertices.push_back(v2.x); vertices.push_back(v2.y); vertices.push_back(v2.z);
-				vertices.push_back(normal.x); vertices.push_back(normal.y); vertices.push_back(normal.z);
-				vertices.push_back(v3.x); vertices.push_back(v3.y); vertices.push_back(v3.z);
-				vertices.push_back(normal.x); vertices.push_back(normal.y); vertices.push_back(normal.z);
+				pushVec3(vertices, v1); // point
+				pushVec3(vertices, normal);
+				pushVec3(vertices, v2);
+				pushVec3(vertices, normal);
+				pushVec3(vertices, v3);
+				pushVec3(vertices, normal);
 
 			}
 		}
@@ -241,7 +230,7 @@ vec3 vertexthetaphi(float size, float theta, float phi) {
 }
 
 //Adds the vertices and normal of a unit cube which will be offset and resized by the model matrix later 
-void generateWallvertices(Engine& engine, std::vector<float>& vertices)
+void Renderer::generateWallvertices(Engine& engine, std::vector<float>& vertices)
 {
 	float vert[] = {
 	-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, 1.0f,
@@ -294,27 +283,27 @@ void generateWallvertices(Engine& engine, std::vector<float>& vertices)
 
 }
 
-void generateGridVertices(std::vector<float> &vertices, vec3 spacing, vec3 diag1, vec3 diag2)
+void Renderer::generateGridVertices(std::vector<float> &vertices, vec3 spacing, vec3 diag1, vec3 diag2)
 {
 	vec3 count = (diag1 - diag2) / spacing;
 	float xcount = count.x, ycount = count.y, zcount = count.z;
 	for (int i = 0; i <= xcount; i++) 
 	{
-		pushVertex(vertices, vec3(diag1.x+ i * spacing.x, 0, 0));
-		pushVertex(vertices, vec3(0));
-		pushVertex(vertices, vec3(diag1.x + i * spacing.x, diag2.y, 0));
-		pushVertex(vertices, vec3(0));
+		pushVec3(vertices, vec3(diag1.x+ i * spacing.x, 0, 0));
+		pushVec3(vertices, vec3(0));
+		pushVec3(vertices, vec3(diag1.x + i * spacing.x, diag2.y, 0));
+		pushVec3(vertices, vec3(0));
 	}
 	for (int j = 0; j <= ycount; j++)
 	{
-		pushVertex(vertices, vec3(0, diag1.y + j * spacing.y, 0));
-		pushVertex(vertices, vec3(0));
-		pushVertex(vertices, vec3(diag2.x, diag1.y + j * spacing.y, 0));
-		pushVertex(vertices, vec3(0));
+		pushVec3(vertices, vec3(0, diag1.y + j * spacing.y, 0));
+		pushVec3(vertices, vec3(0));
+		pushVec3(vertices, vec3(diag2.x, diag1.y + j * spacing.y, 0));
+		pushVec3(vertices, vec3(0));
 	}
 }
 
-void renderGrid(std::vector<float>& vertices, vec3 spacing, vec3 diag1, vec3 diag2)
+void Renderer::renderGrid(std::vector<float>& vertices, vec3 spacing, vec3 diag1, vec3 diag2)
 {
 	mat4 model = mat4(1);
 	float zcount = ((diag2 - diag1) / spacing).z;
@@ -329,26 +318,16 @@ void renderGrid(std::vector<float>& vertices, vec3 spacing, vec3 diag1, vec3 dia
 	}
 }
 
-void pushVertex(std::vector<float>& vertices, vec3 vertex) {
+void pushVec3(std::vector<float>& vertices, vec3 vertex) {
 	vertices.push_back(vertex.x);
 	vertices.push_back(vertex.y);
 	vertices.push_back(vertex.z);
 }
 
-//generate meshes for all particles and walls
-void generateAll(Engine& engine, std::vector<float>& vertices)
-{	
-	vertices.clear();
-	particle p = engine.particles[0];
-	generateSphereMesh(vertices, vec3(0), 1.0f, HRES, VRES);
-	SPHERE_VERT_COUNT = vertices.size();
-	generateWallvertices(engine, vertices);
-	WALL_VERT_COUNT = vertices.size() - SPHERE_VERT_COUNT;
-}
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
-void processInput(GLFWwindow* window)
+void Renderer::processInput(GLFWwindow* window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
@@ -381,8 +360,13 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 // -------------------------------------------------------
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 {
+	Renderer* renderer = static_cast<Renderer*>(glfwGetWindowUserPointer(window));
+	
 	float xpos = static_cast<float>(xposIn);
 	float ypos = static_cast<float>(yposIn);
+
+	float &lastX = renderer->lastX;
+	float &lastY = renderer->lastY;
 
 	if (firstMouse)
 	{
@@ -397,14 +381,16 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 	lastX = xpos;
 	lastY = ypos;
 
-	camera.ProcessMouseMovement(xoffset, yoffset);
+	renderer->camera.ProcessMouseMovement(xoffset, yoffset);
 }
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
 // ----------------------------------------------------------------------
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-	camera.ProcessMouseScroll(static_cast<float>(yoffset));
+	Renderer* renderer = static_cast<Renderer*>(glfwGetWindowUserPointer(window));
+
+	renderer->camera.ProcessMouseScroll(static_cast<float>(yoffset));
 }
 
 void calcFrameRate()
