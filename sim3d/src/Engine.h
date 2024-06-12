@@ -14,6 +14,8 @@ public:
 	glm::vec3 globalAcc;
 	glm::vec3 walldiagonal1, walldiagonal2;
 	
+	bool pause;
+
 	float particleElasticity, wallElasticity;
 	float friction;
 	float tconst;

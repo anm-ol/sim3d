@@ -12,23 +12,23 @@ int main() {
 	Engine engine = Engine();
 
 	Renderer renderer = Renderer(engine);
-	renderer.ourlight.color = vec3(0.4);
+	renderer.ourlight.color = vec3(1);
 	
-	engine.setWall(vec3(-100,-70,-100), vec3(100,40,100));
+	engine.setWall(vec3(-200,-20,-200), vec3(200,40,200));
 
 	// particle parameters
-	const int numParticles = 150;
-	const float size = 10.0f;
+	const int numParticles = 200;
+	const float size = 5.0f;
 	const float mass = size;
-	const vec3 maxVel = vec3(10.0f);
+	const vec3 maxVel = vec3(3.0f);
 
-	engine.wallElasticity = 0.8f;
-	engine.particleElasticity = 0.95f;
+	engine.wallElasticity = 0.9f;
+	engine.particleElasticity = 0.9f;
 	engine.friction = 0.99f;
-	engine.NumSteps = 10;
+	engine.NumSteps = 20;
 
 	engine.createParticles(numParticles, size, mass, maxVel, true);
-	engine.setAccelaration(vec3(0, -.01f, 0));
+	engine.setAccelaration(vec3(0, -.4f, 0));
 
 	if(renderer.render(engine))
 		std::cout << "Error" << std::endl;

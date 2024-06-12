@@ -19,7 +19,7 @@ void main()
     vec3 objectColor = vec3(0.45f,0.6f,1.0f);
     // ambient
     float ambientStrength = 0.2f;
-    vec3 ambient = ambientStrength * ourlight.color;
+    vec3 ambient = ambientStrength * vec3(1);
   	
     // diffuse 
     vec3 norm = normalize(Normal);
@@ -37,7 +37,7 @@ void main()
     if(light == 1.0f)
     {
         vec3 diffuse = diff * vec3(light) + ambient;
-        FragColor = vec4(diffuse,1.0f);
+        FragColor = vec4(diffuse,0.7f);
     }
     else
     {
