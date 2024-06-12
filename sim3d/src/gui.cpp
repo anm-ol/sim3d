@@ -1,12 +1,14 @@
 #include "gui.h"
+#include "Engine.h"
+#include "renderer.h"
 
-GUI::GUI(Engine& ourengine, GLFWwindow* ourwindow) :  engine(ourengine), window(ourwindow)
+GUI::GUI(Engine& ourengine, Renderer& renderer) :  engine(ourengine), renderer(renderer), window(renderer.window)
 {
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
-
 	ImGuiIO& io = ImGui::GetIO();
+	ptrio = &io;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
@@ -27,13 +29,21 @@ void GUI::InitFrame()
 void GUI::render()
 {
 	// render your GUI
-	ImGui::SetNextWindowPos(ImVec2(100, 0));
+	ImGui::SetNextWindowPos(ImVec2(0, 0));
+	ImGui::SetNextWindowSize(ImVec2(400, 0));
 
-	ImGui::Begin("Demo window");
+	ImGui::Begin("Debug Menu");
 
-	//ImGui::Button("hello");
-	ImGui::Checkbox("Pause sim3D", &engine.pause);
-
+	ImGui::Checkbox("Pause Sim3D", &engine.pause);
+	//ImGui::SliderInt("H_Resolution", &renderer.HRES, 2, 50);
+	//ImGui::SliderInt("V_Resolution", &renderer.VRES, 2, 50);
+	ImGui::SliderFloat3("Global Accelaration", &engine.globalAcc.x, -0.5, 0.5);
+	ImGui::SliderFloat("Wall Elasticity", &engine.wallElasticity, 0, 1);
+	ImGui::SliderFloat("Particle Elasticity", &engine.particleElasticity, 0, 1);
+	ImGui::SliderFloat("Friction", &engine.friction, 0, 1);
+	ImGui::SliderFloat3("Light Pos", &renderer.ourlight.pos.x, -100, 100);
+	ImGui::Text("Frame rate: %.1f FPS", ptrio->Framerate);
+	//ImGui::ColorPicker4("Light Color", &renderer.ourlight.color.x);
 	ImGui::End();
 
 	// Render dear imgui into screen

@@ -1,21 +1,20 @@
-#include <iostream>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <vector>
+#include "renderer.h"
+
+#include "Engine.h"
+#include "camera.h"
+#include "GraphicObjects.h"
+#include "shader.h"
+#include "gui.h"
 
 using namespace std;
 using namespace glm;
 
 bool firstMouse = true;
 bool cursorVisible = false;
+
 // timing
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
-
-const int VRES = 25;
-const int HRES = 20;
 
 
 double lastTime = glfwGetTime();
@@ -26,6 +25,8 @@ int Renderer::render(Engine& engine) {
 
 	// tell GLFW to capture our mouse
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+	GUI demoGUI = GUI(engineRef, *this);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
@@ -39,6 +40,10 @@ int Renderer::render(Engine& engine) {
 	generateAll(engine, vertices);
 
 	glEnable(GL_DEPTH_TEST);
+	// Enable blending
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	//initialising to load, compile and link shaders
 	Shader particleShader = Shader("shader/LightingV.glsl", "shader/LightingF.glsl");
 
@@ -69,7 +74,7 @@ int Renderer::render(Engine& engine) {
 		
 		glfwPollEvents();
 
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glClearColor(0.f, 0.f, 0.f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		demoGUI.InitFrame();
@@ -88,7 +93,7 @@ int Renderer::render(Engine& engine) {
 		view = camera.GetViewMatrix();
 		particleShader.setMatrix4f("view", view);
 
-		proj = glm::perspective(radians(45.0f), (float)screen_width / (float)screen_height, 0.1f, 1000.0f);
+		proj = glm::perspective(radians(45.0f), (float)screen_width / (float)screen_height, 10.0f, 1000.0f);
 		particleShader.setMatrix4f("projection", proj);
 
 		particleShader.setVec3f("cameraPos", camera.Position);
@@ -333,31 +338,29 @@ void Renderer::processInput(GLFWwindow* window)
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 
-	if (!cursorVisible)
-	{
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-			camera.ProcessKeyboard(FORWARD, deltaTime);
-		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-			camera.ProcessKeyboard(BACKWARD, deltaTime);
-		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-			camera.ProcessKeyboard(LEFT, deltaTime);
-		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-			camera.ProcessKeyboard(RIGHT, deltaTime);
-		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-			camera.ProcessKeyboard(UP, deltaTime);
-		if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
-			camera.ProcessKeyboard(DOWN, deltaTime);
-	}
-	else
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-	if (glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS)
-		cursorVisible = true;
-	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-		cursorVisible = false;
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		camera.ProcessKeyboard(FORWARD, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		camera.ProcessKeyboard(BACKWARD, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		camera.ProcessKeyboard(LEFT, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		camera.ProcessKeyboard(RIGHT, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+		camera.ProcessKeyboard(UP, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+		camera.ProcessKeyboard(DOWN, deltaTime);
 
-	
+}
 
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	Renderer* renderer = static_cast<Renderer*>(glfwGetWindowUserPointer(window));
+
+	if (key == GLFW_KEY_ENTER && action == GLFW_PRESS)
+		renderer->engineRef.pause = !renderer->engineRef.pause;
+	if (key == GLFW_KEY_LEFT_SHIFT && action == GLFW_PRESS)
+		renderer->setCursorVisible(!renderer->cursorVisible);
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes

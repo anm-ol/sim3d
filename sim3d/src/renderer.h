@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <GLAD/glad.h>
 #include <GLFW/glfw3.h>
+
 #include "Engine.h"
 #include "camera.h"
 #include "GraphicObjects.h"
@@ -14,6 +15,7 @@ using namespace glm;
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 void calcFrameRate();
 
 class Renderer
@@ -23,8 +25,14 @@ public:
 	Engine& engineRef;
 	GLFWwindow* window;
 	
+	bool cursorVisible = false;
+
 	pointLight ourlight;
 	unsigned int SPHERE_VERT_COUNT, WALL_VERT_COUNT;
+
+	int VRES = 25;
+	int HRES = 20;
+
 
 	int screen_height, screen_width;
 	float lastX, lastY;
@@ -49,6 +57,15 @@ public:
 	
 	
 	void processInput(GLFWwindow* window);
+	void setCursorVisible(bool b)
+	{
+		cursorVisible = b;
+		camera.isMovementLocked = b;
+		if (b)
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		else
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	}
 
 	void generateSphereMesh(std::vector<float>& vertices, float size, int hres, int vres);
 	void generateWallvertices(Engine& engine, std::vector<float>& vertices);
@@ -94,6 +111,7 @@ public:
 		glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 		glfwSetCursorPosCallback(window, mouse_callback);
 		glfwSetScrollCallback(window, scroll_callback);
+		glfwSetKeyCallback(window, key_callback);
 
 	};
 };

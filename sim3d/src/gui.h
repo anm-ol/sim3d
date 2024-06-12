@@ -1,19 +1,22 @@
 #pragma once
+#include "Engine.h"
+#include <GLAD/glad.h>
 #include <GLFW/glfw3.h>
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_glfw.h>
 #include <imgui/imgui_impl_opengl3.h>
 
-#include "Engine.h"
-#include "renderer.h"
+class Renderer;
 
 class GUI
 {
 public:
 	Engine& engine;
+	Renderer& renderer;
 	GLFWwindow* window;
+	ImGuiIO* ptrio;
 
-	GUI(Engine& engine, GLFWwindow* ourwindow);
+	GUI(Engine& engine, Renderer& renderer);
 	void InitFrame();
 	void render();
 	void shutdown();
