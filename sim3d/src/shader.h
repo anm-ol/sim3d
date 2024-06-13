@@ -109,6 +109,7 @@ public:
         glUniform3f(glGetUniformLocation(ID, (name + ".pos").c_str()), light.pos.x, light.pos.y, light.pos.z);
         glUniform3f(glGetUniformLocation(ID, (name + ".color").c_str()), light.color.x, light.color.y, light.color.z);
         glUniform1f(glGetUniformLocation(ID, (name + ".intensity").c_str()), light.intensity);
+        glUniform1f(glGetUniformLocation(ID, (name + ".attenuation").c_str()), light.attenuation);
     }
 
 private:
