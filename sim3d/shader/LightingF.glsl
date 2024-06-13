@@ -20,7 +20,7 @@ void main()
 {
     vec3 objectColor = vec3(0.45f,0.6f,1.0f);
     float att = ourlight.attenuation;
-    float dist = length(ourlight.pos - localPos);
+    float dist = length(ourlight.pos - FragPos);
     // ambient
 
     float ambientStrength = 0.2f;
@@ -36,11 +36,11 @@ void main()
     float specularStrength = ourlight.intensity;
     vec3 viewDir = normalize(cameraPos - FragPos);
     vec3 reflectDir = reflect(-lightDir, norm);  
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 25); //higher the last value stronger the reflection
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 8); //higher the last value stronger the reflection
     vec3 specularLight = (specularStrength * spec) * ourlight.color;  
 
     //attenuation calculation
-    float factor = 1/(1.0 + att * dist);
+    float factor = 1/(1.0 + att * dist * dist);
     if(light == 1.0f)
     {
         vec3 diffuse = factor * diff * vec3(light) + ambient;

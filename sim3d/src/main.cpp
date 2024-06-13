@@ -13,7 +13,9 @@ int main() {
 
 	Renderer renderer = Renderer(engine);
 	renderer.ourlight.color = vec3(1);
-	
+	renderer.ourlight.intensity = 1;
+	renderer.ourlight.attenuation = .0003f;
+
 	engine.setWall(vec3(-200,-20,-200), vec3(200,40,200));
 
 	// particle parameters

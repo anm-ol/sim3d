@@ -41,6 +41,8 @@ void GUI::render()
 	ImGui::SliderFloat("Wall Elasticity", &engine.wallElasticity, 0, 1);
 	ImGui::SliderFloat("Particle Elasticity", &engine.particleElasticity, 0, 1);
 	ImGui::SliderFloat("Friction", &engine.friction, 0, 1);
+	ImGui::SliderFloat("Attenuation", &renderer.ourlight.attenuation, 0, 0.001);
+	ImGui::SliderFloat("Intensity", &renderer.ourlight.intensity, 0, 3);
 	ImGui::SliderFloat3("Light Pos", &renderer.ourlight.pos.x, -100, 100);
 	ImGui::Text("Frame rate: %.1f FPS", ptrio->Framerate);
 	//ImGui::ColorPicker4("Light Color", &renderer.ourlight.color.x);
