@@ -30,6 +30,8 @@ public:
 	pointLight ourlight;
 	unsigned int SPHERE_VERT_COUNT, WALL_VERT_COUNT;
 
+	mat4 model, view, proj;
+
 	int VRES = 25;
 	int HRES = 20;
 
@@ -53,6 +55,10 @@ public:
 
 		Renderer::camera = Camera(glm::vec3(0.0f, 0.0f, -30.0f));
 		ourlight = pointLight(); 
+
+		model = mat4(1);
+		view = mat4(1);
+		proj = perspective(radians(45.0f), (float)screen_width / (float)screen_height, 10.0f, 1000.0f);
 	}
 	
 	
@@ -80,10 +86,9 @@ public:
 		Shader lightShader = Shader("shader/lightsourceV.glsl", "shader/lightsourceF.glsl");
 		lightShader.use();
 		//defining model,view,projection matrices
-		glm::mat4 model = mat4(1.0f);
+		model = mat4(1.0f);
 
-		mat4 view = camera.GetViewMatrix();
-		mat4 proj = perspective(radians(45.0f), (float)screen_width / (float)screen_height, 0.1f, 1000.0f);
+		view = camera.GetViewMatrix();
 		lightShader.setMatrix4f("view", view);
 		lightShader.setMatrix4f("projection", proj);
 		model = translate(model, ourlight.pos);

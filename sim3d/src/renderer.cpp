@@ -86,14 +86,12 @@ int Renderer::render(Engine& engine) {
 
 		particleShader.use();
 		//defining model,view,projection matrices
-		glm::mat4 model = mat4(1.0f);
-		glm::mat4 view = mat4(1.0f);
-		glm::mat4 proj = mat4(1.0f);
+		model = mat4(1.0f);
+		view = mat4(1.0f);
 
 		view = camera.GetViewMatrix();
 		particleShader.setMatrix4f("view", view);
 
-		proj = glm::perspective(radians(45.0f), (float)screen_width / (float)screen_height, 10.0f, 1000.0f);
 		particleShader.setMatrix4f("projection", proj);
 
 		particleShader.setVec3f("cameraPos", camera.Position);
@@ -114,7 +112,9 @@ int Renderer::render(Engine& engine) {
 
 			glDrawArrays(GL_TRIANGLES, 0, SPHERE_VERT_COUNT/6);
 		}
+
 		float ModelColor = 1.0f;
+		particleShader.use();
 		particleShader.setFloat("light", ModelColor);
 		model = glm::mat4(1.0f);
 		model = translate(model, (engine.walldiagonal1 + engine.walldiagonal2) / 2.0f);
