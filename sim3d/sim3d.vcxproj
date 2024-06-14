@@ -134,6 +134,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+<<<<<<< Updated upstream
+    <ClCompile Include="src\OctreeNode.cpp" />
+=======
+    <ClCompile Include="src\Edge.cpp" />
+    <ClCompile Include="src\Cloth.cpp" />
+>>>>>>> Stashed changes
     <ClCompile Include="src\collision.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\gui.cpp" />
@@ -143,6 +149,12 @@
     <ClCompile Include="src\renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+<<<<<<< Updated upstream
+    <ClInclude Include="src\OctreeNode.h" />
+=======
+    <ClInclude Include="src\Edge.h" />
+    <ClInclude Include="src\Cloth.h" />
+>>>>>>> Stashed changes
     <ClInclude Include="src\camera.h" />
     <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\renderer.h" />
