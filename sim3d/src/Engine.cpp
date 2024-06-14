@@ -57,9 +57,9 @@ void Engine::runSubsteps(int numstep, float dt)
 		{
 			//updates position for each particle
 			// T_const may be replaced with dt in the future
-			p.update(tconst / numstep);
+			p.update(tconst / numstep, globalAcc);
 			//update velocity according to gravity
-			p.velocity += (globalAcc * tconst) / (float)numstep;
+			//p.velocity += (globalAcc * tconst) / (float)numstep;
 		}
 
 		//call collision handling functions after updation

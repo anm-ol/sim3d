@@ -17,6 +17,7 @@ glm::vec3 particle::getPosition() {
     return pos;
 }
 
+<<<<<<< Updated upstream
 void particle::update(float time) {
     pos += velocity * time;
 }
@@ -25,3 +26,9 @@ bool particle::operator==(const particle& other) const
 {
     return pos == other.pos;
 }
+=======
+void particle::update(float time, glm::vec3 accln) {
+    pos += velocity * time + 0.5f * accln * time * time;
+    velocity += accln * time;
+}
+>>>>>>> Stashed changes
