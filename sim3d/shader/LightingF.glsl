@@ -51,7 +51,7 @@ void main()
 
         //attenuation calculation
         float factor = 1/(1.0 + att * dist * dist);
-        if(light == 1.0f)
+        if(false)
         {
             vec3 diffuse = factor * diff * vec3(light) + ambient;
             result += diffuse;

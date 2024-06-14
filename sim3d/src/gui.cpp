@@ -44,7 +44,7 @@ void GUI::render()
 	//ImGui::SliderFloat("Attenuation", &renderer.m_light.attenuation, 0, 0.001);
 	//ImGui::SliderFloat("Intensity", &renderer.m_light.intensity, 0, 3);
 	//ImGui::SliderFloat3("Light Pos", &renderer.m_light.pos.x, -100, 100);
-	//ImGui::Text("Frame rate: %.1f FPS", ptrio->Framerate);
+	ImGui::Text("Frame rate: %.1f FPS", ptrio->Framerate);
 	//ImGui::ColorPicker4("Light Color", &renderer.ourlight.color.x);
 	ImGui::End();
 
