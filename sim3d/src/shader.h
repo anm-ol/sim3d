@@ -112,6 +112,15 @@ public:
         glUniform1f(glGetUniformLocation(ID, (name + ".attenuation").c_str()), light.attenuation);
     }
 
+    void setLights(const std::string& name, std::vector<pointLight>& lights)
+    {
+        setInt("numlights", lights.size());
+        for (int i = 0; i < lights.size(); i++)
+        {
+            setPointLight(name + "[" + std::to_string(i) + "]", lights[i]);
+        }
+    }
+
 private:
     // utility function for checking shader compilation/linking errors.
     // ------------------------------------------------------------------------

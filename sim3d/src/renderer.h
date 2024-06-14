@@ -4,6 +4,7 @@
 #include <GLAD/glad.h>
 #include <GLFW/glfw3.h>
 
+
 #include "Engine.h"
 #include "camera.h"
 #include "GraphicObjects.h"
@@ -27,7 +28,8 @@ public:
 	
 	bool cursorVisible = false;
 
-	pointLight ourlight;
+	std::vector<pointLight> m_lights;
+	//pointLight m_light;
 	unsigned int SPHERE_VERT_COUNT, WALL_VERT_COUNT;
 
 	mat4 model, view, proj;
@@ -54,7 +56,7 @@ public:
 		glfwSetWindowUserPointer(window, this);
 
 		Renderer::camera = Camera(glm::vec3(0.0f, 0.0f, -30.0f));
-		ourlight = pointLight(); 
+		//m_light = pointLight(); 
 
 		model = mat4(1);
 		view = mat4(1);
@@ -81,22 +83,26 @@ public:
 	
 	void generateAll(Engine& engine, std::vector<float>& vertices);
 
-	void drawLight()
+	void drawLights(std::vector<pointLight>& ourlights)
 	{
 		Shader lightShader = Shader("shader/lightsourceV.glsl", "shader/lightsourceF.glsl");
 		lightShader.use();
 		//defining model,view,projection matrices
-		model = mat4(1.0f);
 
 		view = camera.GetViewMatrix();
 		lightShader.setMatrix4f("view", view);
 		lightShader.setMatrix4f("projection", proj);
-		model = translate(model, ourlight.pos);
+		for (auto& ourlight : ourlights)
+		{
+			model = mat4(1);
+			model = translate(model, ourlight.pos);
+			model = scale(model, vec3(3) * glm::pow(ourlight.intensity, 0.33f));
 
-		lightShader.setMatrix4f("model", model);
-		lightShader.setVec3f("color", ourlight.color);
+			lightShader.setMatrix4f("model", model);
+			lightShader.setVec3f("color", ourlight.color);
 
-		glDrawArrays(GL_TRIANGLES, 0, SPHERE_VERT_COUNT / 6);
+			glDrawArrays(GL_TRIANGLES, 0, SPHERE_VERT_COUNT / 6);
+		}
 	}
 	void createWindow(int WIDTH, int HEIGHT)
 	{

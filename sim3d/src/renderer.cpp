@@ -82,7 +82,7 @@ int Renderer::render(Engine& engine) {
 
 		glBindVertexArray(VAO);
 		
-		drawLight(); //render point light sources
+		drawLights(m_lights); //render point light sources
 
 		particleShader.use();
 		//defining model,view,projection matrices
@@ -95,7 +95,8 @@ int Renderer::render(Engine& engine) {
 		particleShader.setMatrix4f("projection", proj);
 
 		particleShader.setVec3f("cameraPos", camera.Position);
-		particleShader.setPointLight("ourlight", ourlight);
+		//particleShader.setPointLight("ourlight", ourlight);
+		particleShader.setLights("ourlights", m_lights);
 			
 		for (int i = 0; i < engine.particles.size(); i++) 
 		{
