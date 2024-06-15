@@ -5,6 +5,10 @@
 #include "OctreeNode.h"
 
 using namespace glm;
+
+
+vec3 randomVec3(vec3 min, vec3 max);
+
 class Engine {
 public:
 	std::vector<particle> particles;
@@ -12,6 +16,8 @@ public:
 	glm::vec3 walldiagonal1, walldiagonal2;
 	OctreeNode* rootNode;
 	
+	bool pause;
+
 	float particleElasticity, wallElasticity;
 	float friction;
 	float tconst;

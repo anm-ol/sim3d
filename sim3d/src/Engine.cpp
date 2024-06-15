@@ -10,7 +10,6 @@
 
 using namespace glm;
 
-vec3 randomVec3(vec3 min, vec3 max);
 
 Engine::Engine()
 {
@@ -20,6 +19,7 @@ Engine::Engine()
 	friction = 1;
 	globalAcc = vec3(0);
 	NumSteps = 1;
+	pause = false;
 }
 void Engine::setWall(vec3 diag1, vec3 diag2)
 {
@@ -42,6 +42,7 @@ void Engine::setCollisionGrid()
 
 void Engine::updateall(float dt) //this is the main function that gets called in infinite loop
 {
+	if(!pause)
 	runSubsteps(NumSteps, dt); //more numsteps --> more accuracy
 }
 
