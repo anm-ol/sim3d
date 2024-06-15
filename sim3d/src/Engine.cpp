@@ -3,6 +3,7 @@
 #include <vector>
 #include <random>
 #include <algorithm>
+#include <thread>
 
 #include "particle.h"
 #include "Engine.h"
@@ -20,7 +21,10 @@ Engine::Engine()
 	friction = 1;
 	globalAcc = vec3(0);
 	NumSteps = 1;
+
+	m_NumThreads = std::thread::hardware_concurrency(); // Get the number of supported hardware threads
 	pause = false;
+	useThreading = false;
 }
 void Engine::setWall(vec3 diag1, vec3 diag2)
 {
@@ -58,14 +62,22 @@ void Engine::runSubsteps(int numstep, float dt)
 		//call collision handling functions after updation
 		// handling wall collisions
 		wallCollide(*this);
+		
 		// handling inter-particle collisions
-		particleCollide(*this);
+		if(useThreading)
+		collisionParralel(*this);
+		else
+		particleCollide(*this, 0, particles.size());
 	}
 }
 
 // create particles randomly from numParticles, size and maxVel
+// for some reasom the application crashes abruptly at 1185 particles when vector.reserve is not being used
+// crasher at lesser number of particles when reserve() is used
+// something weird is happening with std::vector
 void Engine::createParticles(int numParticles, float size, float mass, vec3 maxVel, bool randVelocity)
 {
+	particles.reserve(numParticles);
 	for (int i = 0; i < numParticles; i++)
 	{
 		createParticle(size, mass, maxVel, randVelocity);
@@ -73,10 +85,11 @@ void Engine::createParticles(int numParticles, float size, float mass, vec3 maxV
 }
 
 // both mass and size are fixed. may make them random later!
+// need to optimize this part
 void Engine::createParticle(float size, float mass, vec3 maxVel, bool randVelocity)
 {
 	// walldiagonal +- size is to ensure particles don't intersect the wall
-	particle p = particle(randomVec3(walldiagonal1 + size, walldiagonal2 - size), size, mass);
+	particle p(randomVec3(walldiagonal1 + size, walldiagonal2 - size), size, mass);
 	bool intersects = false;
 
 	for (auto& other : particles)
@@ -92,7 +105,7 @@ void Engine::createParticle(float size, float mass, vec3 maxVel, bool randVeloci
 	}
 	else {
 		p.setVelocity(randVelocity ? randomVec3(-maxVel, maxVel) : maxVel);
-		particles.push_back(p);
+		particles.emplace_back(p);
 	}
 }
 

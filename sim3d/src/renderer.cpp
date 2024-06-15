@@ -104,7 +104,9 @@ int Renderer::render(Engine& engine) {
 			particleShader.setFloat("light", ModelColor);
 			model = mat4(1.0f);
 
-			particle particlei = engine.particles[i];
+			//this is where earlier the particle was being copied instead of being used as reference
+			//turning into ref improved fps from 40fps to 120fps at 100 particles and 20 timesteps
+			particle& particlei = engine.particles[i];
 			model = translate(model, particlei.pos);
 			model = glm::scale(model, vec3(particlei.size));
 			
@@ -143,7 +145,6 @@ int Renderer::render(Engine& engine) {
 void Renderer::generateAll(Engine& engine, std::vector<float>& vertices)
 {
 	vertices.clear();
-	particle p = engine.particles[0];
 	generateSphereMesh(vertices, 1.0f, HRES, VRES);
 	SPHERE_VERT_COUNT = vertices.size();
 	generateWallvertices(engine, vertices);

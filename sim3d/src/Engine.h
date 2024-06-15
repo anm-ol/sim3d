@@ -15,6 +15,7 @@ public:
 	glm::vec3 walldiagonal1, walldiagonal2;
 	
 	bool pause;
+	bool useThreading;
 
 	float particleElasticity, wallElasticity;
 	float friction;
@@ -22,8 +23,8 @@ public:
 	float xmax, xmin, ymax, ymin, zmin, zmax;
 
 	int NumSteps;
+	int m_NumThreads;
 
-	Engine(float xm, float ym, float zm);
 	Engine();
 	void setWall(glm::vec3 diag1, glm::vec3 diag2);
 	void updateall(float dt);
