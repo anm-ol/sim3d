@@ -10,11 +10,8 @@ public:
 	particle(glm::vec3 posn, float size, float mass);
 	void setVelocity(glm::vec3 v);
 	glm::vec3 getPosition();
-<<<<<<< Updated upstream
 	void update(float time);
 
 	bool operator==(const particle& other) const;
-=======
 	void update(float time, glm::vec3 accln);
->>>>>>> Stashed changes
 };
