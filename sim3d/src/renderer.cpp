@@ -100,7 +100,7 @@ int Renderer::render(Engine& engine) {
 			
 		for (int i = 0; i < engine.particles.size(); i++) 
 		{
-			float ModelColor = 0.9;
+			float ModelColor  = 0.9;
 			particleShader.setFloat("light", ModelColor);
 			model = mat4(1.0f);
 
@@ -110,6 +110,7 @@ int Renderer::render(Engine& engine) {
 			model = translate(model, particlei.pos);
 			model = glm::scale(model, vec3(particlei.size));
 			
+			particleShader.setVec3f("objectColor", particlei.color);
 			particleShader.setMatrix4f("model", model);
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
@@ -118,6 +119,8 @@ int Renderer::render(Engine& engine) {
 
 		float ModelColor = 1.0f;
 		particleShader.use();
+		vec3 wallcolor(1);
+		particleShader.setVec3f("objectColor", wallcolor );
 		particleShader.setFloat("light", ModelColor);
 		model = glm::mat4(1.0f);
 		model = translate(model, (engine.walldiagonal1 + engine.walldiagonal2) / 2.0f);

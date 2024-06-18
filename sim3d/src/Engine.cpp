@@ -8,13 +8,14 @@
 #include "particle.h"
 #include "Engine.h"
 #include "collision.h"
+#include "SpacePartition.h"
 
 using namespace glm;
 
 
 
-Engine::Engine()
-{
+Engine::Engine(const vec3& diag1, const vec3& diag2) : walldiagonal1(diag1), walldiagonal2(diag2), box(*this, 20)
+{	
 	tconst = 1.0f;
 	wallElasticity = 1.0f;
 	particleElasticity = 1.0f;
@@ -22,9 +23,11 @@ Engine::Engine()
 	globalAcc = vec3(0);
 	NumSteps = 1;
 
+
 	m_NumThreads = std::thread::hardware_concurrency(); // Get the number of supported hardware threads
 	pause = false;
 	useThreading = false;
+	usePartition = false;
 }
 void Engine::setWall(vec3 diag1, vec3 diag2)
 {
@@ -64,8 +67,13 @@ void Engine::runSubsteps(int numstep, float dt)
 		wallCollide(*this);
 		
 		// handling inter-particle collisions
-		if(useThreading)
-		collisionParralel(*this);
+		if (useThreading)
+			collisionParralel(*this);
+		else if (usePartition)
+		{
+			box.reset();
+			box.partitionCollide();
+		}
 		else
 		particleCollide(*this, 0, particles.size());
 	}

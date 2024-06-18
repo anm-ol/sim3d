@@ -82,7 +82,7 @@ void particleCollide(Engine& engine, int start, int end)
 	std::vector<particle>& particles = engine.particles;
 	int count = 0;
 	int size = particles.size();
-	for (int i = start; i < end; i++)
+	for (int i = 0; i < size -1 ; i++)
 	{
 		for (int j = i + 1; j < size; j++)
 		{

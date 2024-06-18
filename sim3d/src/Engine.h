@@ -2,20 +2,23 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include "particle.h"
+#include "SpacePartition.h"
 
 using namespace glm;
-
 
 vec3 randomVec3(vec3 min, vec3 max);
 
 class Engine {
 public:
 	std::vector<particle> particles;
+	spacePartition box;
+
 	glm::vec3 globalAcc;
-	glm::vec3 walldiagonal1, walldiagonal2;
+	glm::vec3 walldiagonal1 = vec3(0); glm::vec3 walldiagonal2 = vec3(0);
 	
 	bool pause;
 	bool useThreading;
+	bool usePartition;
 
 	float particleElasticity, wallElasticity;
 	float friction;
@@ -25,7 +28,7 @@ public:
 	int NumSteps;
 	int m_NumThreads;
 
-	Engine();
+	Engine(const vec3& min,const vec3& max);
 	void setWall(glm::vec3 diag1, glm::vec3 diag2);
 	void updateall(float dt);
 	void runSubsteps(int numstep, float dt);

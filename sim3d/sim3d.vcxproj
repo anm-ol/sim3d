@@ -148,6 +148,7 @@
     <ClCompile Include="src\particle.cpp" />
     <ClCompile Include="src\Engine.cpp" />
     <ClCompile Include="src\renderer.cpp" />
+    <ClCompile Include="src\SpacePartition.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\camera.h" />
@@ -167,6 +168,7 @@
     <ClInclude Include="src\shader.h" />
     <ClInclude Include="src\collision.h" />
     <ClInclude Include="src\particle.h" />
+    <ClInclude Include="src\SpacePartition.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shader\basicfshader.glsl" />

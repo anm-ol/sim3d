@@ -38,6 +38,7 @@ void GUI::render()
 
 	ImGui::Checkbox("Pause Sim3D", &engine.pause);
 	ImGui::Checkbox("Use Multi-threading", &engine.useThreading);
+	ImGui::Checkbox("Use Space-partitioning", &engine.usePartition);
 	ImGui::SliderInt("Number of Threads", &engine.m_NumThreads, 1, 12);
 	ImGui::SliderInt("Number of substeps", &engine.NumSteps, 1, 30);
 
