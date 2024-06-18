@@ -2,6 +2,8 @@
 #include "Engine.h"
 #include "renderer.h"
 
+#include <vector>
+
 GUI::GUI(Engine& ourengine, Renderer& renderer) :  engine(ourengine), renderer(renderer), window(renderer.window)
 {
 	// Setup Dear ImGui context
@@ -35,6 +37,11 @@ void GUI::render()
 	ImGui::Begin("Debug Menu");
 
 	ImGui::Checkbox("Pause Sim3D", &engine.pause);
+	ImGui::Checkbox("Use Multi-threading", &engine.useThreading);
+	ImGui::Checkbox("Use Space-partitioning", &engine.usePartition);
+	ImGui::SliderInt("Number of Threads", &engine.m_NumThreads, 1, 12);
+	ImGui::SliderInt("Number of substeps", &engine.NumSteps, 1, 30);
+
 	//ImGui::SliderInt("H_Resolution", &renderer.HRES, 2, 50);
 	//ImGui::SliderInt("V_Resolution", &renderer.VRES, 2, 50);
 	ImGui::SliderFloat3("Global Accelaration", &engine.globalAcc.x, -0.5, 0.5);
@@ -45,6 +52,7 @@ void GUI::render()
 	//ImGui::SliderFloat("Intensity", &renderer.m_light.intensity, 0, 3);
 	//ImGui::SliderFloat3("Light Pos", &renderer.m_light.pos.x, -100, 100);
 	ImGui::Text("Frame rate: %.1f FPS", ptrio->Framerate);
+	ImGui::Text("Number of Particles: %i", engine.particles.size());
 	//ImGui::ColorPicker4("Light Color", &renderer.ourlight.color.x);
 	ImGui::End();
 

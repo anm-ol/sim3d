@@ -2,6 +2,8 @@
 #include <glm/glm.hpp>
 #include "particle.h"
 
+int numCopies = 0;
+
 particle::particle(glm::vec3 posn, float s, float m) {
     pos = posn;
     size = s;   // radius
@@ -17,15 +19,13 @@ glm::vec3 particle::getPosition() {
     return pos;
 }
 
-void particle::update(float time) {
+void particle::update(float time, glm::vec3 acc) {
     pos += velocity * time;
+    velocity += acc * time;
 }
 
-bool particle::operator==(const particle& other) const
+//copy constructor to detect when copies are created
+particle::particle(const particle& other) : pos(other.pos), velocity(other.velocity), size(other.size), mass(other.mass)
 {
-    return pos == other.pos;
-}
-void particle::update(float time, glm::vec3 accln) {
-    pos += velocity * time + 0.5f * accln * time * time;
-    velocity += accln * time;
+   // std::cout << "numcopies " << numCopies++ << std::endl;
 }

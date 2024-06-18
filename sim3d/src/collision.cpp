@@ -1,4 +1,5 @@
 #include <glm/glm.hpp>
+#include <thread>
 #include <iostream>
 #include "particle.h"
 #include "Engine.h"
@@ -8,9 +9,11 @@
 void checkCollisions(std::unordered_map<size_t, std::vector<particle*>>& grid, float elasticity);
 using namespace glm;
 
+void particleCollide(Engine& engine, int start, int end);
+
 bool isCollision(particle& p1, particle& p2) // should this function handle both particle/wall collision?
 {
-	return distance(p1.pos, p2.pos) <= p1.size + p2.size;	// if euclidian distance b/w two particles is less than their combined radius, means they are colliding
+	return dot(p1.pos - p2.pos, p1.pos - p2.pos) <= ((p1.size + p2.size) * (p1.size + p2.size));// if euclidian distance b/w two particles is less than their combined radius, means they are colliding
 }
 
 void resolveCollision(particle& p1, particle& p2, float elasticity)
@@ -48,13 +51,41 @@ void resolveCollision(particle& p1, particle& p2, float elasticity)
 	p2.setVelocity(newV2);
 }
 
+// Parallelized version of particleCollide
+void collisionParralel(Engine& engine)
+{
+	std::vector<particle>& particles = engine.particles;
+	int size = particles.size();
+	//int numChecks = (size * size - size) / 2;
+	int numThreads = engine.m_NumThreads;
+	if (numThreads == 0) numThreads = 2; // Fallback to 2 threads if hardware_concurrency returns 0
+
+	std::vector<std::thread> threads;
+	int chunkSize = size / numThreads;
+
+	// Launch threads
+	for (int t = 0; t < numThreads; t++) {
+		int start = t * chunkSize;
+		int end = (t == (numThreads - 1)) ? size : (start + chunkSize);
+		threads.emplace_back(particleCollide, std::ref(engine), start, end);
+	}
+
+	// Join threads
+	for (auto& thread : threads) {
+		if (thread.joinable()) {
+			thread.join();
+		}
+	}
+}
+
 // handling inter-particle collision
-void particleCollide(Engine& engine)
+void particleCollide(Engine& engine, int start, int end)
 {
 	// we must use a reference here, otherwise the changes will not refelect on the original vector<>
 	std::vector<particle>& particles = engine.particles;
+	int count = 0;
 	int size = particles.size();
-	for (int i = 0; i < size - 1; i++)
+	for (int i = 0; i < size -1 ; i++)
 	{
 		for (int j = i + 1; j < size; j++)
 		{
@@ -63,6 +94,7 @@ void particleCollide(Engine& engine)
 				resolveCollision(particles[i], particles[j], engine.particleElasticity);
 			}
 		}
+		
 	}
 }
 
@@ -70,7 +102,7 @@ void particleCollide(Engine& engine)
 void wallCollide(Engine& engine)
 {
 	//minimum velocity under which the particle.component will be rounded to zero
-	float velocitymin = 0.5;
+	float velocitymin = 0.002;
 
 	// check is particle is outside bounds or intersecting
 	for (auto& p : engine.particles)

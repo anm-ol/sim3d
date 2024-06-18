@@ -18,10 +18,10 @@ uniform pointLight ourlights[MAXLIGHTS];
 uniform int numlights;
 uniform float light;
 uniform vec3 cameraPos;
+uniform vec3 objectColor;
 
 void main()
 {
-    vec3 objectColor = vec3(0.45f,0.6f,1.0f);
     vec3 result = vec3(0);
 
     for(int i=0;i<numlights;i++)
@@ -64,7 +64,7 @@ void main()
     //result = result/ (result + vec3(1));
 
     if(light ==1.0f)
-        FragColor = vec4(result, 0.3);
+        FragColor = vec4(result, 0.1);
     else
         FragColor = vec4(result, 1.0);
 } 

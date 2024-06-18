@@ -5,13 +5,12 @@
 #include "particle.h"
 
 using namespace glm;
-using namespace std;
 
 class OctreeNode
 {
 private:
 	vec3 minBound, maxBound;
-	vector<particle> particles;	// Particles contained in this node	
+	std::vector<particle> particles;	// Particles contained in this node	
 	OctreeNode* children[8];	// Pointers to child nodes
 
 public:

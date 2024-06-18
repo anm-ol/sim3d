@@ -6,7 +6,6 @@
 #include "shader.h"
 #include "gui.h"
 
-using namespace std;
 using namespace glm;
 
 bool firstMouse = true;
@@ -100,14 +99,17 @@ int Renderer::render(Engine& engine) {
 			
 		for (int i = 0; i < engine.particles.size(); i++) 
 		{
-			float ModelColor = 0.9;
+			float ModelColor  = 0.9;
 			particleShader.setFloat("light", ModelColor);
 			model = mat4(1.0f);
 
-			particle particlei = engine.particles[i];
+			//this is where earlier the particle was being copied instead of being used as reference
+			//turning into ref improved fps from 40fps to 120fps at 100 particles and 20 timesteps
+			particle& particlei = engine.particles[i];
 			model = translate(model, particlei.pos);
 			model = glm::scale(model, vec3(particlei.size));
 			
+			particleShader.setVec3f("objectColor", particlei.color);
 			particleShader.setMatrix4f("model", model);
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
@@ -116,6 +118,8 @@ int Renderer::render(Engine& engine) {
 
 		float ModelColor = 1.0f;
 		particleShader.use();
+		vec3 wallcolor(1);
+		particleShader.setVec3f("objectColor", wallcolor );
 		particleShader.setFloat("light", ModelColor);
 		model = glm::mat4(1.0f);
 		model = translate(model, (engine.walldiagonal1 + engine.walldiagonal2) / 2.0f);
@@ -143,7 +147,6 @@ int Renderer::render(Engine& engine) {
 void Renderer::generateAll(Engine& engine, std::vector<float>& vertices)
 {
 	vertices.clear();
-	particle p = engine.particles[0];
 	generateSphereMesh(vertices, 1.0f, HRES, VRES);
 	SPHERE_VERT_COUNT = vertices.size();
 	generateWallvertices(engine, vertices);
