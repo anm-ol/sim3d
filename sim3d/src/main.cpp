@@ -36,8 +36,8 @@ int main() {
 
 
 	// particle parameters
-	const int numParticles = 4000;
-	const float size = 1.0f;
+	const int numParticles = 3000;
+	const float size = 2.0f;
 	const float mass = size;
 	const vec3 maxVel = vec3(.4f);
 

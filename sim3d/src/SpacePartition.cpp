@@ -55,8 +55,21 @@ void spacePartition::setParticles(std::vector<particle>& particles)
     for (auto& p : particles)
     {
         ivec3 boxindex = (p.pos - worldmin) / boxsize;
+        ivec3 minboxindex = vec3(max(0.0f, (p.pos.x - p.size - worldmin.x)), 
+                                 max(0.0f, p.pos.y - p.size - worldmin.y),
+                                 max(0.0f, p.pos.z - p.size - worldmin.z)) / boxsize;
+        vec3 maxboxfloat = (p.pos + p.size - worldmin) / boxsize;
+        ivec3 maxboxindex = ivec3(min((float)subDivs - 1, maxboxfloat.x),
+                                min((float)subDivs - 1, maxboxfloat.y),
+                                 min((float)subDivs - 1, maxboxfloat.z));
         int index = boxindex.x * subDivs * subDivs + boxindex.y * subDivs + boxindex.z;
+        int minindex = minboxindex.x * subDivs * subDivs + minboxindex.y * subDivs + minboxindex.z;
+        int maxindex = maxboxindex.x * subDivs * subDivs + maxboxindex.y * subDivs + maxboxindex.z;
         partitions[index].addParticle(&p);
+        if (minindex != index)
+            partitions[minindex].addParticle(&p);
+        else if (maxindex != index)
+            partitions[maxindex].addParticle(&p);
     }
 }
 
