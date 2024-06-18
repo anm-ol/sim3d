@@ -18,6 +18,9 @@ public:
 	glm::vec3 getPosition();
 	void update(float time);
 
-	bool operator==(const particle& other) const;
+	bool operator==(const particle& other) const
+	{
+		return this->pos == other.pos;
+	}
 	void update(float time, glm::vec3 accln);
 };

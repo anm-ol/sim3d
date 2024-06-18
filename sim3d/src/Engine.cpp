@@ -49,7 +49,7 @@ void Engine::setAccelaration(vec3 acc) {
 
 void Engine::setCollisionGrid()
 {
-	rootNode = new OctreeNode(walldiagonal1, walldiagonal2);
+
 }
 
 void Engine::updateall(float dt) //this is the main function that gets called in infinite loop

@@ -49,11 +49,8 @@ int main() {
 
 	engine.setWall(min, max);
 	//engine.createParticles(numParticles, size, mass, maxVel, true);
-	engine.setAccelaration(vec3(0, -.00f, 0));
+	engine.setAccelaration(vec3(0, -.001f, 0));
 	engine.box.createGrid(min, max);
-
-	int numThreads = std::thread::hardware_concurrency();
-	std::cout << "number of max threads" << numThreads << std::endl;
 
 	if(renderer.render(engine))
 		std::cout << "Error" << std::endl;

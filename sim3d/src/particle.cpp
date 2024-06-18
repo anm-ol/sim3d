@@ -19,8 +19,9 @@ glm::vec3 particle::getPosition() {
     return pos;
 }
 
-void particle::update(float time) {
+void particle::update(float time, glm::vec3 acc) {
     pos += velocity * time;
+    velocity += acc * time;
 }
 
 //copy constructor to detect when copies are created

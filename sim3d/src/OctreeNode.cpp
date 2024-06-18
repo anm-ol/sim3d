@@ -49,7 +49,7 @@ void OctreeNode::insertParticle(particle& p)
 	if (particles.size() > MAX_PARTICLE_PER_NODE) 
 	{ 
 		subdivideNode();
-		vector<particle> particlesToReassign = particles;
+		std::vector<particle> particlesToReassign = particles;
 
 		// Reassign particles to the appropriate children
 		particles.clear();

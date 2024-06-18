@@ -6,7 +6,6 @@
 #include "shader.h"
 #include "gui.h"
 
-using namespace std;
 using namespace glm;
 
 bool firstMouse = true;

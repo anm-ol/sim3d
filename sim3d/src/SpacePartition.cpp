@@ -55,13 +55,13 @@ void spacePartition::setParticles(std::vector<particle>& particles)
     for (auto& p : particles)
     {
         ivec3 boxindex = (p.pos - worldmin) / boxsize;
-        ivec3 minboxindex = vec3(max(0.0f, (p.pos.x - p.size - worldmin.x)), 
-                                 max(0.0f, p.pos.y - p.size - worldmin.y),
-                                 max(0.0f, p.pos.z - p.size - worldmin.z)) / boxsize;
+        ivec3 minboxindex = vec3(glm::max(0.0f, (p.pos.x - p.size - worldmin.x)), 
+                                glm::max(0.0f, p.pos.y - p.size - worldmin.y),
+                                 glm::max(0.0f, p.pos.z - p.size - worldmin.z)) / boxsize;
         vec3 maxboxfloat = (p.pos + p.size - worldmin) / boxsize;
-        ivec3 maxboxindex = ivec3(min((float)subDivs - 1, maxboxfloat.x),
-                                min((float)subDivs - 1, maxboxfloat.y),
-                                 min((float)subDivs - 1, maxboxfloat.z));
+        ivec3 maxboxindex = ivec3(glm::min((float)subDivs - 1, maxboxfloat.x),
+                                  glm::min((float)subDivs - 1, maxboxfloat.y),
+                                  glm::min((float)subDivs - 1, maxboxfloat.z));
         int index = boxindex.x * subDivs * subDivs + boxindex.y * subDivs + boxindex.z;
         int minindex = minboxindex.x * subDivs * subDivs + minboxindex.y * subDivs + minboxindex.z;
         int maxindex = maxboxindex.x * subDivs * subDivs + maxboxindex.y * subDivs + maxboxindex.z;
@@ -76,7 +76,7 @@ void spacePartition::setParticles(std::vector<particle>& particles)
 void spacePartition::partitionCollide()
 {
     float elasticity = engine.particleElasticity;
-    for (partition& part : partitions)
+    for (auto& part : partitions)
     {
         const std::vector<particle*>& group = part.group;
         int size = group.size();
@@ -96,7 +96,7 @@ void spacePartition::partitionCollide()
 
 void spacePartition::reset()
 {
-    for (partition& part : partitions)
+    for (auto& part : partitions)
     {
         part.group.clear();
     }
