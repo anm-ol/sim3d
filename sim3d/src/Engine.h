@@ -2,6 +2,7 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include "particle.h"
+
 #include "SpacePartition.h"
 #include "SpringHandler.h"
 
@@ -35,7 +36,7 @@ public:
 	void updateall(float dt);
 	void runSubsteps(int numstep, float dt);
 	void setAccelaration(glm::vec3);
-
+	void setCollisionGrid();
 
 	void createParticles(int numParticles, float size, float mass, glm::vec3 maxVel, bool randVelocity);
 	void createParticle(float size, float mass, glm::vec3 maxVel, bool randVelocity);

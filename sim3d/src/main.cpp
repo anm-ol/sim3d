@@ -55,7 +55,6 @@ int main() {
 	int numThreads = std::thread::hardware_concurrency();
 	std::cout << "number of max threads" << numThreads << std::endl;
 
-	
 	if(renderer.render(engine))
 		std::cout << "Error" << std::endl;
 	return 0;

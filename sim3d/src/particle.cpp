@@ -23,7 +23,7 @@ void particle::update(float time) {
     pos += velocity * time;
 }
 
-//copyconstructor to detect when copies are created
+//copy constructor to detect when copies are created
 particle::particle(const particle& other) : pos(other.pos), velocity(other.velocity), size(other.size), mass(other.mass)
 {
    // std::cout << "numcopies " << numCopies++ << std::endl;
