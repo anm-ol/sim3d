@@ -2,6 +2,7 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include "particle.h"
+#include "OctreeNode.h"
 
 using namespace glm;
 
@@ -13,6 +14,7 @@ public:
 	std::vector<particle> particles;
 	glm::vec3 globalAcc;
 	glm::vec3 walldiagonal1, walldiagonal2;
+	OctreeNode* rootNode;
 	
 	bool pause;
 
@@ -29,7 +31,7 @@ public:
 	void updateall(float dt);
 	void runSubsteps(int numstep, float dt);
 	void setAccelaration(glm::vec3);
-
+	void setCollisionGrid();
 
 	void createParticles(int numParticles, float size, float mass, glm::vec3 maxVel, bool randVelocity);
 	void createParticle(float size, float mass, glm::vec3 maxVel, bool randVelocity);
