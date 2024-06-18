@@ -48,7 +48,7 @@ int main() {
 	engine.usePartition = true;
 
 	engine.setWall(min, max);
-	engine.createParticles(numParticles, size, mass, maxVel, true);
+	//engine.createParticles(numParticles, size, mass, maxVel, true);
 	engine.setAccelaration(vec3(0, -.00f, 0));
 	engine.box.createGrid(min, max);
 

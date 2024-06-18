@@ -3,6 +3,7 @@
 #include <vector>
 #include "particle.h"
 #include "SpacePartition.h"
+#include "SpringHandler.h"
 
 using namespace glm;
 
@@ -12,6 +13,7 @@ class Engine {
 public:
 	std::vector<particle> particles;
 	spacePartition box;
+	SpringHandler handler;
 
 	glm::vec3 globalAcc;
 	glm::vec3 walldiagonal1 = vec3(0); glm::vec3 walldiagonal2 = vec3(0);
