@@ -1,7 +1,3 @@
-Certainly! Here's a draft for your README file based on the information we discussed:
-
----
-
 # Sim3D
 
 Welcome to the Sim3D! 
@@ -48,4 +44,4 @@ To run the simulation:
 
 ## Contact
 
-If you have any questions, suggestions, or issues, feel free to contact [anmolagrawal5704@example.com](mailto:anmolagrawal5704@gmail.com).
+If you have any questions, suggestions, or issues, feel free to contact [anmolagrawal5704@gmail.com](mailto:anmolagrawal5704@gmail.com).
