@@ -43,8 +43,6 @@ void spacePartition::createGrid(vec3 min, vec3 max)
                 boxmax.x = boxmin.x + boxsize.x;
 
                 partitions.emplace_back(boxmin, boxmax);
-                std::cout << "index " << index << " min " << glm::to_string(boxmin) << " max " << glm::to_string(boxmax) << std::endl;
-                index++;
             }
         }
     }
