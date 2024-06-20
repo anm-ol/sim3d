@@ -5,7 +5,6 @@
 #include "particle.h"
 
 using namespace glm;
-using namespace std;
 
 struct spring {
 	particle& vertex1, vertex2;
@@ -26,8 +25,8 @@ public:
 	//spring co-efficients
 	float structCoeff = 1.0f, shearCoeff = 1.0f, bendingCoeff = 1.0f;
 
-	vector<particle> particles;
-	vector<spring> springs;
+	std::vector<particle> particles;
+	std::vector<spring> springs;
 
 	SpringHandler();
 	SpringHandler(int w, int h, float s, float m);

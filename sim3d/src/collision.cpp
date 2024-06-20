@@ -4,14 +4,11 @@
 #include "particle.h"
 #include "Engine.h"
 
-#include <unordered_map>
-
-void checkCollisions(std::unordered_map<size_t, std::vector<particle*>>& grid, float elasticity);
 using namespace glm;
 
 void particleCollide(Engine& engine, int start, int end);
 
-bool isCollision(particle& p1, particle& p2) // should this function handle both particle/wall collision?
+bool isCollision(particle& p1, particle& p2)
 {
 	return dot(p1.pos - p2.pos, p1.pos - p2.pos) <= ((p1.size + p2.size) * (p1.size + p2.size));// if euclidian distance b/w two particles is less than their combined radius, means they are colliding
 }
@@ -19,8 +16,8 @@ bool isCollision(particle& p1, particle& p2) // should this function handle both
 void resolveCollision(particle& p1, particle& p2, float elasticity)
 {
 	// if collision true then make the spheres "un-interesect"
-	vec3 pos1 = p1.getPosition();
-	vec3 pos2 = p2.getPosition();
+	vec3 pos1 = p1.pos;
+	vec3 pos2 = p2.pos;
 
 	float m1 = p1.mass;
 	float m2 = p2.mass;
@@ -183,37 +180,3 @@ void wallCollide(Engine& engine)
 		}
 	}
 }
-
-size_t hashFunction(int x, int y, int z) {
-	size_t seed = 0;
-	seed ^= std::hash<int>()(x) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
-	seed ^= std::hash<int>()(y) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
-	seed ^= std::hash<int>()(z) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
-	return seed;
-}
-
-void assignParticlesToCells(Engine& engine) {
-	std::unordered_map<size_t, std::vector<particle*>> grid;
-	float gridCellSize = engine.particles[0].size * 5.0f;
-	grid.clear();
-	for (auto& particle : engine.particles) {
-		int x = static_cast<int>(particle.pos.x / gridCellSize);
-		int y = static_cast<int>(particle.pos.y / gridCellSize);
-		int z = static_cast<int>(particle.pos.z / gridCellSize);
-		size_t hash = hashFunction(x, y, z);
-		grid[hash].push_back(&particle);
-	}
-	checkCollisions(grid, engine.particleElasticity);
-}
-
-void checkCollisions(std::unordered_map<size_t, std::vector<particle*>>& grid, float elasticity) {
-	for (auto& cell : grid) {
-		for (size_t i = 0; i < cell.second.size(); ++i) {
-			for (size_t j = i + 1; j < cell.second.size(); ++j) {
-				resolveCollision(*cell.second[i], *cell.second[j], elasticity);  // Example elasticity
-			}
-		}
-	}
-}
-
-

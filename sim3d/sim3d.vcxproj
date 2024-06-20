@@ -134,9 +134,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\OctreeNode.cpp" />
-    <ClCompile Include="src\Edge.cpp" />
-    <ClCompile Include="src\Cloth.cpp" />
     <ClCompile Include="src\collision.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\gui.cpp" />
@@ -155,9 +152,6 @@
     <ClCompile Include="src\SpringHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\OctreeNode.h" />
-    <ClInclude Include="src\Edge.h" />
-    <ClInclude Include="src\Cloth.h" />
     <ClInclude Include="src\camera.h" />
     <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\gui.h" />
