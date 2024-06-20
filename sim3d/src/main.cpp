@@ -20,9 +20,9 @@ int main() {
 	pointLight light1 = pointLight();
 	pointLight light2 = pointLight();
 	pointLight light3 = pointLight();
-	light1.attenuation = .0004f;
-	light2.attenuation = .0004f;
-	light3.attenuation = .0004f;
+	light1.attenuation = .000004f;
+	light2.attenuation = .004f;
+	light3.attenuation = .004f;
 	light1.pos = vec3(30,5,30);
 	light2.pos = vec3(20,0,-40);
 	light3.pos = vec3(-60, 20, 0);
@@ -36,7 +36,7 @@ int main() {
 
 
 	// particle parameters
-	const int numParticles = 1000;
+	const int numParticles = 0;
 	const float size = 2.0f;
 	const float mass = size;
 	const vec3 maxVel = vec3(.4f);
@@ -49,9 +49,10 @@ int main() {
 
 	engine.setWall(min, max);
 	engine.createParticles(numParticles, size, mass, maxVel, true);
-	engine.setAccelaration(vec3(0, -.001f, 0));
+	engine.setAccelaration(vec3(0, 0, 0));
 	engine.box.createGrid(min, max);
 
+	engine.pause = true;
 	if(renderer.render(engine))
 		std::cout << "Error" << std::endl;
 	return 0;

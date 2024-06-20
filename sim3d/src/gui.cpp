@@ -18,6 +18,10 @@ GUI::GUI(Engine& ourengine, Renderer& renderer) :  engine(ourengine), renderer(r
 	ImGui_ImplGlfw_InitForOpenGL(window, true);          // Second param install_callback=true will install GLFW callbacks and chain to existing ones.
 	ImGui_ImplOpenGL3_Init();
 	ImGui::StyleColorsDark();
+
+	randVel = false;
+	size = 0;
+	maxvel = vec3(0);
 }
 
 // feed inputs to dear imgui, start new frame
@@ -32,7 +36,7 @@ void GUI::render()
 {
 	// render your GUI
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
-	ImGui::SetNextWindowSize(ImVec2(400, 0));
+	ImGui::SetNextWindowSize(ImVec2(500, 0));
 
 	ImGui::Begin("Debug Menu");
 
@@ -54,6 +58,16 @@ void GUI::render()
 	ImGui::Text("Frame rate: %.1f FPS", ptrio->Framerate);
 	ImGui::Text("Number of Particles: %i", engine.particles.size());
 	//ImGui::ColorPicker4("Light Color", &renderer.ourlight.color.x);
+
+	ImGui::SliderFloat("Size", &size, 0.0, 20, "%.3f");
+	ImGui::SliderFloat3("Maxvel", &maxvel.x,0,5);
+	ImGui::Checkbox("Random velocity", &randVel);
+	if (ImGui::Button("Add particle"))
+	{
+		engine.createParticle(size, size, maxvel, true);
+	}
+	
+
 	ImGui::End();
 
 	// Render dear imgui into screen
