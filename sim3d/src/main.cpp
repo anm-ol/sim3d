@@ -36,10 +36,11 @@ int main() {
 
 
 	// particle parameters
-	const int numParticles = 0;
+	const int numParticles = 300;
 	const float size = 2.0f;
 	const float mass = size;
 	const vec3 maxVel = vec3(.4f);
+	engine.createParticles(numParticles, size, mass, maxVel, true);
 
 	engine.wallElasticity = 1.0f;
 	engine.particleElasticity = 1.0f;

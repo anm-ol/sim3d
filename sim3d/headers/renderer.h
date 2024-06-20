@@ -27,23 +27,20 @@ public:
 	GLFWwindow* window;
 	
 	bool cursorVisible = false;
+	bool select = false;
 
 	std::vector<pointLight> m_lights;
-	//pointLight m_light;
 	unsigned int SPHERE_VERT_COUNT, WALL_VERT_COUNT;
 
-	mat4 model, view, proj;
+	glm::mat4 model, view, proj;
 
 	int VRES = 25;
 	int HRES = 20;
 
-
 	int screen_height, screen_width;
 	float lastX, lastY;
 
-
 	int render(Engine& engine);
-
 
 	Renderer(Engine& ourengine) : engineRef(ourengine)
 	{

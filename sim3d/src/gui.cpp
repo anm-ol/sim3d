@@ -40,24 +40,21 @@ void GUI::render()
 
 	ImGui::Begin("Debug Menu");
 
-	ImGui::Checkbox("Pause Sim3D", &engine.pause);
-	ImGui::Checkbox("Use Multi-threading", &engine.useThreading);
+	ImGui::Checkbox("Pause Sim3D", &engine.pause); ImGui::SameLine();
+	ImGui::Checkbox("Use Multi-threading", &engine.useThreading); ImGui::SameLine();
 	ImGui::Checkbox("Use Space-partitioning", &engine.usePartition);
+	ImGui::Checkbox("Selection Mode", &renderer.select);
+
 	ImGui::SliderInt("Number of Threads", &engine.m_NumThreads, 1, 12);
 	ImGui::SliderInt("Number of substeps", &engine.NumSteps, 1, 30);
 
-	//ImGui::SliderInt("H_Resolution", &renderer.HRES, 2, 50);
-	//ImGui::SliderInt("V_Resolution", &renderer.VRES, 2, 50);
 	ImGui::SliderFloat3("Global Accelaration", &engine.globalAcc.x, -0.5, 0.5);
 	ImGui::SliderFloat("Wall Elasticity", &engine.wallElasticity, 0, 1);
 	ImGui::SliderFloat("Particle Elasticity", &engine.particleElasticity, 0, 1);
 	ImGui::SliderFloat("Friction", &engine.friction, 0, 1);
-	//ImGui::SliderFloat("Attenuation", &renderer.m_light.attenuation, 0, 0.001);
-	//ImGui::SliderFloat("Intensity", &renderer.m_light.intensity, 0, 3);
-	//ImGui::SliderFloat3("Light Pos", &renderer.m_light.pos.x, -100, 100);
-	ImGui::Text("Frame rate: %.1f FPS", ptrio->Framerate);
+	ImGui::Text("Frame rate: %.1f FPS", ptrio->Framerate); ImGui::SameLine(0,30);
 	ImGui::Text("Number of Particles: %i", engine.particles.size());
-	//ImGui::ColorPicker4("Light Color", &renderer.ourlight.color.x);
+	
 
 	ImGui::SliderFloat("Size", &size, 0.0, 20, "%.3f");
 	ImGui::SliderFloat3("Maxvel", &maxvel.x,0,5);
