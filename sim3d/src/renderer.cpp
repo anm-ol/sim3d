@@ -313,21 +313,6 @@ void Renderer::generateGridVertices(std::vector<float> &vertices, vec3 spacing, 
 	}
 }
 
-void Renderer::renderGrid(std::vector<float>& vertices, vec3 spacing, vec3 diag1, vec3 diag2)
-{
-	mat4 model = mat4(1);
-	float zcount = ((diag2 - diag1) / spacing).z;
-	int size_before = vertices.size();
-	generateGridVertices(vertices, spacing, diag1, diag2);
-	int XY_PLANE_COUNT = vertices.size() - size_before;
-	for (int i = 0; i <= zcount; i++)
-	{
-		model = translate(model, vec3(0, 0,spacing.z));
-		//
-
-	}
-}
-
 void pushVec3(std::vector<float>& vertices, vec3 vertex) {
 	vertices.push_back(vertex.x);
 	vertices.push_back(vertex.y);
@@ -371,6 +356,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 // ---------------------------------------------------------------------------------------------
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
+	Renderer* renderer = static_cast<Renderer*>(glfwGetWindowUserPointer(window));
+	renderer->screen_height = height;
+	renderer->screen_width = width;
+	renderer->proj = perspective(radians(45.0f), (float)width / (float)height, 10.0f, 1000.0f);
+
 	// make sure the viewport matches the new window dimensions; note that width and 
 	// height will be significantly larger than specified on retina displays.
 	glViewport(0, 0, width, height);

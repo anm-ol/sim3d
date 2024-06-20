@@ -71,7 +71,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)sim3d\src\include;$(SolutionDir)sim3d\src\include\GLAD;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)sim3d\src\include;$(SolutionDir)sim3d\src\include\GLAD;$(SolutionDir)sim3d\headers;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)sim3d\src\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -135,7 +135,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\OctreeNode.cpp" />
-    <ClCompile Include="src\Edge.cpp" />
     <ClCompile Include="src\Cloth.cpp" />
     <ClCompile Include="src\collision.cpp" />
     <ClCompile Include="src\glad.c" />
@@ -155,6 +154,19 @@
     <ClCompile Include="src\SpringHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="headers\camera.h" />
+    <ClInclude Include="headers\Cloth.h" />
+    <ClInclude Include="headers\collision.h" />
+    <ClInclude Include="headers\Edge.h" />
+    <ClInclude Include="headers\Engine.h" />
+    <ClInclude Include="headers\GraphicObjects.h" />
+    <ClInclude Include="headers\gui.h" />
+    <ClInclude Include="headers\OctreeNode.h" />
+    <ClInclude Include="headers\particle.h" />
+    <ClInclude Include="headers\renderer.h" />
+    <ClInclude Include="headers\shader.h" />
+    <ClInclude Include="headers\SpacePartition.h" />
+    <ClInclude Include="headers\SpringHandler.h" />
     <ClInclude Include="src\OctreeNode.h" />
     <ClInclude Include="src\Edge.h" />
     <ClInclude Include="src\Cloth.h" />
