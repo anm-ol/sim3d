@@ -36,7 +36,7 @@ int main() {
 
 
 	// particle parameters
-	const int numParticles = 3000;
+	const int numParticles = 1000;
 	const float size = 2.0f;
 	const float mass = size;
 	const vec3 maxVel = vec3(.4f);
@@ -48,7 +48,7 @@ int main() {
 	engine.usePartition = true;
 
 	engine.setWall(min, max);
-	//engine.createParticles(numParticles, size, mass, maxVel, true);
+	engine.createParticles(numParticles, size, mass, maxVel, true);
 	engine.setAccelaration(vec3(0, -.001f, 0));
 	engine.box.createGrid(min, max);
 

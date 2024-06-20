@@ -29,7 +29,8 @@ Engine::Engine(const vec3& diag1, const vec3& diag2) : walldiagonal1(diag1), wal
 	usePartition = false;
 
 	// spring handler
-	//handler = SpringHandler(10, 10, 1.0f, 1.0f);
+	handler = SpringHandler(10, 10, 1.0f, 1.0f);
+  
 	//particles.reserve(handler.particles.size());
 	//particles.insert(particles.end(), handler.particles.begin(), handler.particles.end());
 }
@@ -39,17 +40,10 @@ void Engine::setWall(vec3 diag1, vec3 diag2)
 	walldiagonal2 = diag2;
 	xmin = walldiagonal1.x; ymin = walldiagonal1.y; zmin = walldiagonal1.z;
 	xmax = walldiagonal2.x; ymax = walldiagonal2.y; zmax = walldiagonal2.z;
-
-	setCollisionGrid();
 }
 	
 void Engine::setAccelaration(vec3 acc) {
 	globalAcc = acc;
-}
-
-void Engine::setCollisionGrid()
-{
-
 }
 
 void Engine::updateall(float dt) //this is the main function that gets called in infinite loop
