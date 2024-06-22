@@ -41,26 +41,8 @@ public:
 	float lastX, lastY;
 
 	int render(Engine& engine);
-
-	Renderer(Engine& ourengine) : engineRef(ourengine)
-	{
-		screen_height = 800;
-		screen_width = 1200;
-		lastX = screen_width / 2.0f;
-		lastY = screen_height / 2.0f;
-		//Creates a GLFW window
-		createWindow(screen_width, screen_height);
-		glfwSetWindowUserPointer(window, this);
-
-		Renderer::camera = Camera(glm::vec3(0.0f, 0.0f, -30.0f));
-		//m_light = pointLight(); 
-
-		model = mat4(1);
-		view = mat4(1);
-		proj = perspective(radians(45.0f), (float)screen_width / (float)screen_height, 10.0f, 1000.0f);
-	}
 	
-	
+	Renderer(Engine& engine, int widht, int height);
 	void processInput(GLFWwindow* window);
 	void setCursorVisible(bool b)
 	{

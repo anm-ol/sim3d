@@ -19,6 +19,22 @@ float lastFrame = 0.0f;
 double lastTime = glfwGetTime();
 int numFrames = 0;
 
+Renderer::Renderer(Engine& ourengine, int width, int height) : engineRef(ourengine), screen_width(width), screen_height(height)
+{
+	lastX = screen_width / 2.0f;
+	lastY = screen_height / 2.0f;
+	//Creates a GLFW window
+	createWindow(screen_width, screen_height);
+	glfwSetWindowUserPointer(window, this);
+
+	Renderer::camera = Camera(glm::vec3(0.0f, 0.0f, 100.0f));
+	//m_light = pointLight(); 
+
+	model = mat4(1);
+	view = mat4(1);
+	proj = perspective(radians(45.0f), (float)screen_width / (float)screen_height, 10.0f, 1000.0f);
+}
+
 int Renderer::render(Engine& engine) {
 
 

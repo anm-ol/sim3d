@@ -134,8 +134,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Cloth.cpp" />
-    <ClCompile Include="src\collision.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\gui.cpp" />
     <ClCompile Include="src\include\imgui\imgui.cpp" />

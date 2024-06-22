@@ -50,27 +50,54 @@ void spacePartition::createGrid(vec3 min, vec3 max)
 
 void spacePartition::setParticles(std::vector<particle>& particles)
 {
+    ivec4 min, max;
     for (auto& p : particles)
     {
-        ivec3 boxindex = (p.pos - worldmin) / boxsize;
-        ivec3 minboxindex = vec3(glm::max(0.0f, (p.pos.x - p.size - worldmin.x)), 
-                                glm::max(0.0f, p.pos.y - p.size - worldmin.y),
-                                 glm::max(0.0f, p.pos.z - p.size - worldmin.z)) / boxsize;
-        vec3 maxboxfloat = (p.pos + p.size - worldmin) / boxsize;
-        ivec3 maxboxindex = ivec3(glm::min((float)subDivs - 1, maxboxfloat.x),
-                                  glm::min((float)subDivs - 1, maxboxfloat.y),
-                                  glm::min((float)subDivs - 1, maxboxfloat.z));
-        int index = boxindex.x * subDivs * subDivs + boxindex.y * subDivs + boxindex.z;
-        int minindex = minboxindex.x * subDivs * subDivs + minboxindex.y * subDivs + minboxindex.z;
-        int maxindex = maxboxindex.x * subDivs * subDivs + maxboxindex.y * subDivs + maxboxindex.z;
+        int index = getCellIndex(p.pos);
+        
+        min.x = getCellIndex(p.pos - vec3(p.size, 0, 0));
+        min.y = getCellIndex(p.pos - vec3(0, p.size, 0));
+        min.z = getCellIndex(p.pos - vec3(0, 0, p.size));
+        min.w = getCellIndex(p.pos - p.size);
+        
+        max.x = getCellIndex(p.pos + vec3(p.size, 0, 0));
+        max.y = getCellIndex(p.pos + vec3(0, p.size, 0));
+        max.z = getCellIndex(p.pos + vec3(0, 0, p.size));
+        max.w = getCellIndex(p.pos + p.size);
+
         partitions[index].addParticle(&p);
-        if (minindex != index)
-            partitions[minindex].addParticle(&p);
-        else if (maxindex != index)
-            partitions[maxindex].addParticle(&p);
+        if (min.x != index)
+            partitions[min.x].addParticle(&p);
+        if(min.y != index)
+            partitions[min.y].addParticle(&p);
+        if(min.z != index)
+            partitions[min.z].addParticle(&p);
+        if (min.w != index)
+            partitions[min.w].addParticle(&p);
+
+        if (max.x != index)
+            partitions[max.x].addParticle(&p);
+        if (max.y != index)
+            partitions[max.y].addParticle(&p);
+        if (max.z != index)
+            partitions[max.z].addParticle(&p);
+        if (max.w != index)
+            partitions[max.w].addParticle(&p);
     }
 }
 
+int spacePartition::getCellIndex(vec3 pos)
+{   
+    ivec3 boxindex = (pos - worldmin) / boxsize;
+    boxindex = ivec3(glm::max(0, boxindex.x),
+                      glm::max(0, boxindex.y),
+                      glm::max(0, boxindex.z)); 
+    boxindex = ivec3(glm::min(subDivs - 1, boxindex.x), 
+                     glm::min(subDivs - 1, boxindex.y),
+                      glm::min(subDivs - 1, boxindex.z));
+    int index = boxindex.x * subDivs * subDivs + boxindex.y * subDivs + boxindex.z;
+    return index;
+}
 void spacePartition::partitionCollide()
 {
     float elasticity = engine.particleElasticity;

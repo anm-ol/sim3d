@@ -15,7 +15,7 @@ int main() {
 	vec3 max = vec3(50,30, 50);
 	Engine engine(min,max);
 
-	Renderer renderer = Renderer(engine);
+	Renderer renderer = Renderer(engine, 1500, 1000);
 
 	pointLight light1 = pointLight();
 	pointLight light2 = pointLight();
@@ -36,7 +36,7 @@ int main() {
 
 
 	// particle parameters
-	const int numParticles = 300;
+	const int numParticles = 1000;
 	const float size = 2.0f;
 	const float mass = size;
 	const vec3 maxVel = vec3(.4f);
@@ -45,11 +45,10 @@ int main() {
 	engine.wallElasticity = 1.0f;
 	engine.particleElasticity = 1.0f;
 	engine.friction = 1.0f;
-	engine.NumSteps = 20;
+	engine.NumSteps = 10;
 	engine.usePartition = true;
 
 	engine.setWall(min, max);
-	engine.createParticles(numParticles, size, mass, maxVel, true);
 	engine.setAccelaration(vec3(0, 0, 0));
 	engine.box.createGrid(min, max);
 
