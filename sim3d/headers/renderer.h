@@ -12,7 +12,6 @@
 
 using namespace glm;
 
-
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -26,11 +25,14 @@ public:
 	Engine& engineRef;
 	GLFWwindow* window;
 	
+	Shader particleShader;
+
 	bool cursorVisible = false;
 	bool select = false;
 
 	std::vector<pointLight> m_lights;
-	unsigned int SPHERE_VERT_COUNT, WALL_VERT_COUNT;
+	unsigned int VBO_main, VAO_main, VAO_spring, VBO_spring;
+	unsigned int SPHERE_VERT_COUNT, WALL_VERT_COUNT, SPRING_VERT_COUNT;
 
 	glm::mat4 model, view, proj;
 
@@ -57,7 +59,9 @@ public:
 	void generateSphereMesh(std::vector<float>& vertices, float size, int hres, int vres);
 	void generateWallvertices(Engine& engine, std::vector<float>& vertices);
 	void generateGridVertices(std::vector<float>& vertices, vec3 spacing, vec3 diag1, vec3 diag2);
-	
+	void generateSprings(std::vector<float>& vertices, std::vector<spring> &springs);
+
+	void renderSprings(std::vector<spring>& springs);
 	void renderGrid(std::vector<float>& vertices, vec3 spacing, vec3 diag1, vec3 diag2);
 	
 	void generateAll(Engine& engine, std::vector<float>& vertices);

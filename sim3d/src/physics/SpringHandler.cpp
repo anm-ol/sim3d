@@ -1,8 +1,11 @@
 #include "SpringHandler.h"
 
+using namespace glm;
+
 SpringHandler::SpringHandler() {
 
 }
+
 
 // width and height refers to num particles in x and y axes respectively
 SpringHandler::SpringHandler(int w, int h, float s, float m)
@@ -53,5 +56,19 @@ void SpringHandler::initSprings() {
                 springs.emplace_back(particles[index], particles[index + 2], bendingCoeff);
             }
         }
+    }
+}
+
+void SpringHandler::updateForce()
+{
+    //reset force to zero 
+    for (particle& p : particles)
+    {
+        p.force = vec3(0);
+    }
+    //re-calculate force with updated vertex positions
+    for (spring& spr : springs)
+    {
+        spr.setForce();
     }
 }

@@ -1,5 +1,5 @@
 #include "renderer.h"
-
+#include "SpringHandler.h"
 #include "Engine.h"
 #include "camera.h"
 #include "GraphicObjects.h"
@@ -26,30 +26,28 @@ Renderer::Renderer(Engine& ourengine, int width, int height) : engineRef(ourengi
 	//Creates a GLFW window
 	createWindow(screen_width, screen_height);
 	glfwSetWindowUserPointer(window, this);
+	// tell GLFW to capture our mouse
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
+	//loading GLAD
+	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+	{
+		std::cout << "Failed to initialize GLAD" << std::endl;
+	}
+	
 	Renderer::camera = Camera(glm::vec3(0.0f, 0.0f, 100.0f));
-	//m_light = pointLight(); 
+
+	//initialising to load, compile and link shaders
+	particleShader = Shader("shader/LightingV.glsl", "shader/LightingF.glsl");
 
 	model = mat4(1);
 	view = mat4(1);
 	proj = perspective(radians(45.0f), (float)screen_width / (float)screen_height, 10.0f, 1000.0f);
 }
 
-int Renderer::render(Engine& engine) {
-
-
-	// tell GLFW to capture our mouse
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-	GUI demoGUI = GUI(engineRef, *this);
-
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-	{
-		std::cout << "Failed to initialize GLAD" << std::endl;
-		return -1;
-	}
-
-	//temporary cube coords
+int Renderer::render(Engine& engine)
+{	
+	GUI debugGUI = GUI(engineRef, *this);
 	std::vector<float> vertices;
 	
 	generateAll(engine, vertices);
@@ -59,23 +57,36 @@ int Renderer::render(Engine& engine) {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	//initialising to load, compile and link shaders
-	Shader particleShader = Shader("shader/LightingV.glsl", "shader/LightingF.glsl");
-
 	//create and bind buffers
-	unsigned int VBO, VAO;
-	glGenBuffers(1, &VBO);
-	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO_main);
+	glGenBuffers(1, &VBO_spring);
+	glGenVertexArrays(1, &VAO_main);
+	glGenVertexArrays(1, &VAO_spring);
+	glBindVertexArray(VAO_main);
 
-	glBindVertexArray(VAO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO_main);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)0);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
+	
+	//unbinding
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	//binding spring buffers
+	glBindVertexArray(VAO_spring);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO_spring);
+	/*SIZE WILL BE CHANGED HERE*/glBufferData(GL_ARRAY_BUFFER, sizeof(GL_FLOAT), nullptr, GL_DYNAMIC_DRAW);
+	
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (void*)0);
+	glEnableVertexAttribArray(0);
+	
+	//unbinding
+	glBindVertexArray(VBO_main);
+
 
 	//rendering loop
 	while (!glfwWindowShouldClose(window))
@@ -92,12 +103,13 @@ int Renderer::render(Engine& engine) {
 		glClearColor(0.f, 0.f, 0.f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		demoGUI.InitFrame();
+		debugGUI.InitFrame();
 		processInput(window);
 
-		glBindVertexArray(VAO);
-		
-		drawLights(m_lights); //render point light sources
+		glBindVertexArray(VAO_main);
+
+		//render point light sources
+		drawLights(m_lights); 
 
 		particleShader.use();
 		//defining model,view,projection matrices
@@ -110,7 +122,6 @@ int Renderer::render(Engine& engine) {
 		particleShader.setMatrix4f("projection", proj);
 
 		particleShader.setVec3f("cameraPos", camera.Position);
-		//particleShader.setPointLight("ourlight", ourlight);
 		particleShader.setLights("ourlights", m_lights);
 			
 		for (int i = 0; i < engine.particles.size(); i++) 
@@ -132,30 +143,32 @@ int Renderer::render(Engine& engine) {
 			glDrawArrays(GL_TRIANGLES, 0, SPHERE_VERT_COUNT/6);
 		}
 
+		//Rendering walls
 		float ModelColor = 1.0f;
 		particleShader.use();
 		vec3 wallcolor(1);
 		particleShader.setVec3f("objectColor", wallcolor );
 		particleShader.setFloat("light", ModelColor);
+
 		model = glm::mat4(1.0f);
 		model = translate(model, (engine.walldiagonal1 + engine.walldiagonal2) / 2.0f);
 		model = scale(model, engine.walldiagonal2 - engine.walldiagonal1);
-		//model = glm::translate(model, vec3(-engine.xmax / 2, -engine.ymax / 2, -engine.zmax / 2));
 		particleShader.setMatrix4f("model", model);
+
+		//Draw call
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINES);
 		glDrawArrays(GL_TRIANGLES, SPHERE_VERT_COUNT/6, WALL_VERT_COUNT/6);
-		//set mvp matrix as uniform
 
 		// display frame rate
 		calcFrameRate();
 
 		engine.updateall(deltaTime);
 
-		demoGUI.render();
+		debugGUI.render();
 
 		glfwSwapBuffers(window); 
 	}
-	demoGUI.shutdown();
+	debugGUI.shutdown();
 	return 0;
 }
 
@@ -309,6 +322,34 @@ void Renderer::generateWallvertices(Engine& engine, std::vector<float>& vertices
 
 }
 
+//add the spring vertex data to buffer
+void Renderer::generateSprings(std::vector<float>& vertices, std::vector<spring>& springs)
+{
+	SPRING_VERT_COUNT = springs.size() * 2;
+	vertices.reserve(SPRING_VERT_COUNT);
+
+	for (spring& s : springs)
+	{
+		pushVec3(vertices, s.p1.pos);
+		pushVec3(vertices, s.p2.pos);
+	}	 
+}
+
+//Batch rendering springs dynamically
+void Renderer::renderSprings(std::vector<spring>& springs)
+{
+	std::vector<float> vertices;
+	generateSprings(vertices, springs);
+	
+	glBindBuffer(GL_ARRAY_BUFFER, VBO_spring);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), &vertices[0]);
+	glBindVertexArray(VAO_spring);
+
+	particleShader.use();
+	//setting uniforms optional
+	glDrawArrays(GL_LINES, 0, SPRING_VERT_COUNT);
+}
+
 void Renderer::generateGridVertices(std::vector<float> &vertices, vec3 spacing, vec3 diag1, vec3 diag2)
 {
 	vec3 count = (diag1 - diag2) / spacing;
@@ -337,7 +378,6 @@ void pushVec3(std::vector<float>& vertices, vec3 vertex) {
 
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
-// ---------------------------------------------------------------------------------------------------------
 void Renderer::processInput(GLFWwindow* window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -369,7 +409,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
-// ---------------------------------------------------------------------------------------------
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	Renderer* renderer = static_cast<Renderer*>(glfwGetWindowUserPointer(window));
@@ -384,7 +423,6 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 
 // glfw: whenever the mouse moves, this callback is called
-// -------------------------------------------------------
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 {
 	Renderer* renderer = static_cast<Renderer*>(glfwGetWindowUserPointer(window));
@@ -412,7 +450,6 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 }
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
-// ----------------------------------------------------------------------
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
 	Renderer* renderer = static_cast<Renderer*>(glfwGetWindowUserPointer(window));

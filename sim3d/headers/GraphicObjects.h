@@ -14,3 +14,4 @@ struct pointLight {
 	pointLight(vec3 position, vec3 col, float inten) : pos(position), color(col), intensity(inten), attenuation(1)
 	{}
 };
+

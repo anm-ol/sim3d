@@ -13,7 +13,7 @@
 
 using namespace glm;
 
-Engine::Engine(const vec3& diag1, const vec3& diag2) : walldiagonal1(diag1), walldiagonal2(diag2), box(*this, 25)
+Engine::Engine(const vec3& diag1, const vec3& diag2) : walldiagonal1(diag1), walldiagonal2(diag2), box(*this, 5)
 {	
 	tconst = 1.0f;
 	wallElasticity = 1.0f;
@@ -29,7 +29,7 @@ Engine::Engine(const vec3& diag1, const vec3& diag2) : walldiagonal1(diag1), wal
 	usePartition = false;
 
 	// spring handler
-	handler = SpringHandler(10, 10, 1.0f, 1.0f);
+	//handler = SpringHandler(10, 10, 1.0f, 1.0f);
   
 	//particles.reserve(handler.particles.size());
 	//particles.insert(particles.end(), handler.particles.begin(), handler.particles.end());
@@ -63,8 +63,6 @@ void Engine::runSubsteps(int numstep, float dt)
 			//updates position for each particle
 			// T_const may be replaced with dt in the future
 			p.update(tconst / numstep, globalAcc);
-			//update velocity according to gravity
-			//p.velocity += (globalAcc * tconst) / (float)numstep;
 		}
 
 		//call collision handling functions after updation

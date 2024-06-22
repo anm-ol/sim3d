@@ -7,13 +7,25 @@
 using namespace glm;
 
 struct spring {
-	particle& vertex1, vertex2;
-	float naturalLength = distance(vertex1.pos, vertex2.pos);
+	particle& p1, p2;
+	float naturalLength;
 	float coefficient;
 
 	spring(particle& v1, particle& v2, float coeff)
-		: vertex1(v1), vertex2(v2), coefficient(coeff)
-	{};
+		: p1(v1), p2(v2), coefficient(coeff)
+	{
+		naturalLength = distance(p1.pos, p2.pos);
+	};
+
+	//set force according to hooke's law
+	//if there is an alternate to using glm::distance() , we should use it since sqrt is expensive
+	void setForce()
+	{
+		vec3 dir = normalize(p1.pos - p2.pos);
+		vec3 F = coefficient * (distance(p1.pos, p2.pos) - naturalLength) * -dir;
+		//p1.force += F;
+		//p2.force -= F;
+	}
 };
 
 class SpringHandler
@@ -33,5 +45,6 @@ public:
 
 	void initVertices();
 	void initSprings();
+	void updateForce();
 };
 

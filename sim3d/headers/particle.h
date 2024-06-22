@@ -7,6 +7,7 @@ class particle {
 public:
 	glm::vec3 oldPos, pos;
 	glm::vec3 velocity;
+	glm::vec3 force;
 	glm::vec3 color;
 	float size, mass;
 

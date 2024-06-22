@@ -8,15 +8,17 @@
 using namespace glm;
 
 int main() {
-	//call updatefunction here idk
-	
-	//rendering after that
+
+	//Setting up min and max wall boundaries
 	vec3 min = vec3(-50, -30, -50);
 	vec3 max = vec3(50,30, 50);
+	//initialising engine
 	Engine engine(min,max);
 
+	//init renderer
 	Renderer renderer = Renderer(engine, 1500, 1000);
 
+	//Setting point lights and their parameters
 	pointLight light1 = pointLight();
 	pointLight light2 = pointLight();
 	pointLight light3 = pointLight();
@@ -36,23 +38,25 @@ int main() {
 
 
 	// particle parameters
-	const int numParticles = 1000;
-	const float size = 2.0f;
+	const int numParticles = 1;
+	const float size = 5.0f;
 	const float mass = size;
 	const vec3 maxVel = vec3(.4f);
 	engine.createParticles(numParticles, size, mass, maxVel, true);
 
+	//setting engine parameters
 	engine.wallElasticity = 1.0f;
 	engine.particleElasticity = 1.0f;
 	engine.friction = 1.0f;
 	engine.NumSteps = 10;
 	engine.usePartition = true;
+	engine.pause = true;
 
 	engine.setWall(min, max);
 	engine.setAccelaration(vec3(0, 0, 0));
 	engine.box.createGrid(min, max);
 
-	engine.pause = true;
+	//rendering 
 	if(renderer.render(engine))
 		std::cout << "Error" << std::endl;
 	return 0;
