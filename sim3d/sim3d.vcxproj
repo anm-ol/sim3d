@@ -71,7 +71,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)sim3d\src\include;$(SolutionDir)sim3d\src\include\GLAD;$(SolutionDir)sim3d\headers;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)sim3d\src\include;$(SolutionDir)sim3d\src\include\GLAD;$(SolutionDir)sim3d\headers;$(SolutionDir)sim3d\shader;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)sim3d\src\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -191,6 +191,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="shader\basicfshader.glsl" />
+    <None Include="shader\SpringF.glsl" />
+    <None Include="shader\SpringV.glsl" />
     <Text Include="shader\basicvshader.glsl">
       <FileType>Document</FileType>
     </Text>

@@ -15,7 +15,6 @@ bool cursorVisible = false;
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
 
-
 double lastTime = glfwGetTime();
 int numFrames = 0;
 
@@ -43,6 +42,8 @@ Renderer::Renderer(Engine& ourengine, int width, int height) : engineRef(ourengi
 	model = mat4(1);
 	view = mat4(1);
 	proj = perspective(radians(45.0f), (float)screen_width / (float)screen_height, 10.0f, 1000.0f);
+
+	SPRING_VERT_COUNT = 2 * engineRef.ourSpringHandler.springs.size();
 }
 
 int Renderer::render(Engine& engine)
@@ -345,8 +346,11 @@ void Renderer::renderSprings(std::vector<spring>& springs)
 	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), &vertices[0]);
 	glBindVertexArray(VAO_spring);
 
-	particleShader.use();
+	const char* shaderFolder = "C:/Users/anmol/projects/sim3d/sim3d/shader/";
+	Shader SpringShader = Shader("basicvshader.glsl", "shader/basicfshader.glsl");
+	SpringShader.use();
 	//setting uniforms optional
+	SpringShader.setInt("ObjectID", SPRING);
 	glDrawArrays(GL_LINES, 0, SPRING_VERT_COUNT);
 }
 

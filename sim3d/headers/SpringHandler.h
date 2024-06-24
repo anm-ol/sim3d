@@ -23,8 +23,8 @@ struct spring {
 	{
 		vec3 dir = normalize(p1.pos - p2.pos);
 		vec3 F = coefficient * (distance(p1.pos, p2.pos) - naturalLength) * -dir;
-		//p1.force += F;
-		//p2.force -= F;
+		p1.force += F;
+		p2.force -= F;
 	}
 };
 
@@ -37,7 +37,7 @@ public:
 	//spring co-efficients
 	float structCoeff = 1.0f, shearCoeff = 1.0f, bendingCoeff = 1.0f;
 
-	std::vector<particle> particles;
+	std::vector<unsigned int> particleIDs;
 	std::vector<spring> springs;
 
 	SpringHandler();

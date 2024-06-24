@@ -42,6 +42,12 @@ public:
 	int screen_height, screen_width;
 	float lastX, lastY;
 
+	enum {
+		PARTICLE,
+		WALL,
+		POINT_LIGHT,
+		SPRING
+	};
 	int render(Engine& engine);
 	
 	Renderer(Engine& engine, int widht, int height);

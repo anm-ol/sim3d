@@ -10,8 +10,8 @@ using namespace glm;
 int main() {
 
 	//Setting up min and max wall boundaries
-	vec3 min = vec3(-50, -30, -50);
-	vec3 max = vec3(50,30, 50);
+	vec3 min = vec3(-30, -50, -30);
+	vec3 max = vec3(50,80, 50);
 	//initialising engine
 	Engine engine(min,max);
 
@@ -22,7 +22,7 @@ int main() {
 	pointLight light1 = pointLight();
 	pointLight light2 = pointLight();
 	pointLight light3 = pointLight();
-	light1.attenuation = .000004f;
+	light1.attenuation = .00004f;
 	light2.attenuation = .004f;
 	light3.attenuation = .004f;
 	light1.pos = vec3(30,5,30);
@@ -38,11 +38,11 @@ int main() {
 
 
 	// particle parameters
-	const int numParticles = 1;
-	const float size = 5.0f;
+	const int numParticles = 2000;
+	const float size = 2.0f;
 	const float mass = size;
-	const vec3 maxVel = vec3(.4f);
-	engine.createParticles(numParticles, size, mass, maxVel, true);
+	const vec3 maxVel = vec3(1.0f);
+	//engine.createParticles(numParticles, size, mass, maxVel, true);
 
 	//setting engine parameters
 	engine.wallElasticity = 1.0f;
@@ -53,7 +53,7 @@ int main() {
 	engine.pause = true;
 
 	engine.setWall(min, max);
-	engine.setAccelaration(vec3(0, 0, 0));
+	engine.setAccelaration(vec3(0, -0.02f, 0));
 	engine.box.createGrid(min, max);
 
 	//rendering 

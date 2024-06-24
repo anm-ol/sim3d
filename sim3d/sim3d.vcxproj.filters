@@ -18,19 +18,10 @@
     <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\particle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\collision.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\glad.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Engine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\gui.cpp">
@@ -55,15 +46,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\include\imgui\imgui_widgets.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SpacePartition.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SpringHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Cloth.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\include\imgui\imgui.cpp">
@@ -251,6 +233,9 @@
     <ClInclude Include="src\SpringHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\OctreeNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shader\basicfshader.glsl">
@@ -260,6 +245,8 @@
     <None Include="shader\LightingF.glsl" />
     <None Include="shader\lightsourceV.glsl" />
     <None Include="shader\lightsourceF.glsl" />
+    <None Include="shader\SpringV.glsl" />
+    <None Include="shader\SpringF.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="shader\basicvshader.glsl">

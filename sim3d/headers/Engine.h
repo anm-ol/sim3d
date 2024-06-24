@@ -14,6 +14,7 @@ class Engine {
 public:
 	std::vector<particle> particles;
 	spacePartition box;
+	SpringHandler ourSpringHandler;
 
 	glm::vec3 globalAcc;
 	glm::vec3 walldiagonal1 = vec3(0); glm::vec3 walldiagonal2 = vec3(0);
