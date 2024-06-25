@@ -36,8 +36,8 @@ public:
 
 	glm::mat4 model, view, proj;
 
-	int VRES = 25;
-	int HRES = 20;
+	int VRES = 10;
+	int HRES = 5;
 
 	int screen_height, screen_width;
 	float lastX, lastY;

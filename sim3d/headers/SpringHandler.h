@@ -12,10 +12,10 @@ using namespace glm;
 struct spring {
 	particle &p1, &p2;
 	float naturalLength;
-	float coefficient;
+	const float coefficient, damping;
 
 	spring(particle& v1, particle& v2, float coeff)
-		: p1(v1), p2(v2), coefficient(coeff)
+		: p1(v1), p2(v2), coefficient(coeff), damping(coeff)
 	{
 		naturalLength = distance(p1.pos, p2.pos);
 	};
@@ -25,7 +25,10 @@ struct spring {
 	void setForce()
 	{
 		vec3 dir = normalize(p1.pos - p2.pos);
-		vec3 F = coefficient * (distance(p1.pos, p2.pos) - naturalLength) * -dir;
+		vec3 relativeVel = p1.velocity - p2.velocity;
+		vec3 F_spring = coefficient * (distance(p1.pos, p2.pos) - naturalLength) * -dir;
+		vec3 F_damping = damping * dot(relativeVel, dir) * -dir;
+		vec3 F = F_spring + F_damping;
 		p1.force += F;
 		p2.force += -F;
 	}

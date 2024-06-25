@@ -23,9 +23,10 @@ void SpringHandler::initVertices(Engine& engine) {
 
 	for (int y = 0; y < num_y; y++) {
 		for (int x = 0; x < num_x; x++) {
-			vec3 posn = vec3(x * (size + 1), y * (size + 1), 0.0f);
+			vec3 posn = vec3(x * (size * 3.5), y * (size * 3.5), 0.0f);
             targetVector->emplace_back(posn, size, mass);
-            //targetVector->back().setVelocity(randomVec3(vec3(-0.005), vec3(0.005)));
+            targetVector->back().setVelocity(randomVec3(vec3(0, 0, -0.03),
+                                                        vec3(0, 0, 0.03)));
             particleIDs.emplace_back(targetVector->size() - 1);
 		}
 	}
@@ -62,7 +63,7 @@ void SpringHandler::initSprings() {
             }
             if (y < num_y - 2) {
                 // Vertical bending edge
-                springs.emplace_back((*targetVector)[particleIDs[index]], (*targetVector)[particleIDs[index + 2]], bendingCoeff);
+                springs.emplace_back((*targetVector)[particleIDs[index]], (*targetVector)[particleIDs[index + 2 * num_x]], bendingCoeff);
             }
         }
     }
