@@ -74,10 +74,12 @@ void Engine::runSubsteps(int numstep, float dt)
 			box.reset();
 			box.partitionCollide();
 		}
-		else
-		particleCollide(*this, 0, particles.size());
+		else {
+			particleCollide(*this, 0, particles.size());
+		}
+
+		ourSpringHandler.updateForce(*this);
 	}
-	ourSpringHandler.updateForce();
 }
 
 // create particles randomly from numParticles, size and maxVel

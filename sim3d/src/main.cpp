@@ -41,7 +41,7 @@ int main() {
 	const int numParticles = 2000;
 	const float size = 2.0f;
 	const float mass = size;
-	const vec3 maxVel = vec3(1.0f);
+	const vec3 maxVel = vec3(0.0f);
 	//engine.createParticles(numParticles, size, mass, maxVel, true);
 
 	//setting engine parameters
@@ -53,7 +53,7 @@ int main() {
 	engine.pause = true;
 
 	engine.setWall(min, max);
-	engine.setAccelaration(vec3(0, -0.0f, 0));
+	engine.setAccelaration(vec3(0, -0.00f, 0));
 	engine.box.createGrid(min, max);
 
 	//rendering 
