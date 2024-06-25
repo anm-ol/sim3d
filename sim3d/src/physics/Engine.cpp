@@ -29,7 +29,8 @@ Engine::Engine(const vec3& diag1, const vec3& diag2) : walldiagonal1(diag1), wal
 	usePartition = false;
 
 	// spring handler
-	ourSpringHandler = SpringHandler(&particles, 4, 4, 0.5f, 2000.01f);
+	ourSpringHandler = SpringHandler(&particles, 10, 10, 0.2f, 10000.1f);
+	ourSpringHandler.init(*this);
 }
 void Engine::setWall(vec3 diag1, vec3 diag2)
 {
@@ -52,6 +53,8 @@ void Engine::updateall(float dt) //this is the main function that gets called in
 //Betweem each frame we update position/velocity, handle collision multiple times
 void Engine::runSubsteps(int numstep, float dt) 
 {
+	ourSpringHandler.updateForce();
+
 	for (int i = 1; i <= numstep; i++)
 	{
 		//one "sub-step"
@@ -74,11 +77,10 @@ void Engine::runSubsteps(int numstep, float dt)
 			box.reset();
 			box.partitionCollide();
 		}
-		else {
+		else 
+		{
 			particleCollide(*this, 0, particles.size());
 		}
-
-		ourSpringHandler.updateForce(*this);
 	}
 }
 
@@ -121,7 +123,7 @@ void Engine::createParticle(float size, float mass, vec3 maxVel, bool randVeloci
 }
 
 // Function to generate a random vec3 position within a range
-vec3 randomVec3(vec3 min, vec3 max)
+glm::vec3 randomVec3(vec3 min, vec3 max)
 {
 	std::random_device rd;
 	std::mt19937 gen(rd());

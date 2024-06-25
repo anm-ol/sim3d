@@ -53,6 +53,7 @@ int Renderer::render(Engine& engine)
 	std::vector<float> springVerts;
 	
 	generateAll(engine, vertices);
+	generateSprings(springVerts, engineRef.ourSpringHandler.springs);
 
 	glEnable(GL_DEPTH_TEST);
 	// Enable blending
@@ -81,9 +82,9 @@ int Renderer::render(Engine& engine)
 	//binding spring buffers
 	glBindVertexArray(VAO_spring);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO_spring);
-	/*SIZE WILL BE CHANGED HERE*/glBufferData(GL_ARRAY_BUFFER, sizeof(GL_FLOAT), nullptr, GL_DYNAMIC_DRAW);
-	
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (void*)0);
+	glBufferData(GL_ARRAY_BUFFER, 3 * SPRING_VERT_COUNT * sizeof(GLfloat), nullptr, GL_DYNAMIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*)0);
 	glEnableVertexAttribArray(0);
 	
 	//unbinding
@@ -353,7 +354,7 @@ void Renderer::renderSprings(std::vector<spring>& springs)
 	
 	// Bind the VBO and update its data
 	glBindBuffer(GL_ARRAY_BUFFER, VBO_spring);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), &vertices[0]);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(GLfloat), &vertices[0]);
 
 	// Bind the VAO
 	glBindVertexArray(VAO_spring);
@@ -363,7 +364,10 @@ void Renderer::renderSprings(std::vector<spring>& springs)
 	Shader SpringShader = Shader("shader/basicvshader.glsl", "shader/basicfshader.glsl");
 	SpringShader.use();
 
-	// Optionally, set uniforms
+	// set uniforms
+	view = camera.GetViewMatrix();
+	SpringShader.setMatrix4f("view", view);
+	SpringShader.setMatrix4f("projection", proj);
 	SpringShader.setInt("ObjectID", SPRING);
 
 	// Draw the line segments
@@ -371,8 +375,6 @@ void Renderer::renderSprings(std::vector<spring>& springs)
 
 	// Unbind the VAO for good practice
 	glBindVertexArray(0);
-
-
 }
 
 void Renderer::generateGridVertices(std::vector<float> &vertices, vec3 spacing, vec3 diag1, vec3 diag2)

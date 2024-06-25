@@ -10,7 +10,7 @@ class Engine;
 using namespace glm;
 
 struct spring {
-	particle& p1, p2;
+	particle &p1, &p2;
 	float naturalLength;
 	float coefficient;
 
@@ -49,7 +49,8 @@ public:
 
 	SpringHandler(std::vector<particle> *particles, int w, int h, float s, float m);
 
-	void initVertices();
+	void init(Engine& engine);
+	void initVertices(Engine& engine);
 	void initSprings();
 	void addSpring(particle& p1, particle& p2);
 	void updateForce();

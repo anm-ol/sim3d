@@ -4,22 +4,28 @@
 using namespace glm;
 
 // width and height refers to num particles in x and y axes respectively
-SpringHandler::SpringHandler(int x, int y, float s, float m)
-	: num_x(x), num_y(y), size(s), mass(m) {
+SpringHandler::SpringHandler(std::vector<particle> *particles, int x, int y, float s, float m)
+	: targetVector(particles), num_x(x), num_y(y), size(s), mass(m) 
+{
 };
 
+void SpringHandler::init(Engine& engine)
+{
+    initVertices(engine);
+    initSprings();
+}
 
 // adding particles as vertices
 void SpringHandler::initVertices(Engine& engine) {
-    unsigned int total_num = num_x * num_y;\
+    unsigned int total_num = num_x * num_y;
 	particleIDs.reserve(total_num);
     targetVector->reserve(total_num);
 
 	for (int y = 0; y < num_y; y++) {
 		for (int x = 0; x < num_x; x++) {
-			vec3 posn = vec3(x * (size + 5), y * (size + 5), 0.0f);
-			targetVector->emplace_back(posn, size, mass);
-            particleIDs.push_back(targetVector->size() - 1);
+			vec3 posn = vec3(x * (size + 1), y * (size + 1), 0.0f);
+            targetVector->emplace_back(posn, size, mass);
+            //targetVector->back().setVelocity(randomVec3(vec3(-0.005), vec3(0.005)));
             particleIDs.emplace_back(targetVector->size() - 1);
 		}
 	}
@@ -48,7 +54,7 @@ void SpringHandler::initSprings() {
             if (x < num_x - 1 && y < num_y - 1) {
                 // Shear edges
                 springs.emplace_back((*targetVector)[ID], (*targetVector)[particleIDs[index + num_x + 1]], shearCoeff);
-                springs.emplace_back((*targetVector)[ID + 1], (*targetVector)[particleIDs[index + num_x]], shearCoeff);
+                springs.emplace_back((*targetVector)[particleIDs[index + 1]], (*targetVector)[particleIDs[index + num_x]], shearCoeff);
             }
             if (x < num_x - 2) {
                 // Horizontal bending edge
@@ -62,7 +68,7 @@ void SpringHandler::initSprings() {
     }
 }
 
-void SpringHandler::updateForce(Engine& engine)
+void SpringHandler::updateForce()
 {
     //reset force to zero 
     for (auto ID : particleIDs )

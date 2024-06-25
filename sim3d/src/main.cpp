@@ -11,7 +11,7 @@ int main() {
 
 	//Setting up min and max wall boundaries
 	vec3 min = vec3(-30, -50, -30);
-	vec3 max = vec3(50,80, 50);
+	vec3 max = vec3(50,20, 50);
 	//initialising engine
 	Engine engine(min,max);
 
@@ -45,15 +45,15 @@ int main() {
 	//engine.createParticles(numParticles, size, mass, maxVel, true);
 
 	//setting engine parameters
-	engine.wallElasticity = 1.0f;
-	engine.particleElasticity = 1.0f;
-	engine.friction = 1.0f;
+	engine.wallElasticity = 0.9f;
+	engine.particleElasticity = 0.9f;
+	engine.friction = 0.98f;
 	engine.NumSteps = 10;
 	engine.usePartition = true;
 	engine.pause = true;
 
 	engine.setWall(min, max);
-	engine.setAccelaration(vec3(0, -0.00f, 0));
+	engine.setAccelaration(vec3(0.00, -0.00f, 0.00));
 	engine.box.createGrid(min, max);
 
 	//rendering 
