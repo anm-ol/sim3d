@@ -29,10 +29,8 @@ Engine::Engine(const vec3& diag1, const vec3& diag2) : walldiagonal1(diag1), wal
 	usePartition = false;
 
 	// spring handler
-	ourSpringHandler = SpringHandler(10, 10, 1.0f, 1.0f);
-  
-	particles.reserve(ourSpringHandler.particles.size());
-	particles.insert(particles.end(), ourSpringHandler.particles.begin(), ourSpringHandler.particles.end());
+	ourSpringHandler = SpringHandler(5, 5, 1.0f, 1.0f);
+	ourSpringHandler.init(*this);
 }
 void Engine::setWall(vec3 diag1, vec3 diag2)
 {
@@ -77,10 +75,12 @@ void Engine::runSubsteps(int numstep, float dt)
 			box.reset();
 			box.partitionCollide();
 		}
-		else
-		particleCollide(*this, 0, particles.size());
+		else {
+			particleCollide(*this, 0, particles.size());
+		}
+
+		ourSpringHandler.updateForce(*this);
 	}
-	ourSpringHandler.updateForce();
 }
 
 // create particles randomly from numParticles, size and maxVel

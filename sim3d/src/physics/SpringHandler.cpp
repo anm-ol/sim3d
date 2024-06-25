@@ -1,4 +1,5 @@
 #include "SpringHandler.h"
+#include "Engine.h"
 
 using namespace glm;
 
@@ -8,64 +9,70 @@ SpringHandler::SpringHandler() {
 
 
 // width and height refers to num particles in x and y axes respectively
-SpringHandler::SpringHandler(int w, int h, float s, float m)
-	: width(w), height(h), size(s), mass(m) {
-
-	initVertices();
-	initSprings();
+SpringHandler::SpringHandler(int x, int y, float s, float m)
+	: num_x(x), num_y(y), size(s), mass(m) {
 };
 
 
 // adding particles as vertices
-void SpringHandler::initVertices() {
-	particles.reserve(width * height);
+void SpringHandler::initVertices(Engine& engine) {
+    unsigned int total_num = num_x * num_y;
+    engine.particles.reserve(total_num);
+	particleIDs.reserve(total_num);
 
-	for (int y = 0; y < height; y++) {
-		for (int x = 0; x < width; x++) {
-			vec3 posn = vec3(x * size, y * size, 0.0f);
-			particles.emplace_back(posn, size, mass);
+	for (int y = 0; y < num_y; y++) {
+		for (int x = 0; x < num_x; x++) {
+			vec3 posn = vec3(x * (size + 5), y * (size + 5), 0.0f);
+			engine.particles.emplace_back(posn, size, mass);
+            particleIDs.emplace_back(engine.particles.size() - 1);
 		}
 	}
 }
 
-void SpringHandler::initSprings() {
-    springs.reserve(width * height * 6);
-    for (int y = 0; y < height; y++) {
-        for (int x = 0; x < width; x++) {
-            int index = y * width + x;
+void SpringHandler::init(Engine& engine) {
+    initVertices(engine);
+    initSprings(engine);
+}
 
-            if (x < width - 1) {
-                // Horizontal structural edge
-                springs.emplace_back(particles[index], particles[index + 1], structCoeff);
+void SpringHandler::initSprings(Engine& engine) {
+    springs.reserve(num_x * num_y * 6);
+
+    for (int y = 0; y < num_y; y++) {
+        for (int x = 0; x < num_x; x++) {
+            int index = y * num_x + x;
+            if (x < num_x - 1) {
+                // Horizontal structural 
+                springs.emplace_back(engine.particles[particleIDs[index]], engine.particles[particleIDs[index + 1]], structCoeff);
             }
-            if (y < height - 1) {
+            if (y < num_y - 1) {
                 // Vertical structural edge
-                springs.emplace_back(particles[index], particles[index + width], structCoeff);
+                springs.emplace_back(engine.particles[particleIDs[index]], engine.particles[particleIDs[index + 1]], structCoeff);
             }
-            if (x < width - 1 && y < height - 1) {
+            if (x < num_x - 1 && y < num_y - 1) {
                 // Shear edges
-                springs.emplace_back(particles[index], particles[index + width + 1], shearCoeff);
-                springs.emplace_back(particles[index + 1], particles[index + width], shearCoeff);
+                springs.emplace_back(engine.particles[particleIDs[index]], engine.particles[particleIDs[index + num_x + 1]], shearCoeff);
+                springs.emplace_back(engine.particles[particleIDs[index + 1]], engine.particles[particleIDs[index + num_x]], shearCoeff);
             }
-            if (x < width - 2) {
+            if (x < num_x - 2) {
                 // Horizontal bending edge
-                springs.emplace_back(particles[index], particles[index + 2], bendingCoeff);
+                springs.emplace_back(engine.particles[particleIDs[index]], engine.particles[particleIDs[index + 2]], bendingCoeff);
             }
-            if (y < height - 2) {
+            if (y < num_y - 2) {
                 // Vertical bending edge
-                springs.emplace_back(particles[index], particles[index + 2], bendingCoeff);
+                springs.emplace_back(engine.particles[particleIDs[index]], engine.particles[particleIDs[index + 2]], bendingCoeff);
             }
         }
     }
 }
 
-void SpringHandler::updateForce()
+void SpringHandler::updateForce(Engine& engine)
 {
     //reset force to zero 
-    for (particle& p : particles)
+    for (auto& index : particleIDs)
     {
-        p.force = vec3(0);
+        engine.particles[index].force = engine.globalAcc;
     }
+
     //re-calculate force with updated vertex positions
     for (spring& spr : springs)
     {

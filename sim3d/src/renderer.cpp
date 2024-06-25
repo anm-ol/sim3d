@@ -144,6 +144,9 @@ int Renderer::render(Engine& engine)
 			glDrawArrays(GL_TRIANGLES, 0, SPHERE_VERT_COUNT/6);
 		}
 
+		//Rendering the springs
+		//renderSprings(engine.ourSpringHandler.springs);
+
 		//Rendering walls
 		float ModelColor = 1.0f;
 		particleShader.use();

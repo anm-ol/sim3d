@@ -4,6 +4,8 @@
 #include <vector>
 #include "particle.h"
 
+class Engine;
+
 using namespace glm;
 
 struct spring {
@@ -24,14 +26,15 @@ struct spring {
 		vec3 dir = normalize(p1.pos - p2.pos);
 		vec3 F = coefficient * (distance(p1.pos, p2.pos) - naturalLength) * -dir;
 		p1.force += F;
-		p2.force -= F;
+		p2.force += -F;
 	}
 };
 
 class SpringHandler
 {
 public:
-	int width, height;
+	// number of particles in x and y axes
+	int num_x, num_y;
 	float size, mass;
 	
 	//spring co-efficients
@@ -41,10 +44,11 @@ public:
 	std::vector<spring> springs;
 
 	SpringHandler();
-	SpringHandler(int w, int h, float s, float m);
+	SpringHandler(int x, int y, float s, float m);
 
-	void initVertices();
-	void initSprings();
-	void updateForce();
+	void init(Engine& engine);
+	void initVertices(Engine& engine);
+	void initSprings(Engine& engine);
+	void updateForce(Engine& engine);
 };
 
