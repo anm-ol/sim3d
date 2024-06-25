@@ -50,6 +50,7 @@ int Renderer::render(Engine& engine)
 {	
 	GUI debugGUI = GUI(engineRef, *this);
 	std::vector<float> vertices;
+	std::vector<float> springVerts;
 	
 	generateAll(engine, vertices);
 
@@ -111,6 +112,11 @@ int Renderer::render(Engine& engine)
 
 		//render point light sources
 		drawLights(m_lights); 
+
+		//render springs as lines
+		renderSprings(engine.ourSpringHandler.springs);
+
+		glBindVertexArray(VAO_main);
 
 		particleShader.use();
 		//defining model,view,projection matrices
@@ -342,16 +348,28 @@ void Renderer::renderSprings(std::vector<spring>& springs)
 	std::vector<float> vertices;
 	generateSprings(vertices, springs);
 	
+	// Bind the VBO and update its data
 	glBindBuffer(GL_ARRAY_BUFFER, VBO_spring);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), &vertices[0]);
+
+	// Bind the VAO
 	glBindVertexArray(VAO_spring);
 
+	// Compile and use the shader program
 	const char* shaderFolder = "C:/Users/anmol/projects/sim3d/sim3d/shader/";
-	Shader SpringShader = Shader("basicvshader.glsl", "shader/basicfshader.glsl");
+	Shader SpringShader = Shader("shader/basicvshader.glsl", "shader/basicfshader.glsl");
 	SpringShader.use();
-	//setting uniforms optional
+
+	// Optionally, set uniforms
 	SpringShader.setInt("ObjectID", SPRING);
+
+	// Draw the line segments
 	glDrawArrays(GL_LINES, 0, SPRING_VERT_COUNT);
+
+	// Unbind the VAO for good practice
+	glBindVertexArray(0);
+
+
 }
 
 void Renderer::generateGridVertices(std::vector<float> &vertices, vec3 spacing, vec3 diag1, vec3 diag2)

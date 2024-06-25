@@ -53,7 +53,7 @@ int main() {
 	engine.pause = true;
 
 	engine.setWall(min, max);
-	engine.setAccelaration(vec3(0, -0.02f, 0));
+	engine.setAccelaration(vec3(0, -0.0f, 0));
 	engine.box.createGrid(min, max);
 
 	//rendering 

@@ -2,14 +2,9 @@
 
 using namespace glm;
 
-SpringHandler::SpringHandler() {
-
-}
-
-
 // width and height refers to num particles in x and y axes respectively
-SpringHandler::SpringHandler(int w, int h, float s, float m)
-	: width(w), height(h), size(s), mass(m) {
+SpringHandler::SpringHandler(std::vector<particle> *particles, int w, int h, float s, float m)
+	: targetVector(particles), width(w), height(h), size(s), mass(m) {
 
 	initVertices();
 	initSprings();
@@ -18,14 +13,21 @@ SpringHandler::SpringHandler(int w, int h, float s, float m)
 
 // adding particles as vertices
 void SpringHandler::initVertices() {
-	particles.reserve(width * height);
+	particleIDs.reserve(width * height);
+    targetVector->reserve(width * height);
 
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			vec3 posn = vec3(x * size, y * size, 0.0f);
-			particles.emplace_back(posn, size, mass);
+			targetVector->emplace_back(posn, size, mass);
+            particleIDs.push_back(targetVector->size() - 1);
 		}
 	}
+}
+
+void SpringHandler::addSpring(particle& p1, particle& p2)
+{
+    
 }
 
 void SpringHandler::initSprings() {
@@ -33,27 +35,27 @@ void SpringHandler::initSprings() {
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             int index = y * width + x;
-
+            unsigned int ID = particleIDs[index];
             if (x < width - 1) {
                 // Horizontal structural edge
-                springs.emplace_back(particles[index], particles[index + 1], structCoeff);
+                springs.emplace_back((*targetVector)[ID], (*targetVector)[ID + 1], structCoeff);
             }
             if (y < height - 1) {
                 // Vertical structural edge
-                springs.emplace_back(particles[index], particles[index + width], structCoeff);
+                springs.emplace_back((*targetVector)[ID], (*targetVector)[ID + width], structCoeff);
             }
             if (x < width - 1 && y < height - 1) {
                 // Shear edges
-                springs.emplace_back(particles[index], particles[index + width + 1], shearCoeff);
-                springs.emplace_back(particles[index + 1], particles[index + width], shearCoeff);
+                springs.emplace_back((*targetVector)[ID], (*targetVector)[ID + width + 1], shearCoeff);
+                springs.emplace_back((*targetVector)[ID + 1], (*targetVector)[ID + width], shearCoeff);
             }
             if (x < width - 2) {
                 // Horizontal bending edge
-                springs.emplace_back(particles[index], particles[index + 2], bendingCoeff);
+                springs.emplace_back((*targetVector)[ID], (*targetVector)[ID + 2], bendingCoeff);
             }
             if (y < height - 2) {
                 // Vertical bending edge
-                springs.emplace_back(particles[index], particles[index + 2], bendingCoeff);
+                springs.emplace_back((*targetVector)[ID], (*targetVector)[ID + 2], bendingCoeff);
             }
         }
     }
@@ -62,9 +64,9 @@ void SpringHandler::initSprings() {
 void SpringHandler::updateForce()
 {
     //reset force to zero 
-    for (particle& p : particles)
+    for (auto ID : particleIDs )
     {
-        p.force = vec3(0);
+        (*targetVector)[ID].force = vec3(0);
     }
     //re-calculate force with updated vertex positions
     for (spring& spr : springs)

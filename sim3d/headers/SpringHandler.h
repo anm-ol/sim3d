@@ -2,6 +2,7 @@
 #include <glm/glm.hpp>
 #include <iostream>
 #include <vector>
+
 #include "particle.h"
 
 using namespace glm;
@@ -37,14 +38,17 @@ public:
 	//spring co-efficients
 	float structCoeff = 1.0f, shearCoeff = 1.0f, bendingCoeff = 1.0f;
 
+	std::vector<particle> *targetVector;
 	std::vector<unsigned int> particleIDs;
 	std::vector<spring> springs;
 
-	SpringHandler();
-	SpringHandler(int w, int h, float s, float m);
+	SpringHandler() : targetVector(){}
+
+	SpringHandler(std::vector<particle> *particles, int w, int h, float s, float m);
 
 	void initVertices();
 	void initSprings();
+	void addSpring(particle& p1, particle& p2);
 	void updateForce();
 };
 

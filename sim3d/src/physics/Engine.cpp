@@ -13,7 +13,7 @@
 
 using namespace glm;
 
-Engine::Engine(const vec3& diag1, const vec3& diag2) : walldiagonal1(diag1), walldiagonal2(diag2), box(*this, 20)
+Engine::Engine(const vec3& diag1, const vec3& diag2) : walldiagonal1(diag1), walldiagonal2(diag2), box(*this, 2)
 {	
 	tconst = 1.0f;
 	wallElasticity = 1.0f;
@@ -29,10 +29,7 @@ Engine::Engine(const vec3& diag1, const vec3& diag2) : walldiagonal1(diag1), wal
 	usePartition = false;
 
 	// spring handler
-	ourSpringHandler = SpringHandler(10, 10, 1.0f, 1.0f);
-  
-	particles.reserve(ourSpringHandler.particles.size());
-	particles.insert(particles.end(), ourSpringHandler.particles.begin(), ourSpringHandler.particles.end());
+	ourSpringHandler = SpringHandler(&particles, 4, 4, 0.5f, 2000.01f);
 }
 void Engine::setWall(vec3 diag1, vec3 diag2)
 {
