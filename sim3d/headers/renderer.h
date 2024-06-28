@@ -25,7 +25,7 @@ public:
 	Engine& engineRef;
 	GLFWwindow* window;
 	
-	Shader particleShader;
+	Shader particleShader, lightShader, SpringShader;
 
 	bool cursorVisible = false;
 	bool select = false;
@@ -36,8 +36,8 @@ public:
 
 	glm::mat4 model, view, proj;
 
-	int VRES = 10;
-	int HRES = 5;
+	int VRES = 15;
+	int HRES = 15;
 
 	int screen_height, screen_width;
 	float lastX, lastY;
@@ -64,7 +64,6 @@ public:
 
 	void generateSphereMesh(std::vector<float>& vertices, float size, int hres, int vres);
 	void generateWallvertices(Engine& engine, std::vector<float>& vertices);
-	void generateGridVertices(std::vector<float>& vertices, vec3 spacing, vec3 diag1, vec3 diag2);
 	void generateSprings(std::vector<float>& vertices, std::vector<spring> &springs);
 
 	void renderSprings(std::vector<spring>& springs);
@@ -74,7 +73,6 @@ public:
 
 	void drawLights(std::vector<pointLight>& ourlights)
 	{
-		Shader lightShader = Shader("shader/lightsourceV.glsl", "shader/lightsourceF.glsl");
 		lightShader.use();
 		//defining model,view,projection matrices
 

@@ -134,6 +134,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\ClothRenderer.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\gui.cpp" />
     <ClCompile Include="src\include\imgui\imgui.cpp" />
@@ -166,6 +167,8 @@
     <ClInclude Include="headers\shader.h" />
     <ClInclude Include="headers\SpacePartition.h" />
     <ClInclude Include="headers\SpringHandler.h" />
+    <ClInclude Include="src\ClothRenderer.h" />
+    <ClInclude Include="src\include\stb_image.h" />
     <ClInclude Include="src\OctreeNode.h" />
     <ClInclude Include="src\Edge.h" />
     <ClInclude Include="src\Cloth.h" />

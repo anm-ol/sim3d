@@ -11,22 +11,24 @@ SpringHandler::SpringHandler(std::vector<particle> *particles, int x, int y, flo
 
 void SpringHandler::init(Engine& engine)
 {
-    initVertices(engine);
-    initSprings();
+    //initVertices(engine);
+    //initSprings();
 }
 
 // adding particles as vertices
-void SpringHandler::initVertices(Engine& engine) {
+void SpringHandler::initVertices(Engine& engine, vec3 startPos, float spacing) {
     unsigned int total_num = num_x * num_y;
+    m_spacing = spacing;
+    m_startPos = startPos;
 	particleIDs.reserve(total_num);
     targetVector->reserve(total_num);
 
 	for (int y = 0; y < num_y; y++) {
 		for (int x = 0; x < num_x; x++) {
-			vec3 posn = vec3(x * (size * 3.5), y * (size * 3.5), 0.0f);
+			vec3 posn =  startPos + vec3(x * (size * spacing), y * (size * spacing), 0.0f);
             targetVector->emplace_back(posn, size, mass);
-            targetVector->back().setVelocity(randomVec3(vec3(0, 0, -0.03),
-                                                        vec3(0, 0, 0.03)));
+            targetVector->back().setVelocity(randomVec3(vec3(-0.3),
+                                                        vec3(0.3)));
             particleIDs.emplace_back(targetVector->size() - 1);
 		}
 	}

@@ -11,7 +11,7 @@
 
 void partition::addParticle(particle* p)
 {
-    group.push_back(p);
+    group.emplace_back(p);
     p->color = color;
 }
 spacePartition::spacePartition(Engine& engine, int divisions)
@@ -88,14 +88,17 @@ void spacePartition::setParticles(std::vector<particle>& particles)
 
 int spacePartition::getCellIndex(vec3 pos)
 {   
+    // Calculate box indices in each dimension
     ivec3 boxindex = (pos - worldmin) / boxsize;
-    boxindex = ivec3(glm::max(0, boxindex.x),
-                      glm::max(0, boxindex.y),
-                      glm::max(0, boxindex.z)); 
-    boxindex = ivec3(glm::min(subDivs - 1, boxindex.x), 
-                     glm::min(subDivs - 1, boxindex.y),
-                      glm::min(subDivs - 1, boxindex.z));
+
+    // Clamp box indices to valid range [0, subDivs - 1]
+    boxindex.x = glm::clamp(boxindex.x, 0, subDivs - 1);
+    boxindex.y = glm::clamp(boxindex.y, 0, subDivs - 1);
+    boxindex.z = glm::clamp(boxindex.z, 0, subDivs - 1);
+
+    // Calculate linear index
     int index = boxindex.x * subDivs * subDivs + boxindex.y * subDivs + boxindex.z;
+
     return index;
 }
 void spacePartition::partitionCollide()

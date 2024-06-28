@@ -15,7 +15,7 @@ struct spring {
 	const float coefficient, damping;
 
 	spring(particle& v1, particle& v2, float coeff)
-		: p1(v1), p2(v2), coefficient(coeff), damping(coeff)
+		: p1(v1), p2(v2), coefficient(coeff), damping(coeff/2)
 	{
 		naturalLength = distance(p1.pos, p2.pos);
 	};
@@ -39,7 +39,8 @@ class SpringHandler
 public:
 	// number of particles in x and y axes
 	int num_x, num_y;
-	float size, mass;
+	float size, mass, m_spacing;
+	vec3 m_startPos;
 	
 	//spring co-efficients
 	float structCoeff = 1.0f, shearCoeff = 1.0f, bendingCoeff = 1.0f;
@@ -53,7 +54,7 @@ public:
 	SpringHandler(std::vector<particle> *particles, int w, int h, float s, float m);
 
 	void init(Engine& engine);
-	void initVertices(Engine& engine);
+	void initVertices(Engine& engine, vec3 StartPos, float spacing);
 	void initSprings();
 	void addSpring(particle& p1, particle& p2);
 	void updateForce();

@@ -37,7 +37,10 @@ Renderer::Renderer(Engine& ourengine, int width, int height) : engineRef(ourengi
 	Renderer::camera = Camera(glm::vec3(0.0f, 0.0f, 100.0f));
 
 	//initialising to load, compile and link shaders
-	particleShader = Shader("shader/LightingV.glsl", "shader/LightingF.glsl");
+	std::string shaderFolder = "C:/Users/anmol/projects/sim3d/sim3d/shader/";
+	particleShader = Shader(shaderFolder + "LightingV.glsl", shaderFolder + "LightingF.glsl");
+	lightShader = Shader(shaderFolder + "lightsourceV.glsl", shaderFolder + "lightsourceF.glsl");
+	SpringShader = Shader(shaderFolder + "basicvshader.glsl", shaderFolder + "basicfshader.glsl");
 
 	model = mat4(1);
 	view = mat4(1);
@@ -360,8 +363,6 @@ void Renderer::renderSprings(std::vector<spring>& springs)
 	glBindVertexArray(VAO_spring);
 
 	// Compile and use the shader program
-	const char* shaderFolder = "C:/Users/anmol/projects/sim3d/sim3d/shader/";
-	Shader SpringShader = Shader("shader/basicvshader.glsl", "shader/basicfshader.glsl");
 	SpringShader.use();
 
 	// set uniforms
@@ -371,30 +372,11 @@ void Renderer::renderSprings(std::vector<spring>& springs)
 	SpringShader.setInt("ObjectID", SPRING);
 
 	// Draw the line segments
+	glLineWidth(3);
 	glDrawArrays(GL_LINES, 0, SPRING_VERT_COUNT);
 
 	// Unbind the VAO for good practice
 	glBindVertexArray(0);
-}
-
-void Renderer::generateGridVertices(std::vector<float> &vertices, vec3 spacing, vec3 diag1, vec3 diag2)
-{
-	vec3 count = (diag1 - diag2) / spacing;
-	float xcount = count.x, ycount = count.y, zcount = count.z;
-	for (int i = 0; i <= xcount; i++) 
-	{
-		pushVec3(vertices, vec3(diag1.x+ i * spacing.x, 0, 0));
-		pushVec3(vertices, vec3(0));
-		pushVec3(vertices, vec3(diag1.x + i * spacing.x, diag2.y, 0));
-		pushVec3(vertices, vec3(0));
-	}
-	for (int j = 0; j <= ycount; j++)
-	{
-		pushVec3(vertices, vec3(0, diag1.y + j * spacing.y, 0));
-		pushVec3(vertices, vec3(0));
-		pushVec3(vertices, vec3(diag2.x, diag1.y + j * spacing.y, 0));
-		pushVec3(vertices, vec3(0));
-	}
 }
 
 void pushVec3(std::vector<float>& vertices, vec3 vertex) {

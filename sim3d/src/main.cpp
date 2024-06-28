@@ -22,7 +22,7 @@ int main() {
 	pointLight light1 = pointLight();
 	pointLight light2 = pointLight();
 	pointLight light3 = pointLight();
-	light1.attenuation = .0004f;
+	light1.attenuation = .004f;
 	light2.attenuation = .0004f;
 	light3.attenuation = .0004f;
 	light1.pos = vec3(30,5,30);
@@ -45,10 +45,10 @@ int main() {
 	//engine.createParticles(numParticles, size, mass, maxVel, true);
 
 	//setting engine parameters
-	engine.wallElasticity = 0.1f;
-	engine.particleElasticity = 0.9f;
+	engine.wallElasticity = 0.9f;
+	engine.particleElasticity = 0.2f;
 	engine.friction = 0.98f;
-	engine.NumSteps = 15;
+	engine.NumSteps = 5;
 	engine.usePartition = true;
 	engine.pause = true;
 
