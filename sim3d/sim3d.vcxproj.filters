@@ -69,12 +69,6 @@
     <ClCompile Include="src\include\imgui\imgui_widgets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\SpacePartition.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SpringHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\physics\collision.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -91,6 +85,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\physics\SpringHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ClothRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -236,6 +233,12 @@
     <ClInclude Include="src\OctreeNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="headers\ClothRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\stb_image\stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shader\basicfshader.glsl">
@@ -247,10 +250,23 @@
     <None Include="shader\lightsourceF.glsl" />
     <None Include="shader\SpringV.glsl" />
     <None Include="shader\SpringF.glsl" />
+    <None Include="shader\cloth_frag.glsl" />
+    <None Include="shader\cloth_vert.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="shader\basicvshader.glsl">
       <Filter>Source Files</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="textures\awesomeface.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="textures\pepe.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="textures\texture1.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

@@ -46,6 +46,7 @@ public:
 	float structCoeff = 1.0f, shearCoeff = 1.0f, bendingCoeff = 1.0f;
 
 	std::vector<particle> *targetVector;
+	std::vector<vec3> particlePositions;
 	std::vector<unsigned int> particleIDs;
 	std::vector<spring> springs;
 

@@ -25,7 +25,7 @@ public:
 	Engine& engineRef;
 	GLFWwindow* window;
 	
-	Shader particleShader, lightShader, SpringShader;
+	Shader particleShader, lightShader, SpringShader, ClothShader;
 
 	bool cursorVisible = false;
 	bool select = false;

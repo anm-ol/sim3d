@@ -5,6 +5,7 @@
 #include "GraphicObjects.h"
 #include "shader.h"
 #include "gui.h"
+#include "ClothRenderer.h"
 
 using namespace glm;
 
@@ -41,6 +42,7 @@ Renderer::Renderer(Engine& ourengine, int width, int height) : engineRef(ourengi
 	particleShader = Shader(shaderFolder + "LightingV.glsl", shaderFolder + "LightingF.glsl");
 	lightShader = Shader(shaderFolder + "lightsourceV.glsl", shaderFolder + "lightsourceF.glsl");
 	SpringShader = Shader(shaderFolder + "basicvshader.glsl", shaderFolder + "basicfshader.glsl");
+	ClothShader = Shader(shaderFolder + "cloth_vert.glsl", shaderFolder + "cloth_frag.glsl");
 
 	model = mat4(1);
 	view = mat4(1);
@@ -55,8 +57,11 @@ int Renderer::render(Engine& engine)
 	std::vector<float> vertices;
 	std::vector<float> springVerts;
 	
+	//setup objects
 	generateAll(engine, vertices);
 	generateSprings(springVerts, engineRef.ourSpringHandler.springs);
+	ClothRenderer cloth(engine.ourSpringHandler, ClothShader);
+	//cloth.generateTexMesh();
 
 	glEnable(GL_DEPTH_TEST);
 	// Enable blending
@@ -118,7 +123,12 @@ int Renderer::render(Engine& engine)
 		drawLights(m_lights); 
 
 		//render springs as lines
-		renderSprings(engine.ourSpringHandler.springs);
+		//renderSprings(engine.ourSpringHandler.springs);
+		view = mat4(1.0f);
+		view = camera.GetViewMatrix();
+
+		//render cloth
+		cloth.render(view, proj);
 
 		glBindVertexArray(VAO_main);
 
@@ -126,8 +136,8 @@ int Renderer::render(Engine& engine)
 		//defining model,view,projection matrices
 		model = mat4(1.0f);
 		view = mat4(1.0f);
-
 		view = camera.GetViewMatrix();
+
 		particleShader.setMatrix4f("view", view);
 
 		particleShader.setMatrix4f("projection", proj);
@@ -151,7 +161,7 @@ int Renderer::render(Engine& engine)
 			particleShader.setMatrix4f("model", model);
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-			glDrawArrays(GL_TRIANGLES, 0, SPHERE_VERT_COUNT/6);
+			//glDrawArrays(GL_TRIANGLES, 0, SPHERE_VERT_COUNT/6);
 		}
 
 		//Rendering the springs

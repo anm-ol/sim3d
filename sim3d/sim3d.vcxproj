@@ -167,8 +167,8 @@
     <ClInclude Include="headers\shader.h" />
     <ClInclude Include="headers\SpacePartition.h" />
     <ClInclude Include="headers\SpringHandler.h" />
-    <ClInclude Include="src\ClothRenderer.h" />
-    <ClInclude Include="src\include\stb_image.h" />
+    <ClInclude Include="headers\ClothRenderer.h" />
+    <ClInclude Include="src\include\stb_image\stb_image.h" />
     <ClInclude Include="src\OctreeNode.h" />
     <ClInclude Include="src\Edge.h" />
     <ClInclude Include="src\Cloth.h" />
@@ -194,6 +194,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="shader\basicfshader.glsl" />
+    <None Include="shader\cloth_frag.glsl" />
+    <None Include="shader\cloth_vert.glsl" />
     <None Include="shader\SpringF.glsl" />
     <None Include="shader\SpringV.glsl" />
     <Text Include="shader\basicvshader.glsl">
@@ -203,6 +205,11 @@
     <None Include="shader\lightsourceV.glsl" />
     <None Include="shader\LightingF.glsl" />
     <None Include="shader\LightingV.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="textures\awesomeface.png" />
+    <Image Include="textures\pepe.png" />
+    <Image Include="textures\texture1.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
