@@ -29,8 +29,8 @@ Engine::Engine(const vec3& diag1, const vec3& diag2) : walldiagonal1(diag1), wal
 	usePartition = false;
 
 	// spring handler
-	ourSpringHandler = SpringHandler(&particles, 20, 20, .2, 10.1);
-	ourSpringHandler.initVertices(*this, vec3(0,-30,0), 4.5);
+	ourSpringHandler = SpringHandler(&particles, 20, 20, .5, 10.1);
+	ourSpringHandler.initVertices(*this, vec3(0,-30,0), 3.5);
 	ourSpringHandler.initSprings();
 }
 void Engine::setWall(vec3 diag1, vec3 diag2)
