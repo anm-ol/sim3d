@@ -38,7 +38,7 @@ int main() {
 
 
 	// particle parameters
-	const int numParticles = 2000;
+	const int numParticles = 3000;
 	const float size = 2.0f;
 	const float mass = size;
 	const vec3 maxVel = vec3(0.0f);
@@ -47,7 +47,7 @@ int main() {
 	//setting engine parameters
 	engine.wallElasticity = 0.2f;
 	engine.particleElasticity = 0.2f;
-	engine.friction = 0.98f;
+	engine.friction = 0.0f;
 	engine.NumSteps = 2;
 	engine.usePartition = true;
 	engine.pause = true;

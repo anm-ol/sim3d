@@ -21,7 +21,7 @@ struct spring {
 	};
 
 	//set force according to hooke's law
-	//if there is an alternate to using glm::distance() , we should use it since sqrt is expensive
+	//if there is an alternate to using glm::distance(), we should use it since sqrt is expensive
 	void setForce()
 	{
 		vec3 dir = normalize(p1.pos - p2.pos);
@@ -43,7 +43,7 @@ public:
 	vec3 m_startPos;
 	
 	//spring co-efficients
-	float structCoeff = 1.0f, shearCoeff = 1.0f, bendingCoeff = 1.0f;
+	float structCoeff = 0.5f, shearCoeff = 1.0f, bendingCoeff = 1.0f;
 
 	std::vector<particle> *targetVector;
 	std::vector<vec3> particlePositions;

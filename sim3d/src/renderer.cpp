@@ -38,7 +38,7 @@ Renderer::Renderer(Engine& ourengine, int width, int height) : engineRef(ourengi
 	Renderer::camera = Camera(glm::vec3(0.0f, 0.0f, 100.0f));
 
 	//initialising to load, compile and link shaders
-	std::string shaderFolder = "C:/Users/anmol/projects/sim3d/sim3d/shader/";
+	std::string shaderFolder = "..\\sim3d\\shader\\";
 	particleShader = Shader(shaderFolder + "LightingV.glsl", shaderFolder + "LightingF.glsl");
 	lightShader = Shader(shaderFolder + "lightsourceV.glsl", shaderFolder + "lightsourceF.glsl");
 	SpringShader = Shader(shaderFolder + "basicvshader.glsl", shaderFolder + "basicfshader.glsl");
@@ -61,7 +61,7 @@ int Renderer::render(Engine& engine)
 	generateAll(engine, vertices);
 	generateSprings(springVerts, engineRef.ourSpringHandler.springs);
 	ClothRenderer cloth(engine.ourSpringHandler, ClothShader);
-	//cloth.generateTexMesh();
+	cloth.generateTexMesh();
 
 	glEnable(GL_DEPTH_TEST);
 	// Enable blending
@@ -145,7 +145,7 @@ int Renderer::render(Engine& engine)
 		particleShader.setVec3f("cameraPos", camera.Position);
 		particleShader.setLights("ourlights", m_lights);
 			
-		for (int i = 0; i < engine.particles.size(); i++) 
+		for (auto& particle : engine.particles) 
 		{
 			float ModelColor  = 0.9;
 			particleShader.setFloat("light", ModelColor);
@@ -153,19 +153,18 @@ int Renderer::render(Engine& engine)
 
 			//this is where earlier the particle was being copied instead of being used as reference
 			//turning into ref improved fps from 40fps to 120fps at 100 particles and 20 timesteps
-			particle& particlei = engine.particles[i];
-			model = translate(model, particlei.pos);
-			model = glm::scale(model, vec3(particlei.size));
+			model = translate(model, particle.pos);
+			model = glm::scale(model, vec3(particle.size));
 			
-			particleShader.setVec3f("objectColor", particlei.color);
+			particleShader.setVec3f("objectColor", particle.color);
 			particleShader.setMatrix4f("model", model);
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-			//glDrawArrays(GL_TRIANGLES, 0, SPHERE_VERT_COUNT/6);
+			glDrawArrays(GL_TRIANGLES, 0, SPHERE_VERT_COUNT/6);
 		}
 
 		//Rendering the springs
-		//renderSprings(engine.ourSpringHandler.springs);
+		renderSprings(engine.ourSpringHandler.springs);
 
 		//Rendering walls
 		float ModelColor = 1.0f;
@@ -181,7 +180,7 @@ int Renderer::render(Engine& engine)
 
 		//Draw call
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINES);
-		glDrawArrays(GL_TRIANGLES, SPHERE_VERT_COUNT/6, WALL_VERT_COUNT/6);
+		//glDrawArrays(GL_TRIANGLES, SPHERE_VERT_COUNT/6, WALL_VERT_COUNT/6);
 
 		// display frame rate
 		calcFrameRate();
