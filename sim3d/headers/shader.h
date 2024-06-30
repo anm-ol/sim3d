@@ -6,6 +6,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <vector>
 
 #include "GraphicObjects.h"
 
@@ -15,9 +16,12 @@ class Shader
 {
 public:
     unsigned int ID;
+
+    Shader() : ID(0)
+    {}
     // constructor generates the shader on the fly
     // ------------------------------------------------------------------------
-    Shader(const char* vertexPath, const char* fragmentPath)
+    Shader(std::string vertexPath, std::string fragmentPath)
     {
         // 1. retrieve the vertex/fragment source code from filePath
         std::string vertexCode;
@@ -30,8 +34,8 @@ public:
         try
         {
             // open files
-            vShaderFile.open(vertexPath);
-            fShaderFile.open(fragmentPath);
+            vShaderFile.open(vertexPath.c_str());
+            fShaderFile.open(fragmentPath.c_str());
             std::stringstream vShaderStream, fShaderStream;
             // read file's buffer contents into streams
             vShaderStream << vShaderFile.rdbuf();
@@ -79,29 +83,29 @@ public:
     }
     // utility uniform functions
     // ------------------------------------------------------------------------
-    void setBool(const std::string& name, bool value) const
+    void setBool(const char* name, bool value) const
     {
-        glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)value);
+        glUniform1i(glGetUniformLocation(ID, name), (int)value);
     }
     // ------------------------------------------------------------------------
-    void setInt(const std::string& name, int value) const
+    void setInt(const char* name, int value) const
     {
-        glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
+        glUniform1i(glGetUniformLocation(ID, name), value);
     }
     // ------------------------------------------------------------------------
-    void setFloat(const std::string& name, float value) const
+    void setFloat(const char* name, float value) const
     {
-        glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
+        glUniform1f(glGetUniformLocation(ID, name), value);
     }
 
-    void setVec3f(const std::string& name, glm::vec3& vector)
+    void setVec3f(const char* name, glm::vec3& vector)
     {
-        glUniform3f(glGetUniformLocation(ID, name.c_str()), vector.x, vector.y, vector.z);
+        glUniform3f(glGetUniformLocation(ID, name), vector.x, vector.y, vector.z);
     }
 
-    void setMatrix4f(const std::string& name, glm::mat4& matrix)
+    void setMatrix4f(const char* name, glm::mat4& matrix)
     {
-        glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, glm::value_ptr(matrix));
+        glUniformMatrix4fv(glGetUniformLocation(ID, name), 1, GL_FALSE, glm::value_ptr(matrix));
     }
 
     void setPointLight(const std::string& name, pointLight& light)

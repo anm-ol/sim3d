@@ -13,7 +13,7 @@
 
 using namespace glm;
 
-Engine::Engine(const vec3& diag1, const vec3& diag2) : walldiagonal1(diag1), walldiagonal2(diag2), box(*this, 20)
+Engine::Engine(const vec3& diag1, const vec3& diag2) : walldiagonal1(diag1), walldiagonal2(diag2), box(*this, 30)
 {	
 	tconst = 1.0f;
 	wallElasticity = 1.0f;
@@ -29,10 +29,9 @@ Engine::Engine(const vec3& diag1, const vec3& diag2) : walldiagonal1(diag1), wal
 	usePartition = false;
 
 	// spring handler
-	handler = SpringHandler(10, 10, 1.0f, 1.0f);
-  
-	//particles.reserve(handler.particles.size());
-	//particles.insert(particles.end(), handler.particles.begin(), handler.particles.end());
+	ourSpringHandler = SpringHandler(&particles, 20, 20, .5, 10.1);
+	ourSpringHandler.initVertices(*this, vec3(0,-30,0), 3.5);
+	ourSpringHandler.initSprings();
 }
 void Engine::setWall(vec3 diag1, vec3 diag2)
 {
@@ -55,6 +54,8 @@ void Engine::updateall(float dt) //this is the main function that gets called in
 //Betweem each frame we update position/velocity, handle collision multiple times
 void Engine::runSubsteps(int numstep, float dt) 
 {
+	ourSpringHandler.updateForce();
+
 	for (int i = 1; i <= numstep; i++)
 	{
 		//one "sub-step"
@@ -63,8 +64,6 @@ void Engine::runSubsteps(int numstep, float dt)
 			//updates position for each particle
 			// T_const may be replaced with dt in the future
 			p.update(tconst / numstep, globalAcc);
-			//update velocity according to gravity
-			//p.velocity += (globalAcc * tconst) / (float)numstep;
 		}
 
 		//call collision handling functions after updation
@@ -79,8 +78,10 @@ void Engine::runSubsteps(int numstep, float dt)
 			box.reset();
 			box.partitionCollide();
 		}
-		else
-		particleCollide(*this, 0, particles.size());
+		else 
+		{
+			particleCollide(*this, 0, particles.size());
+		}
 	}
 }
 
@@ -123,7 +124,7 @@ void Engine::createParticle(float size, float mass, vec3 maxVel, bool randVeloci
 }
 
 // Function to generate a random vec3 position within a range
-vec3 randomVec3(vec3 min, vec3 max)
+glm::vec3 randomVec3(vec3 min, vec3 max)
 {
 	std::random_device rd;
 	std::mt19937 gen(rd());

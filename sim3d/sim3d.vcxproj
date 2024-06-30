@@ -71,7 +71,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)sim3d\src\include;$(SolutionDir)sim3d\src\include\GLAD;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)sim3d\src\include;$(SolutionDir)sim3d\src\include\GLAD;$(SolutionDir)sim3d\headers;$(SolutionDir)sim3d\shader;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)sim3d\src\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -109,6 +109,7 @@
       <PreprocessorDefinitions>GLFW3_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)sim3d\src\include;$(SolutionDir)sim3d\src\include\GLAD;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -134,7 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\collision.cpp" />
+    <ClCompile Include="src\ClothRenderer.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\gui.cpp" />
     <ClCompile Include="src\include\imgui\imgui.cpp" />
@@ -145,13 +146,33 @@
     <ClCompile Include="src\include\imgui\imgui_tables.cpp" />
     <ClCompile Include="src\include\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\particle.cpp" />
-    <ClCompile Include="src\Engine.cpp" />
+    <ClCompile Include="src\physics\collision.cpp" />
+    <ClCompile Include="src\physics\Engine.cpp" />
+    <ClCompile Include="src\physics\OctreeNode.cpp" />
+    <ClCompile Include="src\physics\particle.cpp" />
+    <ClCompile Include="src\physics\SpacePartition.cpp" />
+    <ClCompile Include="src\physics\SpringHandler.cpp" />
     <ClCompile Include="src\renderer.cpp" />
-    <ClCompile Include="src\SpacePartition.cpp" />
-    <ClCompile Include="src\SpringHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="headers\camera.h" />
+    <ClInclude Include="headers\Cloth.h" />
+    <ClInclude Include="headers\collision.h" />
+    <ClInclude Include="headers\Edge.h" />
+    <ClInclude Include="headers\Engine.h" />
+    <ClInclude Include="headers\GraphicObjects.h" />
+    <ClInclude Include="headers\gui.h" />
+    <ClInclude Include="headers\OctreeNode.h" />
+    <ClInclude Include="headers\particle.h" />
+    <ClInclude Include="headers\renderer.h" />
+    <ClInclude Include="headers\shader.h" />
+    <ClInclude Include="headers\SpacePartition.h" />
+    <ClInclude Include="headers\SpringHandler.h" />
+    <ClInclude Include="headers\ClothRenderer.h" />
+    <ClInclude Include="src\include\stb_image\stb_image.h" />
+    <ClInclude Include="src\OctreeNode.h" />
+    <ClInclude Include="src\Edge.h" />
+    <ClInclude Include="src\Cloth.h" />
     <ClInclude Include="src\camera.h" />
     <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\gui.h" />
@@ -174,6 +195,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="shader\basicfshader.glsl" />
+    <None Include="shader\cloth_frag.glsl" />
+    <None Include="shader\cloth_vert.glsl" />
+    <None Include="shader\SpringF.glsl" />
+    <None Include="shader\SpringV.glsl" />
     <Text Include="shader\basicvshader.glsl">
       <FileType>Document</FileType>
     </Text>
@@ -181,6 +206,11 @@
     <None Include="shader\lightsourceV.glsl" />
     <None Include="shader\LightingF.glsl" />
     <None Include="shader\LightingV.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="textures\awesomeface.png" />
+    <Image Include="textures\pepe.png" />
+    <Image Include="textures\texture1.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

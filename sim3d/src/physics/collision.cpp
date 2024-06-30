@@ -10,6 +10,8 @@ void particleCollide(Engine& engine, int start, int end);
 
 bool isCollision(particle& p1, particle& p2)
 {
+	if(&p1 == &p2)
+		return false;
 	return dot(p1.pos - p2.pos, p1.pos - p2.pos) <= ((p1.size + p2.size) * (p1.size + p2.size));// if euclidian distance b/w two particles is less than their combined radius, means they are colliding
 }
 

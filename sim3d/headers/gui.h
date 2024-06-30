@@ -21,5 +21,8 @@ public:
 	void render();
 	void shutdown();
 
+	bool randVel;
+	float size;
+	vec3 maxvel;
 	
 };

@@ -55,5 +55,5 @@ public:
 		void setParticles(std::vector<particle>&particles);
 		void partitionCollide();
 		void reset();
-	
+		int getCellIndex(vec3 pos);
 };
