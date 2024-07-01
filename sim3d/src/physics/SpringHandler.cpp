@@ -7,6 +7,7 @@ using namespace glm;
 SpringHandler::SpringHandler(std::vector<particle> *particles, int x, int y, float s, float m)
 	: targetVector(particles), num_x(x), num_y(y), size(s), mass(m) 
 {
+    isInit = true;
 };
 
 void SpringHandler::init(Engine& engine)

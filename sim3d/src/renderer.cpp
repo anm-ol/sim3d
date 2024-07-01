@@ -116,18 +116,17 @@ int Renderer::render(Engine& engine)
 		//render point light sources
 		drawLights(m_lights);
 
-		//render springs as lines
-		//renderSprings(engine.ourSpringHandler.springs);
-		view = mat4(1.0f);
+		view = camera.GetViewMatrix();
+
+		if (showparticles)
+			renderParticles(vertices);
 		view = camera.GetViewMatrix();
 
 		//render cloth
-		if (cloth && showcloth)
+		if (cloth && showcloth && engine.ourSpringHandler.isInit)
 			cloth->render(view, proj);
-		if(showparticles)
-		renderParticles(vertices);
-		if(showsprings)
-		renderSprings(engine.ourSpringHandler.springs);
+		if(showsprings && engine.ourSpringHandler.isInit)
+			renderSprings(engine.ourSpringHandler.springs);
 		renderWalls();
 
 		debugGUI.InitFrame();
@@ -153,6 +152,7 @@ void Renderer::generateAll(Engine& engine, std::vector<float>& vertices)
 	WALL_VERT_COUNT = vertices.size() - SPHERE_VERT_COUNT;
 
 	generateSprings(springVerts, engineRef.ourSpringHandler.springs);
+	if(engine.ourSpringHandler.isInit)
 	cloth = std::make_unique<ClothRenderer>(engine.ourSpringHandler, ClothShader);
 }
 
@@ -304,7 +304,6 @@ void Renderer::renderParticles(std::vector<float>& vertices)
 	particleShader.use();
 	//defining model,view,projection matrices
 	model = mat4(1.0f);
-	view = mat4(1.0f);
 	view = camera.GetViewMatrix();
 	particleShader.setMatrix4f("view", view);
 	particleShader.setMatrix4f("projection", proj);
@@ -352,7 +351,7 @@ void Renderer::renderWalls()
 	particleShader.setMatrix4f("model", model);
 
 	//Draw call
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINES);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glDrawArrays(GL_TRIANGLES, SPHERE_VERT_COUNT / 6, WALL_VERT_COUNT / 6);
 	glBindVertexArray(0);
 }

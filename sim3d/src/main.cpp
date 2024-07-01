@@ -18,7 +18,8 @@ int main() {
 	//init renderer
 	Renderer renderer = Renderer(engine, 1500, 1000);
 	renderer.showcloth = true;
-	renderer.showparticles = false;
+	if(!engine.ourSpringHandler.isInit)
+		renderer.showparticles = true;
 	renderer.showsprings = false;
 	renderer.useSelect = true;
 	//Setting point lights and their parameters

@@ -1,6 +1,7 @@
 #pragma once
 #include <glm/glm.hpp>
 #include <vector>
+#include <memory>
 #include "particle.h"
 
 #include "SpacePartition.h"
