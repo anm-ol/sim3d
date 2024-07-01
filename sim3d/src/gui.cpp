@@ -44,7 +44,7 @@ void GUI::render()
 
 	ImGui::PushItemWidth(ImGui::GetFontSize() * -12);
 
-	ImGui::Begin("Demo Window", NULL, window_flags);
+	ImGui::Begin("Settings", NULL, window_flags);
 
 	// Other ImGui elements (e.g., particle size, max velocity, etc.)ImGui::Text("Frame rate: %.1f FPS", ptrio->Framerate); ImGui::SameLine(0,30);
 	ImGui::Text("Number of Particles: %i", engine.particles.size());
@@ -74,7 +74,7 @@ void GUI::render()
 	// Menu bar for Particle Settings
 	if (ImGui::BeginMenuBar())
 	{
-		if (ImGui::BeginMenu("Particle Settings"))
+		if (ImGui::BeginMenu("Engine Settings"))
 		{
 			ImGui::SliderInt("Number of Threads", &engine.m_NumThreads, 1, 12);
 			ImGui::SliderInt("Number of substeps", &engine.NumSteps, 1, 30);
@@ -89,11 +89,19 @@ void GUI::render()
 	if (ImGui::BeginMenuBar())
 	{
 		if (ImGui::BeginMenu("Renderer settings")) {
+		
+			if (ImGui::Button("Open a texture")) {
+				ImGui::OpenPopup("###FilePicker");
+				if(ImGui::BeginPopupModal("###FilePicker")) {
+					ImGui::EndPopup();
+				}
+			}
 			ImGui::Checkbox("Show Cloth", &renderer.showcloth);
 			if (!renderer.showcloth)
 				renderer.showsprings = true;
 			ImGui::Checkbox("Show particles", &renderer.showparticles);
 			ImGui::Checkbox("Show springs", &renderer.showsprings);
+			ImGui::Checkbox("Use pivots", &engine.ourSpringHandler.usePivots);
 			ImGui::EndMenu();
 		}
 		ImGui::EndMenuBar();

@@ -19,7 +19,7 @@ ClothRenderer::ClothRenderer(SpringHandler &handler, Shader shader)
 	
 	//setting buffer data
 	generateTexMesh();
-	loadTexture("textures/paint.jpg");
+	loadTexture("textures/surfaceTexture.jpg");
 
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), nullptr, GL_DYNAMIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)0);

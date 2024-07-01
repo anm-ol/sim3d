@@ -122,7 +122,7 @@ public:
             renderer->screen_width = width;
             renderer->proj = perspective(radians(45.0f), (float)width / (float)height, 10.0f, 1000.0f);
             glViewport(0, 0, width, height);
-            });
+			});
 
         // Set cursor position callback
         glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xposIn, double yposIn) {

@@ -1,0 +1,3 @@
+[submodule "sim3d/src/include/ImGuizmo"]
+	path = sim3d/src/include/ImGuizmo
+	url = https://github.com/CedricGuillemet/ImGuizmo
