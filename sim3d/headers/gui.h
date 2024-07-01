@@ -5,6 +5,8 @@
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_glfw.h>
 #include <imgui/imgui_impl_opengl3.h>
+#include <vector>
+#include <ImGuizmo.h>
 
 class Renderer;
 
@@ -22,6 +24,8 @@ public:
 	void render();
 	void shutdown();
 
+	std::vector<std::string> textureNames;
+	bool openpopup = false;
 	bool randVel;
 	float size;
 	vec3 maxvel;

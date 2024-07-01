@@ -92,10 +92,13 @@ void GUI::render()
 		
 			if (ImGui::Button("Open a texture")) {
 				ImGui::OpenPopup("###FilePicker");
-				if(ImGui::BeginPopupModal("###FilePicker")) {
+			}
+				if(ImGui::BeginPopup("###FilePicker")) {
+					ImGui::Text("1");
+					ImGui::Text("2");
 					ImGui::EndPopup();
 				}
-			}
+			
 			ImGui::Checkbox("Show Cloth", &renderer.showcloth);
 			if (!renderer.showcloth)
 				renderer.showsprings = true;

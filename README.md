@@ -1,6 +1,6 @@
 # Sim3D
 
-Welcome to the Sim3D! 
+Welcome to Sim3D! 
 This is the successor to Sim2D which was written in Java and Processing.
 This engine is designed to simulate particles in a 3D environment using OpenGL and C++. It allows for particle collision and movement, and includes a scene editor for setting up simulation parameters.
 
@@ -13,34 +13,77 @@ The primary purpose of this particle simulation engine is to create particle sim
 - Particle collision and movement
 - Scene editor for setting up simulation parameters
 - Different types of advanced lighting methods (currently includes Phong)
-- GUI for the scene editor (to be added)
+- GUI for the scene editor (using Dear ImGui and ImGuizmo)
 
-## Installation
+## Prerequisites
 
 To run the engine, you will need:
 - OpenGL version 3
 - C++ compiler
+- Git
+- vcpkg package manager
+- Visual Studio (2019 or later recommended)
 
-All dependencies required for compiling and running the engine are included in the `src/include` directory:
-- GLM
-- GLAD
-- GLFW
-- Dear ImGui
+## Installation
+
+### 1. Install Visual Studio
+
+Download and install Visual Studio from the official Microsoft website:
+[https://visualstudio.microsoft.com/downloads/](https://visualstudio.microsoft.com/downloads/)
+
+Make sure to include the "Desktop development with C++" workload during installation.
+
+### 2. Clone the Repository
+
+```sh
+git clone https://github.com/yourusername/sim3d.git
+cd sim3d
+```
+
+### 3. Set Up vcpkg
+
+If you haven't installed vcpkg yet, follow these steps:
+
+```sh
+git clone https://github.com/microsoft/vcpkg.git
+cd vcpkg
+.\bootstrap-vcpkg.bat
+.\vcpkg integrate install
+```
+
+### 4. Install Dependencies
+
+Use vcpkg to install ImGuizmo:
+
+```sh
+.\vcpkg install imguizmo
+```
+
+### 5. Build the Project
+
+Open the project in Visual Studio and build it, ensuring that your project is configured to use the vcpkg toolchain file.
 
 ## Usage
 
 To run the simulation:
-1. Clone the repository.
-2. Navigate to the directory containing the repository.
-3. Compile and run the `main.cpp` file.
-4. Set the engine state parameters (number of particles, their positions, wall positions, velocities, gravity, etc.) directly in the `main.cpp` file.
-5. Use the following keyboard controls during simulation:
+1. Compile and run the `main.cpp` file.
+2. Set the engine state parameters (number of particles, their positions, wall positions, velocities, gravity, etc.) directly in the `main.cpp` file or use the scene editor.
+3. Use the following keyboard controls during simulation:
    - **WASD**: Camera movement
    - **Left Shift**: Toggle cursor visibility to interact with the GUI
    - **Space**: Move camera up
    - **Left Ctrl**: Move camera down
    - **Enter**: Play/pause simulation
 
+## Dependencies
+
+The following dependencies are included in the `src/include` directory:
+- GLM
+- GLAD
+- GLFW
+- Dear ImGui
+
+ImGuizmo is installed and managed through vcpkg.
 
 ## Contact
 
