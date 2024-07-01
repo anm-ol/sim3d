@@ -20,6 +20,7 @@ int main() {
 	renderer.showcloth = true;
 	renderer.showparticles = false;
 	renderer.showsprings = false;
+	renderer.useSelect = true;
 	//Setting point lights and their parameters
 	pointLight light1 = pointLight();
 	pointLight light2 = pointLight();

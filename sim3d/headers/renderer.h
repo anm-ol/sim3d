@@ -27,7 +27,7 @@ public:
 	std::vector<float> springVerts;
 	std::unique_ptr<ClothRenderer> cloth;
 	bool cursorVisible = false;
-	bool select = false;
+	bool useSelect = false;
 	bool showparticles = false;
 	bool showsprings = false;
 	bool showcloth = false;

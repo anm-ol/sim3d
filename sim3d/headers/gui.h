@@ -23,7 +23,7 @@ public:
 	void InitFrame();
 	void render();
 	void shutdown();
-
+	ImVec2 getWindowSize();
 	std::vector<std::string> textureNames;
 	bool openpopup = false;
 	bool randVel;
