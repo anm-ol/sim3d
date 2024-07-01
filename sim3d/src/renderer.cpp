@@ -6,7 +6,6 @@
 #include "shader.h"
 #include "gui.h"
 #include "ClothRenderer.h"
-
 #include <filesystem>
 
 using namespace glm;
@@ -37,7 +36,7 @@ Renderer::Renderer(Engine& ourengine, int width, int height) : engineRef(ourengi
 	{
 		std::cout << "Failed to initialize GLAD" << std::endl;
 	}
-	
+
 	Renderer::camera = Camera(glm::vec3(0.0f, 0.0f, 100.0f));
 
 	//initialising to load, compile and link shaders
@@ -55,9 +54,9 @@ Renderer::Renderer(Engine& ourengine, int width, int height) : engineRef(ourengi
 }
 
 int Renderer::render(Engine& engine)
-{	
+{
 	GUI debugGUI = GUI(engineRef, *this);
-	
+
 	//setup objects
 	generateAll(engine, vertices);
 
@@ -80,7 +79,7 @@ int Renderer::render(Engine& engine)
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
-	
+
 	//unbinding
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -91,7 +90,7 @@ int Renderer::render(Engine& engine)
 	glBufferData(GL_ARRAY_BUFFER, 3 * SPRING_VERT_COUNT * sizeof(GLfloat), nullptr, GL_DYNAMIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*)0);
 	glEnableVertexAttribArray(0);
-	
+
 	//unbinding
 	glBindVertexArray(VBO_main);
 
@@ -104,7 +103,7 @@ int Renderer::render(Engine& engine)
 		float currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
-		
+
 		glfwPollEvents();
 
 		glClearColor(0.f, 0.f, 0.f, 1.0f);
@@ -116,7 +115,7 @@ int Renderer::render(Engine& engine)
 		glBindVertexArray(VAO_main);
 
 		//render point light sources
-		drawLights(m_lights); 
+		drawLights(m_lights);
 
 		//render springs as lines
 		//renderSprings(engine.ourSpringHandler.springs);
@@ -124,17 +123,19 @@ int Renderer::render(Engine& engine)
 		view = camera.GetViewMatrix();
 
 		//render cloth
-		if(cloth)
-		cloth->render(view, proj);
+		if (cloth && showcloth)
+			cloth->render(view, proj);
+		if(showparticles)
 		renderParticles(vertices);
-		//renderSprings(engine.ourSpringHandler.springs);
+		if(showsprings)
+		renderSprings(engine.ourSpringHandler.springs);
 		renderWalls();
 
 		// display frame rate
 		calcFrameRate();
 		engine.updateall(deltaTime);
 		debugGUI.render();
-		glfwSwapBuffers(window); 
+		glfwSwapBuffers(window);
 	}
 	debugGUI.shutdown();
 	return 0;
@@ -163,9 +164,9 @@ void Renderer::generateSphereMesh(std::vector<float>& vertices, float size, int 
 	vec3 v1, v2, v3, normal;
 	for (int i = 1; i <= hres; i++)
 	{
-		for (int j = 0; j <vres; j++) {
-			float theta = j*vstep;
-			float phi= i*hstep;
+		for (int j = 0; j < vres; j++) {
+			float theta = j * vstep;
+			float phi = i * hstep;
 
 			//first layer
 			if (i == 1)
@@ -286,8 +287,8 @@ void Renderer::generateWallvertices(Engine& engine, std::vector<float>& vertices
 	-0.5f,  0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
 	-0.5f,  0.5f, -0.5f,  0.0f, -1.0f,  0.0f
 	};
-	
-	for (int i = 0; i < sizeof(vert) / sizeof(float); i++) 
+
+	for (int i = 0; i < sizeof(vert) / sizeof(float); i++)
 	{
 		vertices.push_back(vert[i]);
 	}
@@ -304,9 +305,7 @@ void Renderer::renderParticles(std::vector<float>& vertices)
 	model = mat4(1.0f);
 	view = mat4(1.0f);
 	view = camera.GetViewMatrix();
-
 	particleShader.setMatrix4f("view", view);
-
 	particleShader.setMatrix4f("projection", proj);
 
 	particleShader.setVec3f("cameraPos", camera.Position);
@@ -314,13 +313,12 @@ void Renderer::renderParticles(std::vector<float>& vertices)
 
 	//this is where earlier the particle was being copied instead of being used as reference
 		//turning into ref improved fps from 40fps to 120fps at 100 particles and 20 timesteps
-	for (auto &particlei : engineRef.particles)
+	for (auto& particlei : engineRef.particles)
 	{
 		float ModelColor = 0.9;
 		particleShader.setFloat("light", ModelColor);
 		model = mat4(1.0f);
 
-		
 		model = translate(model, particlei.pos);
 		model = glm::scale(model, vec3(particlei.size));
 
@@ -328,7 +326,7 @@ void Renderer::renderParticles(std::vector<float>& vertices)
 		particleShader.setMatrix4f("model", model);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-		//glDrawArrays(GL_TRIANGLES, 0, SPHERE_VERT_COUNT/6);
+		glDrawArrays(GL_TRIANGLES, 0, SPHERE_VERT_COUNT/6);
 	}
 	glBindVertexArray(0);
 }
@@ -341,7 +339,12 @@ void Renderer::renderWalls()
 	vec3 wallcolor(1);
 	particleShader.setVec3f("objectColor", wallcolor);
 	particleShader.setFloat("light", ModelColor);
+	particleShader.setLights("ourlights", m_lights);
 
+	view = mat4(1.0f);
+	view = camera.GetViewMatrix();
+	particleShader.setMatrix4f("view", view);
+	particleShader.setMatrix4f("projection", proj);
 	model = glm::mat4(1.0f);
 	model = translate(model, (engineRef.walldiagonal1 + engineRef.walldiagonal2) / 2.0f);
 	model = scale(model, engineRef.walldiagonal2 - engineRef.walldiagonal1);
@@ -363,7 +366,7 @@ void Renderer::generateSprings(std::vector<float>& vertices, std::vector<spring>
 	{
 		pushVec3(vertices, s.p1.pos);
 		pushVec3(vertices, s.p2.pos);
-	}	 
+	}
 }
 
 //Batch rendering springs dynamically
@@ -371,7 +374,7 @@ void Renderer::renderSprings(std::vector<spring>& springs)
 {
 	std::vector<float> vertices;
 	generateSprings(vertices, springs);
-	
+
 	// Bind the VBO and update its data
 	glBindBuffer(GL_ARRAY_BUFFER, VBO_spring);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(GLfloat), &vertices[0]);

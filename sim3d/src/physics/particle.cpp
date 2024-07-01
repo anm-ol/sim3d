@@ -19,6 +19,7 @@ void particle::setVelocity(glm::vec3 v)
 //position verlet function
 void particle::update(float time, glm::vec3 acc) 
 {
+    if (isPivot) return;
     if (velocity != (pos - oldPos) / time)
     {
         oldPos = pos - velocity * time;

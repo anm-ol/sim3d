@@ -16,6 +16,7 @@ public:
 	GLFWwindow* window;
 	ImGuiIO* ptrio;
 
+	float width, height;
 	GUI(Engine& engine, Renderer& renderer);
 	void InitFrame();
 	void render();
