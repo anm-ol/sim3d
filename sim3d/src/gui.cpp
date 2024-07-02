@@ -54,6 +54,7 @@ void GUI::render()
 	ImGui::SliderFloat3("Maxvel", &maxvel.x, 0, 5);
 	ImGui::Checkbox("Random velocity", &randVel);
 	ImGui::Checkbox("Selection Mode", &renderer.useSelect);
+	ImGui::InputInt("Select particle ID:", &renderer.selectedParticle);
 	ImGui::Text("Frame rate: %.1f FPS", ptrio->Framerate);
 
 	if (ImGui::Button("Add particle"))
@@ -118,6 +119,7 @@ void GUI::render()
 	//guizmos
 	if (renderer.useSelect)
 	{
+		auto& object = engine.particles[renderer.selectedParticle];
 		//renderer.get selected object();
 		ImGuizmo::SetOrthographic(false);
 		ImGuizmo::SetDrawlist(ImGui::GetForegroundDrawList());
@@ -125,14 +127,18 @@ void GUI::render()
 		mat4 view = renderer.camera.GetViewMatrix();
 		mat4 projection = renderer.proj;
 		ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
-		mat4 transform = mat4(1);
+		vec3 position = object.pos;
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position);
 		ImGuizmo::Manipulate(value_ptr(view), value_ptr(projection), ImGuizmo::OPERATION::TRANSLATE,
 			ImGuizmo::MODE::WORLD, value_ptr(transform));
-		ImGuizmo::DrawCubes(value_ptr(view), value_ptr(projection), value_ptr(transform), 3);
+		//ImGuizmo::DrawCubes(value_ptr(view), value_ptr(projection), value_ptr(transform), 1);
 
 		if (ImGuizmo::IsUsing()) {
-			vec3 translate = glm::vec3(transform[3]);
-			//selectedobject.pos += translate;
+			glm::vec3 newPosition;
+			glm::vec3 dummyRotation;
+			glm::vec3 dummyScale;
+			ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), glm::value_ptr(newPosition), glm::value_ptr(dummyRotation), glm::value_ptr(dummyScale));
+			object.pos = newPosition;
 		}
 	}
 	// Render dear imgui into screen

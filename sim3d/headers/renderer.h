@@ -33,6 +33,7 @@ public:
 	bool showcloth = false;
 
 	std::vector<pointLight> m_lights;
+	int selectedParticle;
 	unsigned int VBO_main, VAO_main, VAO_spring, VBO_spring;
 	unsigned int SPHERE_VERT_COUNT, WALL_VERT_COUNT, SPRING_VERT_COUNT;
 
@@ -159,6 +160,14 @@ public:
                 renderer->engineRef.pause = !renderer->engineRef.pause;
             if (key == GLFW_KEY_LEFT_SHIFT && action == GLFW_PRESS)
                 renderer->setCursorVisible(!renderer->cursorVisible);
+			if (key == GLFW_KEY_LEFT && action == GLFW_PRESS)
+				renderer->selectedParticle--;
+			if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS)
+				renderer->selectedParticle++;
+			if (key == GLFW_KEY_UP && action == GLFW_PRESS && renderer->engineRef.ourSpringHandler.isInit)
+				renderer->selectedParticle += renderer->cloth->num_x;
+			if (key == GLFW_KEY_DOWN && action == GLFW_PRESS && renderer->engineRef.ourSpringHandler.isInit)
+				renderer->selectedParticle -= renderer->cloth->num_x;
             });
     }
 };
