@@ -54,7 +54,10 @@ void GUI::render()
 	ImGui::SliderFloat3("Maxvel", &maxvel.x, 0, 5);
 	ImGui::Checkbox("Random velocity", &randVel);
 	ImGui::Checkbox("Selection Mode", &renderer.useSelect);
+	if (!renderer.useSelect) ImGui::BeginDisabled();
 	ImGui::InputInt("Select particle ID:", &renderer.selectedParticle);
+	ImGui::Checkbox("Add pivot", &engine.particles[renderer.selectedParticle].isPivot);
+	if (!renderer.useSelect) ImGui::EndDisabled();
 	ImGui::Text("Frame rate: %.1f FPS", ptrio->Framerate);
 
 	if (ImGui::Button("Add particle"))
@@ -67,6 +70,8 @@ void GUI::render()
 	{
 		if (ImGui::BeginMenu("Simulation Options"))
 		{
+			if (ImGui::Button("Reset scene")) {
+			}
 			ImGui::Checkbox("Pause Sim3D", &engine.pause);
 			ImGui::Checkbox("Use Multi-threading", &engine.useThreading);
 			ImGui::Checkbox("Use Space-partitioning", &engine.usePartition);
@@ -108,7 +113,6 @@ void GUI::render()
 				//renderer.showsprings = true;
 			ImGui::Checkbox("Show particles", &renderer.showparticles);
 			ImGui::Checkbox("Show springs", &renderer.showsprings);
-			ImGui::Checkbox("Use pivots", &engine.ourSpringHandler.usePivots);
 			ImGui::EndMenu();
 		}
 		ImGui::EndMenuBar();

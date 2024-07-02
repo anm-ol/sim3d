@@ -32,6 +32,7 @@ public:
 	int NumSteps;
 	int m_NumThreads;
 
+	Engine();
 	Engine(const vec3& min,const vec3& max);
 	void setWall(glm::vec3 diag1, glm::vec3 diag2);
 	void updateall(float dt);
