@@ -28,16 +28,9 @@ void SpringHandler::initVertices(Engine& engine, vec3 startPos, float spacing) {
 		for (int x = 0; x < num_x; x++) {
 			vec3 posn =  startPos + vec3(x * (size * spacing), y * (size * spacing), 0.0f);
             targetVector->emplace_back(posn, size, mass);
-
-            if (y == num_y - 1 && usePivots) {
-                targetVector->back().isPivot = true;
-            }
-            else {
-                targetVector->back().setVelocity(randomVec3(vec3(-0.3), vec3(0.3)));
-            }
+            targetVector->back().setVelocity(randomVec3(vec3(-0.3), vec3(0.3)));
             particleIDs.emplace_back(targetVector->size() - 1);
             particlePositions.push_back(posn);
-
 		}
 	}
 }
@@ -86,9 +79,7 @@ void SpringHandler::updateForce()
     {
         auto ID = particleIDs[i];
         auto& p = (*targetVector)[ID];
-
         particlePositions[i] = p.pos;
-        //p.isPivot = usePivots;
         p.force = vec3(0);
     }
 

@@ -41,16 +41,16 @@ public:
 	int num_x, num_y;
 	float size, mass, m_spacing;
 	vec3 m_startPos;
-	// use pivots for cloth
-	bool usePivots = true;
 	bool isInit = false;
+
 	//spring co-efficients
-	float structCoeff = 0.5f, shearCoeff = 1.0f, bendingCoeff = 1.0f;
+	float structCoeff = 0.5f, shearCoeff = 0.5f, bendingCoeff = 1.0f;
 
 	std::vector<particle> *targetVector;
 	std::vector<vec3> particlePositions;
 	std::vector<unsigned int> particleIDs;
 	std::vector<spring> springs;
+	std::vector<int> pivots;
 
 	SpringHandler() : targetVector(nullptr){}
 

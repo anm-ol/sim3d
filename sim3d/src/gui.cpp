@@ -58,11 +58,14 @@ void GUI::render()
 	ImGui::Checkbox("Selection Mode", &renderer.useSelect);
 	if (renderer.useSelect)
 	{
+		ImGui::BeginDisabled();
 		ImGui::RadioButton("Particle", &selectedObjectType, PARTICLE);
 		ImGui::RadioButton("Light", &selectedObjectType, LIGHT);
 		ImGui::RadioButton("Cloth", &selectedObjectType, CLOTH);
 	}
 	ImGui::InputInt("Select Object ID:", &renderer.selectedObject);
+	ImGui::Checkbox("Add pivot", &engine.particles[renderer.selectedObject].isPivot);
+	if (!renderer.useSelect) ImGui::EndDisabled();
 	ImGui::Text("Frame rate: %.1f FPS", ptrio->Framerate);
 
 	if (ImGui::Button("Add particle"))
@@ -75,6 +78,8 @@ void GUI::render()
 	{
 		if (ImGui::BeginMenu("Simulation Options"))
 		{
+			if (ImGui::Button("Reset scene")) {
+			}
 			ImGui::Checkbox("Pause Sim3D", &engine.pause);
 			ImGui::Checkbox("Use Multi-threading", &engine.useThreading);
 			ImGui::Checkbox("Use Space-partitioning", &engine.usePartition);
@@ -116,7 +121,6 @@ void GUI::render()
 				//renderer.showsprings = true;
 			ImGui::Checkbox("Show particles", &renderer.showparticles);
 			ImGui::Checkbox("Show springs", &renderer.showsprings);
-			ImGui::Checkbox("Use pivots", &engine.ourSpringHandler.usePivots);
 			ImGui::EndMenu();
 		}
 		ImGui::EndMenuBar();
