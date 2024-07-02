@@ -58,14 +58,12 @@ void GUI::render()
 	ImGui::Checkbox("Selection Mode", &renderer.useSelect);
 	if (renderer.useSelect)
 	{
-		ImGui::BeginDisabled();
 		ImGui::RadioButton("Particle", &selectedObjectType, PARTICLE);
 		ImGui::RadioButton("Light", &selectedObjectType, LIGHT);
 		ImGui::RadioButton("Cloth", &selectedObjectType, CLOTH);
 	}
 	ImGui::InputInt("Select Object ID:", &renderer.selectedObject);
 	ImGui::Checkbox("Add pivot", &engine.particles[renderer.selectedObject].isPivot);
-	if (!renderer.useSelect) ImGui::EndDisabled();
 	ImGui::Text("Frame rate: %.1f FPS", ptrio->Framerate);
 
 	if (ImGui::Button("Add particle"))
