@@ -1,7 +1,0 @@
-{
-    "name": "sim3d",
-    "version": "1.83",
-    "dependencies": [
-        "imguizmo"
-    ]
-}
