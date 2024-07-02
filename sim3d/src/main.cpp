@@ -18,15 +18,18 @@ int main() {
 	//init renderer
 	Renderer renderer = Renderer(engine, 1500, 1000);
 	renderer.showcloth = true;
-	if(!engine.ourSpringHandler.isInit)
-		renderer.showparticles = true;
 	renderer.showsprings = false;
 	renderer.useSelect = true;
+	if (!engine.ourSpringHandler.isInit) {
+		renderer.showcloth = false;
+		renderer.showsprings = false;
+		renderer.showparticles = true;
+	}
 	//Setting point lights and their parameters
 	pointLight light1 = pointLight();
 	pointLight light2 = pointLight();
 	pointLight light3 = pointLight();
-	light1.attenuation = .00004f;
+	light1.attenuation = .0004f;
 	light2.attenuation = .0004f;
 	light3.attenuation = .0004f;
 	light1.pos = vec3(30,5,30);
@@ -42,11 +45,11 @@ int main() {
 
 
 	// particle parameters
-	const int numParticles = 3000;
-	const float size = 2.0f;
+	const int numParticles = 30;
+	const float size = 5.0f;
 	const float mass = size;
 	const vec3 maxVel = vec3(0.0f);
-	//engine.createParticles(numParticles, size, mass, maxVel, true);
+	engine.createParticles(numParticles, size, mass, maxVel, true);
 
 	//setting engine parameters
 	engine.wallElasticity = 0.2f;

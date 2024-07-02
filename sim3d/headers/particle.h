@@ -12,6 +12,7 @@ public:
 	float size, mass;
 	bool isPivot = false;
 
+	particle() {}
 	particle(glm::vec3 posn, float size, float mass);
 	particle(const particle& other);
 

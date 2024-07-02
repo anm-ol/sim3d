@@ -27,7 +27,14 @@ public:
 	std::vector<std::string> textureNames;
 	bool openpopup = false;
 	bool randVel;
+	int selectedObjectType;
 	float size;
 	vec3 maxvel;
 	
+	enum 
+	{
+		PARTICLE,
+		LIGHT,
+		CLOTH
+	};
 };

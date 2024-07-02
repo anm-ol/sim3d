@@ -3,6 +3,8 @@
 #include "renderer.h"
 
 #include <vector>
+#include <variant>
+#include <functional>
 
 GUI::GUI(Engine& ourengine, Renderer& renderer) :  engine(ourengine), renderer(renderer), window(renderer.window)
 {
@@ -54,7 +56,13 @@ void GUI::render()
 	ImGui::SliderFloat3("Maxvel", &maxvel.x, 0, 5);
 	ImGui::Checkbox("Random velocity", &randVel);
 	ImGui::Checkbox("Selection Mode", &renderer.useSelect);
-	ImGui::InputInt("Select particle ID:", &renderer.selectedParticle);
+	if (renderer.useSelect)
+	{
+		ImGui::RadioButton("Particle", &selectedObjectType, PARTICLE);
+		ImGui::RadioButton("Light", &selectedObjectType, LIGHT);
+		ImGui::RadioButton("Cloth", &selectedObjectType, CLOTH);
+	}
+	ImGui::InputInt("Select Object ID:", &renderer.selectedObject);
 	ImGui::Text("Frame rate: %.1f FPS", ptrio->Framerate);
 
 	if (ImGui::Button("Add particle"))
@@ -80,7 +88,7 @@ void GUI::render()
 	{
 		if (ImGui::BeginMenu("Engine Settings"))
 		{
-			ImGui::SliderInt("Number of Threads", &engine.m_NumThreads, 1, 12);
+			//ImGui::SliderInt("Number of Threads", &engine.m_NumThreads, 1, 12);
 			ImGui::SliderInt("Number of substeps", &engine.NumSteps, 1, 30);
 			ImGui::SliderFloat3("Global Acceleration", &engine.globalAcc.x, -0.05f, 0.05f);
 			ImGui::SliderFloat("Wall Elasticity", &engine.wallElasticity, 0.0f, 1.0f);
@@ -119,26 +127,55 @@ void GUI::render()
 	//guizmos
 	if (renderer.useSelect)
 	{
-		auto& object = engine.particles[renderer.selectedParticle];
-		//renderer.get selected object();
-		ImGuizmo::SetOrthographic(false);
-		ImGuizmo::SetDrawlist(ImGui::GetForegroundDrawList());
+		void* objectPtr = nullptr;
+		vec3 position(0);
+		//get selected object type 
+		if (selectedObjectType == PARTICLE)
+		{
+			if (renderer.selectedObject > (engine.particles.size() - 1))
+				renderer.selectedObject = 0;
+			objectPtr = &engine.particles[renderer.selectedObject];
+		}
+		else if (selectedObjectType == LIGHT)
+		{
+			if (renderer.selectedObject > (renderer.m_lights.size() -1))
+				renderer.selectedObject = 0;
+			objectPtr = &renderer.m_lights[renderer.selectedObject];
+		}
+		if (objectPtr)
+		{
+			if (selectedObjectType == PARTICLE)
+				position = static_cast<particle*>(objectPtr)->pos;
+			else if (selectedObjectType == LIGHT)
+				position = static_cast<pointLight*>(objectPtr)->pos;
 
-		mat4 view = renderer.camera.GetViewMatrix();
-		mat4 projection = renderer.proj;
-		ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
-		vec3 position = object.pos;
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position);
-		ImGuizmo::Manipulate(value_ptr(view), value_ptr(projection), ImGuizmo::OPERATION::TRANSLATE,
-			ImGuizmo::MODE::WORLD, value_ptr(transform));
-		//ImGuizmo::DrawCubes(value_ptr(view), value_ptr(projection), value_ptr(transform), 1);
+			// Now you can use the position variable
 
-		if (ImGuizmo::IsUsing()) {
-			glm::vec3 newPosition;
-			glm::vec3 dummyRotation;
-			glm::vec3 dummyScale;
-			ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), glm::value_ptr(newPosition), glm::value_ptr(dummyRotation), glm::value_ptr(dummyScale));
-			object.pos = newPosition;
+		// Now you can use the position variable
+
+			ImGuizmo::SetOrthographic(false);
+			ImGuizmo::SetDrawlist(ImGui::GetForegroundDrawList());
+
+			mat4 view = renderer.camera.GetViewMatrix();
+			mat4 projection = renderer.proj;
+			ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+			glm::mat4 transform = glm::translate(glm::mat4(1.0f), position);
+			ImGuizmo::Manipulate(value_ptr(view), value_ptr(projection), ImGuizmo::OPERATION::TRANSLATE,
+				ImGuizmo::MODE::WORLD, value_ptr(transform));
+			//ImGuizmo::DrawCubes(value_ptr(view), value_ptr(projection), value_ptr(transform), 1);
+
+			if (ImGuizmo::IsUsing()) {
+				glm::vec3 newPosition;
+				glm::vec3 dummyRotation;
+				glm::vec3 dummyScale;
+				ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), glm::value_ptr(newPosition), glm::value_ptr(dummyRotation), glm::value_ptr(dummyScale));
+				if (selectedObjectType == PARTICLE) {
+					static_cast<particle*>(objectPtr)->pos = newPosition;
+				}
+				else if (selectedObjectType == LIGHT) {
+					static_cast<pointLight*>(objectPtr)->pos = newPosition;
+				}
+			}
 		}
 	}
 	// Render dear imgui into screen
