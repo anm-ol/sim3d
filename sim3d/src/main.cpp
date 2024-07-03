@@ -14,7 +14,7 @@ int main() {
 	vec3 max = vec3(50,20, 50);
 	//initialising engine
 	Engine engine(min,max);
-
+	engine.setSpringHandler(20, 20, .5, 5);
 	//init renderer
 	Renderer renderer = Renderer(engine, 1500, 1000);
 	renderer.showcloth = true;
@@ -49,7 +49,7 @@ int main() {
 	const float size = 5.0f;
 	const float mass = size;
 	const vec3 maxVel = vec3(0.0f);
-	engine.createParticles(numParticles, size, mass, maxVel, true);
+	//engine.createParticles(numParticles, size, mass, maxVel, true);
 
 	//setting engine parameters
 	engine.wallElasticity = 0.2f;

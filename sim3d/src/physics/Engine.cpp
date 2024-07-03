@@ -28,13 +28,8 @@ Engine::Engine(const vec3& diag1, const vec3& diag2) : walldiagonal1(diag1), wal
 	useThreading = false;
 	usePartition = false;
 
-	// spring handler
-	//ourSpringHandler = SpringHandler(&particles, 20, 20, .5, 5.01);
-	if (ourSpringHandler.isInit)
-	{
-		ourSpringHandler.initVertices(*this, vec3(0, -30, 0), 3.5);
-		ourSpringHandler.initSprings();
-	}
+	ourSpringHandler = SpringHandler();
+
 }
 void Engine::setWall(vec3 diag1, vec3 diag2)
 {
@@ -102,6 +97,16 @@ void Engine::createParticles(int numParticles, float size, float mass, vec3 maxV
 	}
 }
 
+void Engine::setSpringHandler(int width, int height, float size, float mass)
+{
+	// spring handler
+	ourSpringHandler = SpringHandler(&particles, width, height, size, mass);
+	if (ourSpringHandler.isInit)
+	{
+		ourSpringHandler.initVertices(*this, vec3(0, -30, 0), 3.5);
+		ourSpringHandler.initSprings();
+	}
+}
 // both mass and size are fixed. may make them random later!
 // need to optimize this part
 void Engine::createParticle(float size, float mass, vec3 maxVel, bool randVelocity)

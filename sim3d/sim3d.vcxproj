@@ -153,7 +153,6 @@
     <ClCompile Include="src\physics\SpacePartition.cpp" />
     <ClCompile Include="src\physics\SpringHandler.cpp" />
     <ClCompile Include="src\renderer.cpp" />
-    <ClCompile Include="src\SceneConfig.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\camera.h" />

@@ -12,7 +12,7 @@ using namespace glm;
 struct spring {
 	particle &p1, &p2;
 	float naturalLength;
-	const float coefficient, damping;
+	float coefficient, damping;
 
 	spring(particle& v1, particle& v2, float coeff)
 		: p1(v1), p2(v2), coefficient(coeff), damping(coeff * 0.5)
