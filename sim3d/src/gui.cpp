@@ -128,7 +128,8 @@ void GUI::render()
 						ImGui::SetItemDefaultFocus();
 					}
 				}
-				std::cout << currentItem << std::endl;
+				renderer.cloth->loadTexture(("textures/" + currentItem).c_str());
+				//std::cout << currentItem << std::endl;
 				ImGui::EndCombo();
 			}
 
