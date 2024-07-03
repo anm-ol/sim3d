@@ -166,7 +166,6 @@
     <ClInclude Include="headers\OctreeNode.h" />
     <ClInclude Include="headers\particle.h" />
     <ClInclude Include="headers\renderer.h" />
-    <ClInclude Include="headers\SceneConfig.h" />
     <ClInclude Include="headers\shader.h" />
     <ClInclude Include="headers\SpacePartition.h" />
     <ClInclude Include="headers\SpringHandler.h" />

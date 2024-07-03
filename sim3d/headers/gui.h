@@ -8,6 +8,9 @@
 #include <vector>
 #include <ImGuizmo.h>
 
+#include <iostream>
+#include <filesystem>
+
 class Renderer;
 
 class GUI
@@ -30,7 +33,8 @@ public:
 	int selectedObjectType;
 	float size;
 	vec3 maxvel;
-	
+	std::string currentItem;
+
 	enum 
 	{
 		PARTICLE,

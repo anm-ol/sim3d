@@ -62,8 +62,11 @@ void GUI::render()
 		ImGui::RadioButton("Light", &selectedObjectType, LIGHT);
 		ImGui::RadioButton("Cloth", &selectedObjectType, CLOTH);
 	}
+
+	if (!renderer.useSelect) ImGui::BeginDisabled();
 	ImGui::InputInt("Select Object ID:", &renderer.selectedObject);
 	ImGui::Checkbox("Add pivot", &engine.particles[renderer.selectedObject].isPivot);
+	if(!renderer.useSelect) ImGui::EndDisabled();
 	ImGui::Text("Frame rate: %.1f FPS", ptrio->Framerate);
 
 	if (ImGui::Button("Add particle"))
@@ -76,8 +79,6 @@ void GUI::render()
 	{
 		if (ImGui::BeginMenu("Simulation Options"))
 		{
-			if (ImGui::Button("Reset scene")) {
-			}
 			ImGui::Checkbox("Pause Sim3D", &engine.pause);
 			ImGui::Checkbox("Use Multi-threading", &engine.useThreading);
 			ImGui::Checkbox("Use Space-partitioning", &engine.usePartition);
@@ -104,16 +105,33 @@ void GUI::render()
 	if (ImGui::BeginMenuBar())
 	{
 		if (ImGui::BeginMenu("Renderer settings")) {
-		
-			if (ImGui::Button("Open a texture")) {
-				ImGui::OpenPopup("###FilePicker");
+
+			std::string path = std::filesystem::current_path().string() + "/textures/";
+			std::vector<std::string> textures;
+
+			for (const auto& entry : std::filesystem::directory_iterator(path)) {
+				textures.push_back(entry.path().filename().string());
 			}
-				if(ImGui::BeginPopup("###FilePicker")) {
-					ImGui::Text("1");
-					ImGui::Text("2");
-					ImGui::EndPopup();
+
+			if (!textures.empty() && currentItem.empty()) {
+				currentItem = textures[0];
+			}
+
+			if (ImGui::BeginCombo("Select a texture", currentItem.c_str(), ImGuiComboFlags_NoArrowButton)) {
+				for (int i = 0; i < textures.size(); i++) {
+				
+					bool isSelected = (currentItem == textures[i]);
+					if (ImGui::Selectable(textures[i].c_str(), isSelected)) {
+						currentItem = textures[i];
+					}
+					if (isSelected) {
+						ImGui::SetItemDefaultFocus();
+					}
 				}
-			
+				std::cout << currentItem << std::endl;
+				ImGui::EndCombo();
+			}
+
 			ImGui::Checkbox("Show Cloth", &renderer.showcloth);
 			//if (!renderer.showcloth)
 				//renderer.showsprings = true;
