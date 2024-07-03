@@ -1,5 +1,9 @@
 # Sim3D
 
+![five.png](images/five.png)
+![nine.png](images/nine.png)
+![three.png](images/three.png)
+
 Welcome to Sim3D! 
 This is the successor to Sim2D which was written in Java and Processing.
 This engine is designed to simulate particles in a 3D environment using OpenGL and C++. It allows for particle collision and movement, and includes a scene editor for setting up simulation parameters.
