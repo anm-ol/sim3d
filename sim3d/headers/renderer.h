@@ -20,16 +20,20 @@ public:
 	Camera camera;
 	Engine& engineRef;
 	GLFWwindow* window;
-	
+
 	Shader particleShader, lightShader, SpringShader, ClothShader;
 
 	std::vector<float> vertices;
 	std::vector<float> springVerts;
 	std::unique_ptr<ClothRenderer> cloth;
 	bool cursorVisible = false;
-	bool select = false;
+	bool useSelect = false;
+	bool showparticles = false;
+	bool showsprings = false;
+	bool showcloth = false;
 
 	std::vector<pointLight> m_lights;
+	int selectedObject;
 	unsigned int VBO_main, VAO_main, VAO_spring, VBO_spring;
 	unsigned int SPHERE_VERT_COUNT, WALL_VERT_COUNT, SPRING_VERT_COUNT;
 
@@ -48,7 +52,7 @@ public:
 		SPRING
 	};
 	int render(Engine& engine);
-	
+
 	Renderer(Engine& engine, int widht, int height);
 	void processInput(GLFWwindow* window);
 	void setCursorVisible(bool b)
@@ -63,13 +67,13 @@ public:
 
 	void generateSphereMesh(std::vector<float>& vertices, float size, int hres, int vres);
 	void generateWallvertices(Engine& engine, std::vector<float>& vertices);
-	void generateSprings(std::vector<float>& vertices, std::vector<spring> &springs);
+	void generateSprings(std::vector<float>& vertices, std::vector<spring>& springs);
 
-	void renderParticles(std::vector<float> &vertices);
+	void renderParticles(std::vector<float>& vertices);
 	void renderWalls();
 	void renderSprings(std::vector<spring>& springs);
 	void renderGrid(std::vector<float>& vertices, vec3 spacing, vec3 diag1, vec3 diag2);
-	
+
 	void generateAll(Engine& engine, std::vector<float>& vertices);
 
 	void drawLights(std::vector<pointLight>& ourlights)
@@ -92,13 +96,13 @@ public:
 			glDrawArrays(GL_TRIANGLES, 0, SPHERE_VERT_COUNT / 6);
 		}
 	}
-    void createWindow(int WIDTH, int HEIGHT)
-    {
-        // Initialize GLFW and create a basic window
-        glfwInit();
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	void createWindow(int WIDTH, int HEIGHT)
+	{
+		// Initialize GLFW and create a basic window
+		glfwInit();
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
         window = glfwCreateWindow(WIDTH, HEIGHT, "Sim3D", NULL, NULL);
         if (window == NULL)
@@ -119,7 +123,7 @@ public:
             renderer->screen_width = width;
             renderer->proj = perspective(radians(45.0f), (float)width / (float)height, 10.0f, 1000.0f);
             glViewport(0, 0, width, height);
-            });
+			});
 
         // Set cursor position callback
         glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xposIn, double yposIn) {
@@ -156,10 +160,17 @@ public:
                 renderer->engineRef.pause = !renderer->engineRef.pause;
             if (key == GLFW_KEY_LEFT_SHIFT && action == GLFW_PRESS)
                 renderer->setCursorVisible(!renderer->cursorVisible);
+			if (key == GLFW_KEY_LEFT && action == GLFW_PRESS)
+				renderer->selectedObject--;
+			if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS)
+				renderer->selectedObject++;
+			if (key == GLFW_KEY_UP && action == GLFW_PRESS && renderer->engineRef.ourSpringHandler.isInit)
+				renderer->selectedObject += renderer->cloth->num_x;
+			if (key == GLFW_KEY_DOWN && action == GLFW_PRESS && renderer->engineRef.ourSpringHandler.isInit)
+				renderer->selectedObject -= renderer->cloth->num_x;
             });
     }
 };
 
 void pushVec3(std::vector<float>& v, glm::vec3 vertex);
 glm::vec3 vertexthetaphi(float size, float theta, float phi);
-

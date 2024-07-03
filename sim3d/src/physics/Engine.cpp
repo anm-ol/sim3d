@@ -14,7 +14,7 @@
 using namespace glm;
 
 Engine::Engine(const vec3& diag1, const vec3& diag2) : walldiagonal1(diag1), walldiagonal2(diag2), box(*this, 30)
-{	
+{
 	tconst = 1.0f;
 	wallElasticity = 1.0f;
 	particleElasticity = 1.0f;
@@ -28,10 +28,8 @@ Engine::Engine(const vec3& diag1, const vec3& diag2) : walldiagonal1(diag1), wal
 	useThreading = false;
 	usePartition = false;
 
-	// spring handler
-	ourSpringHandler = SpringHandler(&particles, 20, 20, .5, 10.1);
-	ourSpringHandler.initVertices(*this, vec3(0,-30,0), 3.5);
-	ourSpringHandler.initSprings();
+	ourSpringHandler = SpringHandler();
+
 }
 void Engine::setWall(vec3 diag1, vec3 diag2)
 {
@@ -54,6 +52,7 @@ void Engine::updateall(float dt) //this is the main function that gets called in
 //Betweem each frame we update position/velocity, handle collision multiple times
 void Engine::runSubsteps(int numstep, float dt) 
 {
+	if(ourSpringHandler.isInit)
 	ourSpringHandler.updateForce();
 
 	for (int i = 1; i <= numstep; i++)
@@ -98,6 +97,16 @@ void Engine::createParticles(int numParticles, float size, float mass, vec3 maxV
 	}
 }
 
+void Engine::setSpringHandler(int width, int height, float size, float mass)
+{
+	// spring handler
+	ourSpringHandler = SpringHandler(&particles, width, height, size, mass);
+	if (ourSpringHandler.isInit)
+	{
+		ourSpringHandler.initVertices(*this, vec3(0, -30, 0), 3.5);
+		ourSpringHandler.initSprings();
+	}
+}
 // both mass and size are fixed. may make them random later!
 // need to optimize this part
 void Engine::createParticle(float size, float mass, vec3 maxVel, bool randVelocity)

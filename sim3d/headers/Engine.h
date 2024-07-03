@@ -1,6 +1,7 @@
 #pragma once
 #include <glm/glm.hpp>
 #include <vector>
+#include <memory>
 #include "particle.h"
 
 #include "SpacePartition.h"
@@ -31,13 +32,14 @@ public:
 	int NumSteps;
 	int m_NumThreads;
 
+	Engine();
 	Engine(const vec3& min,const vec3& max);
 	void setWall(glm::vec3 diag1, glm::vec3 diag2);
 	void updateall(float dt);
 	void runSubsteps(int numstep, float dt);
 	void setAccelaration(glm::vec3);
-	void setCollisionGrid();
 
 	void createParticles(int numParticles, float size, float mass, glm::vec3 maxVel, bool randVelocity);
 	void createParticle(float size, float mass, glm::vec3 maxVel, bool randVelocity);
+	void setSpringHandler(int width, int height, float size, float mass);
 };

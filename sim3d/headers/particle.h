@@ -10,7 +10,9 @@ public:
 	glm::vec3 force;
 	glm::vec3 color;
 	float size, mass;
+	bool isPivot = false;
 
+	particle() {}
 	particle(glm::vec3 posn, float size, float mass);
 	particle(const particle& other);
 

@@ -12,16 +12,16 @@ using namespace glm;
 struct spring {
 	particle &p1, &p2;
 	float naturalLength;
-	const float coefficient, damping;
+	float coefficient, damping;
 
 	spring(particle& v1, particle& v2, float coeff)
-		: p1(v1), p2(v2), coefficient(coeff), damping(coeff/2)
+		: p1(v1), p2(v2), coefficient(coeff), damping(coeff * 0.5)
 	{
 		naturalLength = distance(p1.pos, p2.pos);
 	};
 
 	//set force according to hooke's law
-	//if there is an alternate to using glm::distance() , we should use it since sqrt is expensive
+	//if there is an alternate to using glm::distance(), we should use it since sqrt is expensive
 	void setForce()
 	{
 		vec3 dir = normalize(p1.pos - p2.pos);
@@ -41,14 +41,16 @@ public:
 	int num_x, num_y;
 	float size, mass, m_spacing;
 	vec3 m_startPos;
-	
+	bool isInit = false;
+
 	//spring co-efficients
-	float structCoeff = 1.0f, shearCoeff = 1.0f, bendingCoeff = 1.0f;
+	float structCoeff = 0.5f, shearCoeff = 0.5f, bendingCoeff = 1.0f;
 
 	std::vector<particle> *targetVector;
 	std::vector<vec3> particlePositions;
 	std::vector<unsigned int> particleIDs;
 	std::vector<spring> springs;
+	std::vector<int> pivots;
 
 	SpringHandler() : targetVector(nullptr){}
 

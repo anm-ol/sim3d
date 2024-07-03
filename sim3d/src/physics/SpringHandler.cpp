@@ -7,6 +7,7 @@ using namespace glm;
 SpringHandler::SpringHandler(std::vector<particle> *particles, int x, int y, float s, float m)
 	: targetVector(particles), num_x(x), num_y(y), size(s), mass(m) 
 {
+    isInit = true;
 };
 
 void SpringHandler::init(Engine& engine)
@@ -30,7 +31,6 @@ void SpringHandler::initVertices(Engine& engine, vec3 startPos, float spacing) {
             targetVector->back().setVelocity(randomVec3(vec3(-0.3), vec3(0.3)));
             particleIDs.emplace_back(targetVector->size() - 1);
             particlePositions.push_back(posn);
-
 		}
 	}
 }
@@ -75,11 +75,12 @@ void SpringHandler::initSprings() {
 void SpringHandler::updateForce()
 {
     //reset force to zero 
-    for (int i = 0; i < particleIDs.size(); i++)
+    for (int i : particleIDs)
     {
         auto ID = particleIDs[i];
-        particlePositions[i] = (*targetVector)[ID].pos;
-        (*targetVector)[ID].force = vec3(0);
+        auto& p = (*targetVector)[ID];
+        particlePositions[i] = p.pos;
+        p.force = vec3(0);
     }
 
     //re-calculate force with updated vertex positions
