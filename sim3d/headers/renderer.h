@@ -31,6 +31,7 @@ public:
 	bool showparticles = false;
 	bool showsprings = false;
 	bool showcloth = false;
+	bool showLights = true;
 
 	std::vector<pointLight> m_lights;
 	int selectedObject;
