@@ -114,7 +114,7 @@ int Renderer::render(Engine& engine)
 		glBindVertexArray(VAO_main);
 
 		//render point light sources
-		drawLights(m_lights);
+		if(showLights) drawLights(m_lights);
 
 		view = camera.GetViewMatrix();
 

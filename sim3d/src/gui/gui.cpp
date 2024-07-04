@@ -52,34 +52,34 @@ void GUI::render()
 	ImGui::Begin("Settings", NULL, window_flags);
 	// Other ImGui elements (e.g., particle size, max velocity, etc.)ImGui::Text("Frame rate: %.1f FPS", ptrio->Framerate); ImGui::SameLine(0,30);
 	ImGui::Text("Number of Particles: %i", engine.particles.size());
-	ImGui::SliderFloat("Size", &size, 0.0, 20, "%.3f");
-	ImGui::SliderFloat3("Maxvel", &maxvel.x, 0, 5);
-	ImGui::Checkbox("Random velocity", &randVel);
 	ImGui::Checkbox("Selection Mode", &renderer.useSelect);
 	if (renderer.useSelect)
 	{
 		ImGui::RadioButton("Particle", &selectedObjectType, PARTICLE);
 		ImGui::RadioButton("Light", &selectedObjectType, LIGHT);
 		ImGui::RadioButton("Cloth", &selectedObjectType, CLOTH);
-	}
 
-	if (!renderer.useSelect) ImGui::BeginDisabled();
-	ImGui::InputInt("Select Object ID:", &renderer.selectedObject);
-	ImGui::Checkbox("Add pivot", &engine.particles[renderer.selectedObject].isPivot);
-	if(!renderer.useSelect) ImGui::EndDisabled();
+		ImGui::InputInt("Select Object ID:", &renderer.selectedObject);
+
+		// add pivots only for particles and check index range
+		if (selectedObjectType == PARTICLE && renderer.selectedObject >= 0 && renderer.selectedObject < engine.particles.size()) {
+			ImGui::Checkbox("Add pivot", &engine.particles.at(renderer.selectedObject).isPivot);
+		}
+	}
+	ImGui::Separator();
+	// section to add particle
+
+	if (!engine.ourSpringHandler.isInit) {
+		ImGui::Text("Add particle");
+		ImGui::SliderFloat("Size", &size, 0.0, 20, "%.3f");
+		ImGui::SliderFloat3("Maxvel", &maxvel.x, 0, 5);
+		ImGui::Checkbox("Random velocity", &randVel);
+		if (ImGui::Button("Add particle"))
+		{
+			engine.createParticle(size, size, maxvel, true);
+		}
+	}
 	ImGui::Text("Frame rate: %.1f FPS", ptrio->Framerate);
-
-	if (ImGui::Button("Add particle"))
-	{
-		engine.createParticle(size, size, maxvel, true);
-	}
-	if (ImGui::Button("Remove cloth"))
-	{
-		engine.removeSpringHandler();
-		//gotta change this later, no hard coding things
-		//cant leave particle vector being empty, gives vector exception
-		engine.createParticle(5, 1, vec3(0), false);
-	}
 
 	// Menu bar for Simulation Options
 	if (ImGui::BeginMenuBar())
@@ -105,6 +105,14 @@ void GUI::render()
 			ImGui::SliderFloat("Wall Elasticity", &engine.wallElasticity, 0.0f, 1.0f);
 			ImGui::SliderFloat("Particle Elasticity", &engine.particleElasticity, 0.0f, 1.0f);
 			ImGui::SliderFloat("Friction", &engine.friction, 0.0f, 1.0f);
+			if (engine.ourSpringHandler.isInit)
+			{
+				if (ImGui::Button("Remove Cloth"))
+				{
+					engine.removeSpringHandler();
+					engine.createParticle(1, 1, vec3(0), false);
+				}
+			}
 			ImGui::EndMenu();
 		}
 		ImGui::EndMenuBar();
@@ -124,27 +132,31 @@ void GUI::render()
 				currentItem = textures[0];
 			}
 
-			if (ImGui::BeginCombo("Select a texture", currentItem.c_str(), ImGuiComboFlags_NoArrowButton)) {
-				for (int i = 0; i < textures.size(); i++) {
-				
-					bool isSelected = (currentItem == textures[i]);
-					if (ImGui::Selectable(textures[i].c_str(), isSelected)) {
-						currentItem = textures[i];
+			if (engine.ourSpringHandler.isInit) {
+				if (ImGui::BeginCombo("Select a texture", currentItem.c_str(), ImGuiComboFlags_NoArrowButton)) {
+					for (auto& texture : textures) {
+
+						bool isSelected = (currentItem == texture);
+						if (ImGui::Selectable(texture.c_str(), isSelected)) {
+							currentItem = texture;
+							renderer.cloth->loadTexture(("textures/" + currentItem).c_str());
+						}
+						if (isSelected) {
+							ImGui::SetItemDefaultFocus();
+						}
 					}
-					if (isSelected) {
-						ImGui::SetItemDefaultFocus();
-					}
+					ImGui::EndCombo();
 				}
-				renderer.cloth->loadTexture(("textures/" + currentItem).c_str());
-				//std::cout << currentItem << std::endl;
-				ImGui::EndCombo();
 			}
 
-			ImGui::Checkbox("Show Cloth", &renderer.showcloth);
-			//if (!renderer.showcloth)
-				//renderer.showsprings = true;
+			// toggle springs and cloth option must only be visible when cloth is being rendered 
+			if (engine.ourSpringHandler.isInit) {
+				ImGui::Checkbox("Show Cloth", &renderer.showcloth);
+				ImGui::Checkbox("Show springs", &renderer.showsprings);
+
+			}
 			ImGui::Checkbox("Show particles", &renderer.showparticles);
-			ImGui::Checkbox("Show springs", &renderer.showsprings);
+			ImGui::Checkbox("Show Lights", &renderer.showLights);
 			ImGui::EndMenu();
 		}
 		ImGui::EndMenuBar();
@@ -160,13 +172,13 @@ void GUI::render()
 		//get selected object type 
 		if (selectedObjectType == PARTICLE)
 		{
-			if (renderer.selectedObject > (engine.particles.size() - 1))
+			if (renderer.selectedObject > (engine.particles.size() - 1) || renderer.selectedObject < 0)
 				renderer.selectedObject = 0;
 			objectPtr = &engine.particles[renderer.selectedObject];
 		}
 		else if (selectedObjectType == LIGHT)
 		{
-			if (renderer.selectedObject > (renderer.m_lights.size() -1))
+			if (renderer.selectedObject > (renderer.m_lights.size() - 1) || renderer.selectedObject < 0)
 				renderer.selectedObject = 0;
 			objectPtr = &renderer.m_lights[renderer.selectedObject];
 		}

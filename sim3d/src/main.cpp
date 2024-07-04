@@ -10,8 +10,8 @@ using namespace glm;
 int main() {
 
 	//Setting up min and max wall boundaries
-	vec3 min = vec3(-30, -50, -30);
-	vec3 max = vec3(50,20, 50);
+	vec3 min = vec3(-50.0f);
+	vec3 max = vec3(50.0f);
 	//initialising engine
 	Engine engine(min,max);
 	engine.setSpringHandler(20, 20, .5, 5);
@@ -45,8 +45,8 @@ int main() {
 
 
 	// particle parameters
-	const int numParticles = 30;
-	const float size = 5.0f;
+	const int numParticles = 500;
+	const float size = 3.0f;
 	const float mass = size;
 	const vec3 maxVel = vec3(0.0f);
 	//engine.createParticles(numParticles, size, mass, maxVel, true);

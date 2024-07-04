@@ -113,7 +113,7 @@ void Engine::removeSpringHandler() {
 	for (int index = size - 1; index >= 0; index--)
 	{
 		auto ID = ourSpringHandler.particleIDs[index];
-		particles.erase(particles.begin()+ID);
+		particles.erase(particles.begin() + ID);
 	}
 	ourSpringHandler.isInit = false;
 }
