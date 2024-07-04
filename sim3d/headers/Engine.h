@@ -42,4 +42,5 @@ public:
 	void createParticles(int numParticles, float size, float mass, glm::vec3 maxVel, bool randVelocity);
 	void createParticle(float size, float mass, glm::vec3 maxVel, bool randVelocity);
 	void setSpringHandler(int width, int height, float size, float mass);
+	void removeSpringHandler();
 };

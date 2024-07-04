@@ -73,6 +73,13 @@ void GUI::render()
 	{
 		engine.createParticle(size, size, maxvel, true);
 	}
+	if (ImGui::Button("Remove cloth"))
+	{
+		engine.removeSpringHandler();
+		//gotta change this later, no hard coding things
+		//cant leave particle vector being empty, gives vector exception
+		engine.createParticle(5, 1, vec3(0), false);
+	}
 
 	// Menu bar for Simulation Options
 	if (ImGui::BeginMenuBar())
