@@ -40,7 +40,7 @@ public:
 
 	glm::mat4 model, view, proj;
 
-	int VRES = 15;
+	int VRES = 25;
 	int HRES = 15;
 
 	int screen_height, screen_width;

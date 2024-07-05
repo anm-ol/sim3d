@@ -13,7 +13,7 @@
 
 using namespace glm;
 
-Engine::Engine(const vec3& diag1, const vec3& diag2) : walldiagonal1(diag1), walldiagonal2(diag2), box(*this, 30)
+Engine::Engine(const vec3& diag1, const vec3& diag2) : walldiagonal1(diag1), walldiagonal2(diag2), box(*this, 20)
 {
 	tconst = 1.0f;
 	wallElasticity = 1.0f;
@@ -22,14 +22,12 @@ Engine::Engine(const vec3& diag1, const vec3& diag2) : walldiagonal1(diag1), wal
 	globalAcc = vec3(0);
 	NumSteps = 1;
 
-
 	m_NumThreads = std::thread::hardware_concurrency(); // Get the number of supported hardware threads
 	pause = false;
 	useThreading = false;
 	usePartition = false;
 
 	ourSpringHandler = SpringHandler();
-
 }
 void Engine::setWall(vec3 diag1, vec3 diag2)
 {

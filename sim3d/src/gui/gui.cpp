@@ -101,7 +101,7 @@ void GUI::render()
 		{
 			//ImGui::SliderInt("Number of Threads", &engine.m_NumThreads, 1, 12);
 			ImGui::SliderInt("Number of substeps", &engine.NumSteps, 1, 30);
-			ImGui::SliderFloat3("Global Acceleration", &engine.globalAcc.x, -0.05f, 0.05f);
+			ImGui::InputFloat3("Global Acceleration", &engine.globalAcc.x);
 			ImGui::SliderFloat("Wall Elasticity", &engine.wallElasticity, 0.0f, 1.0f);
 			ImGui::SliderFloat("Particle Elasticity", &engine.particleElasticity, 0.0f, 1.0f);
 			ImGui::SliderFloat("Friction", &engine.friction, 0.0f, 1.0f);
