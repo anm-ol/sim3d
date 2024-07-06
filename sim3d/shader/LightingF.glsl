@@ -61,10 +61,10 @@ void main()
             result += factor * (diffuseLight + specularLight + ambient) * objectColor;
         }
     }
-    //result = result/ (result + vec3(1));
+    result = result/ (result + vec3(1));
 
     if(light ==1.0f)
-        FragColor = vec4(result, 0.1);
+        FragColor = vec4(result, 0.2);
     else
         FragColor = vec4(result, 1.0);
 } 

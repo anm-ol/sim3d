@@ -48,7 +48,7 @@ Renderer::Renderer(Engine& ourengine, int width, int height) : engineRef(ourengi
 
 	model = mat4(1);
 	view = mat4(1);
-	proj = perspective(radians(45.0f), (float)screen_width / (float)screen_height, 10.0f, 1000.0f);
+	proj = perspective(radians(45.0f), (float)screen_width / (float)screen_height, 1.0f, 1000.0f);
 
 	SPRING_VERT_COUNT = 2 * engineRef.ourSpringHandler.springs.size();
 }
