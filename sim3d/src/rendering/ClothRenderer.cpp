@@ -3,8 +3,14 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image/stb_image.h>
 #include "shader.h"
+#include "camera.h"
+#include <vector>
 
 void pushVec3(std::vector<float>& vertices, vec3 v);
+
+
+//int offset = 5;
+int offset = (int)sizeof(vertex)/4;
 
 ClothRenderer::ClothRenderer(SpringHandler &handler, Shader shader) 
 	:ourhandler(handler), shader(shader)
@@ -22,15 +28,17 @@ ClothRenderer::ClothRenderer(SpringHandler &handler, Shader shader)
 	loadTexture("textures/paint.jpg");
 
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), nullptr, GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, offset * sizeof(GLfloat), (void*)0);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, offset * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
 	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, offset * sizeof(GLfloat), (void*)((offset - 2) * sizeof(GLfloat)));
+	glEnableVertexAttribArray(2);
 
 	glBindVertexArray(0);
 }
 
-void ClothRenderer::render(glm::mat4& view, glm::mat4& projection)
+void ClothRenderer::render(vec3 &cameraPos, mat4& view, mat4& projection)
 {
 	glBindVertexArray(VAO);
 	shader.use();
@@ -46,9 +54,15 @@ void ClothRenderer::render(glm::mat4& view, glm::mat4& projection)
 
 	shader.setMatrix4f("view", view);
 	shader.setMatrix4f("projection", projection);
+	shader.setVec3f("cameraPos", cameraPos);
 	glDrawArrays(GL_TRIANGLES, 0, vertices.size() * 5 / 3);
 
 	glBindVertexArray(0);
+}
+
+void ClothRenderer::setLights(std::vector<pointLight> lights) {
+	shader.use();
+	shader.setLights("ourlights", lights);
 }
 void ClothRenderer::loadTexture(const char* filepath)
 {
@@ -87,10 +101,18 @@ void ClothRenderer::loadTexture(const char* filepath)
 	shader.setInt("texture1", 0);
 }
 
+void ClothRenderer::setNormals()
+{
+	for (int ID : ourhandler.particleIDs) {
+
+	}
+}
 void ClothRenderer::generateTexMesh()
 {
 	vertices.clear();
 	vec3 vertex1, vertex2, vertex3;
+	vec3 normal;
+	vertex vert1, vert2, vert3;
 	float u1, u2, u3, v1, v2, v3;
 	
 	for (int y = 0; y < num_y - 1; y++)
@@ -111,9 +133,15 @@ void ClothRenderer::generateTexMesh()
 			u3 = (float)x / num_x;
 			v3 = (float)y / num_y + 1.0/num_y;
 
-			pushVec3(vertices, vertex1); vertices.push_back(u1); vertices.push_back(v1);
-			pushVec3(vertices, vertex2); vertices.push_back(u2); vertices.push_back(v2);
-			pushVec3(vertices, vertex3); vertices.push_back(u3); vertices.push_back(v3);
+			normal = normalize(glm::cross(vertex2 - vertex1, vertex3));
+			vert1.pos = vertex1; vert1.normal = normal; vert1.uv = vec2(u1, v1);
+			vert2.pos = vertex2; vert2.normal = normal; vert2.uv = vec2(u2, v2);
+			vert3.pos = vertex3; vert3.normal = normal; vert3.uv = vec2(u3, v3);
+
+			vert1.pushVertex(vertices); vert2.pushVertex(vertices); vert3.pushVertex(vertices);
+			//pushVec3(vertices, vertex1); vertices.push_back(u1); vertices.push_back(v1);
+			//pushVec3(vertices, vertex2); vertices.push_back(u2); vertices.push_back(v2);
+			//pushVec3(vertices, vertex3); vertices.push_back(u3); vertices.push_back(v3);
 
 			//triangle 2
 			vertex1 = ourhandler.particlePositions[index + 1];
@@ -126,9 +154,15 @@ void ClothRenderer::generateTexMesh()
 			u3 = (float)x / num_x + 1.0 / num_x;
 			v3 = (float)y / num_y + 1.0 / num_y;
 
-			pushVec3(vertices, vertex1); vertices.push_back(u1); vertices.push_back(v1);
-			pushVec3(vertices, vertex2); vertices.push_back(u2); vertices.push_back(v2);
-			pushVec3(vertices, vertex3); vertices.push_back(u3); vertices.push_back(v3);
+			normal = normalize(glm::cross(vertex2 - vertex1, vertex3));
+			vert1.pos = vertex1; vert1.normal = normal; vert1.uv = vec2(u1, v1);
+			vert2.pos = vertex2; vert2.normal = normal; vert2.uv = vec2(u2, v2);
+			vert3.pos = vertex3; vert3.normal = normal; vert3.uv = vec2(u3, v3);
+
+			vert1.pushVertex(vertices); vert2.pushVertex(vertices); vert3.pushVertex(vertices);
+			//pushVec3(vertices, vertex1); vertices.push_back(u1); vertices.push_back(v1);
+			//pushVec3(vertices, vertex2); vertices.push_back(u2); vertices.push_back(v2);
+			//pushVec3(vertices, vertex3); vertices.push_back(u3); vertices.push_back(v3);
 		}
 	}
 }
@@ -149,20 +183,18 @@ void ClothRenderer::setUpdatedMesh()
 			v2 = ourhandler.particlePositions[index + 1];
 			v3 = ourhandler.particlePositions[index + num_x];
 			setVertex(vertices, v1, vertexindex);
-			setVertex(vertices, v2, vertexindex + 5);
-			setVertex(vertices, v3, vertexindex + 10);
-
-			vertexindex += 15;
+			setVertex(vertices, v2, vertexindex + offset);
+			setVertex(vertices, v3, vertexindex + 2 * offset);
+			vertexindex += 3 * offset;
+			
 			//triangle 2
 			v1 = ourhandler.particlePositions[index + 1];
 			v2 = ourhandler.particlePositions[index + num_x];
 			v3 = ourhandler.particlePositions[index + num_x + 1];
-
 			setVertex(vertices, v1, vertexindex);
-			setVertex(vertices, v2, vertexindex + 5);
-			setVertex(vertices, v3, vertexindex + 10);
-
-			vertexindex += 15;
+			setVertex(vertices, v2, vertexindex + offset);
+			setVertex(vertices, v3, vertexindex + 2 * offset);
+			vertexindex += 3 * offset;
 		}
 	}
 }

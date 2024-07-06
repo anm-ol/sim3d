@@ -10,3 +10,4 @@ sim3d/x64/
 sim3d/x64/Debug/
 /sim3d/imgui.ini
 /sim3d/sim3d/Debug
+*.tlog

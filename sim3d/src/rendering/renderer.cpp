@@ -124,7 +124,10 @@ int Renderer::render(Engine& engine)
 
 		//render cloth
 		if (cloth && showcloth && engine.ourSpringHandler.isInit)
-			cloth->render(view, proj);
+		{
+			cloth->setLights(m_lights);
+			cloth->render(camera.Position, view, proj);
+		}
 		if(showsprings && engine.ourSpringHandler.isInit)
 			renderSprings(engine.ourSpringHandler.springs);
 		renderWalls();
