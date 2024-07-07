@@ -57,7 +57,7 @@ void GUI::render()
 	{
 		ImGui::RadioButton("Particle", &selectedObjectType, PARTICLE);
 		ImGui::RadioButton("Light", &selectedObjectType, LIGHT);
-		ImGui::RadioButton("Cloth", &selectedObjectType, CLOTH);
+		if(engine.ourSpringHandler.isInit) ImGui::RadioButton("Cloth", &selectedObjectType, CLOTH);
 
 		ImGui::InputInt("Select Object ID:", &renderer.selectedObject);
 
@@ -172,19 +172,28 @@ void GUI::render()
 		//get selected object type 
 		if (selectedObjectType == PARTICLE)
 		{
-			if (renderer.selectedObject > (engine.particles.size() - 1) || renderer.selectedObject < 0)
+			if (renderer.selectedObject < 0)
+				renderer.selectedObject = engine.particles.size() - 1;
+			else if (renderer.selectedObject > (engine.particles.size() - 1))
 				renderer.selectedObject = 0;
 			objectPtr = &engine.particles[renderer.selectedObject];
 		}
 		else if (selectedObjectType == LIGHT)
 		{
-			if (renderer.selectedObject > (renderer.m_lights.size() - 1) || renderer.selectedObject < 0)
+			if (renderer.selectedObject < 0)
+				renderer.selectedObject = renderer.m_lights.size() - 1;
+			else if (renderer.selectedObject > renderer.m_lights.size() - 1)
 				renderer.selectedObject = 0;
 			objectPtr = &renderer.m_lights[renderer.selectedObject];
 		}
+		else if (selectedObjectType == CLOTH) {
+			// add guizmo to the middle particle of the cloth. 
+			// Make it look like it's at the center of the cloth 
+			objectPtr = &engine.particles[engine.particles.size() / 2];
+		}
 		if (objectPtr)
 		{
-			if (selectedObjectType == PARTICLE)
+			if (selectedObjectType == PARTICLE || selectedObjectType == CLOTH)
 				position = static_cast<particle*>(objectPtr)->pos;
 			else if (selectedObjectType == LIGHT)
 				position = static_cast<pointLight*>(objectPtr)->pos;
@@ -193,7 +202,6 @@ void GUI::render()
 
 		// Now you can use the position variable
 
-			ImGuizmo::SetOrthographic(false);
 			ImGuizmo::SetDrawlist(ImGui::GetForegroundDrawList());
 
 			mat4 view = renderer.camera.GetViewMatrix();
@@ -214,6 +222,11 @@ void GUI::render()
 				}
 				else if (selectedObjectType == LIGHT) {
 					static_cast<pointLight*>(objectPtr)->pos = newPosition;
+				}
+				else if (selectedObjectType == CLOTH) {
+					vec3 trans = newPosition - position;
+					engine.ourSpringHandler.translate(trans);
+					//static_cast<particle*>(objectPtr)->pos += trans;
 				}
 			}
 		}

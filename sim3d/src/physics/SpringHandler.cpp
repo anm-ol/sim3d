@@ -66,7 +66,7 @@ void SpringHandler::initSprings() {
             }
             if (y < num_y - 2) {
                 // Vertical bending edge
-                springs.emplace_back((*targetVector)[particleIDs[index]], (*targetVector)[particleIDs[index + 2 * num_x]], bendingCoeff);
+                springs.emplace_back((*targetVector)[ID], (*targetVector)[particleIDs[index + 2 * num_x]], bendingCoeff);
             }
         }
     }
@@ -87,5 +87,15 @@ void SpringHandler::updateForce()
     for (spring& spr : springs)
     {
         spr.setForce();
+    }
+}
+
+void SpringHandler::translate(vec3 translate) {
+    for (int i : particleIDs) {
+        auto ID = particleIDs[i];
+        auto& p = (*targetVector)[ID];
+        
+        p.pos += translate;
+        particlePositions[i] = p.pos;
     }
 }

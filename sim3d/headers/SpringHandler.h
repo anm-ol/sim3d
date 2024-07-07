@@ -61,5 +61,8 @@ public:
 	void initSprings();
 	void addSpring(particle& p1, particle& p2);
 	void updateForce();
+
+	void translate(vec3 translate);
+	void rotate(vec3 roatate);
 };
 
