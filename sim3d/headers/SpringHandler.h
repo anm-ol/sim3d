@@ -50,7 +50,7 @@ public:
 	std::vector<vec3> particlePositions;
 	std::vector<unsigned int> particleIDs;
 	std::vector<spring> springs;
-	std::vector<int> pivots;
+	int center;
 
 	SpringHandler() : targetVector(nullptr){}
 
@@ -63,6 +63,6 @@ public:
 	void updateForce();
 
 	void translate(vec3 translate);
-	void rotate(vec3 roatate);
+	void rotate(vec3 roatation);
 };
 

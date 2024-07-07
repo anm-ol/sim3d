@@ -21,6 +21,7 @@ void SpringHandler::initVertices(Engine& engine, vec3 startPos, float spacing) {
     unsigned int total_num = num_x * num_y;
     m_spacing = spacing;
     m_startPos = startPos;
+    center = total_num / 2;
 	particleIDs.reserve(total_num);
     targetVector->reserve(total_num);
 
@@ -90,12 +91,26 @@ void SpringHandler::updateForce()
     }
 }
 
+
+// used for translating the entire cloth
 void SpringHandler::translate(vec3 translate) {
     for (int i : particleIDs) {
         auto ID = particleIDs[i];
         auto& p = (*targetVector)[ID];
         
         p.pos += translate;
+        particlePositions[i] = p.pos;
+    }
+}
+
+void SpringHandler::rotate(vec3 rotation) {
+    for (int i : particleIDs) {
+        auto ID = particleIDs[i];
+        auto& p = (*targetVector)[ID];
+
+        vec3 centerPos = particlePositions[center];
+        // Rotate around particle's current position
+        p.pos += rotation * (p.pos - centerPos);
         particlePositions[i] = p.pos;
     }
 }

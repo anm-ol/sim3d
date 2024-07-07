@@ -57,7 +57,11 @@ void GUI::render()
 	{
 		ImGui::RadioButton("Particle", &selectedObjectType, PARTICLE);
 		ImGui::RadioButton("Light", &selectedObjectType, LIGHT);
-		if(engine.ourSpringHandler.isInit) ImGui::RadioButton("Cloth", &selectedObjectType, CLOTH);
+		if (engine.ourSpringHandler.isInit) ImGui::RadioButton("Cloth", &selectedObjectType, CLOTH);
+		if (selectedObjectType == CLOTH) {
+			ImGui::SameLine();
+			ImGui::Checkbox("Rotation mode", &rotationMode);
+		}
 
 		ImGui::InputInt("Select Object ID:", &renderer.selectedObject);
 
@@ -128,18 +132,18 @@ void GUI::render()
 				textures.push_back(entry.path().filename().string());
 			}
 
-			if (!textures.empty() && currentItem.empty()) {
-				currentItem = textures[0];
+			if (!textures.empty() && selectedTexture.empty()) {
+				selectedTexture = textures[0];
 			}
 
 			if (engine.ourSpringHandler.isInit) {
-				if (ImGui::BeginCombo("Select a texture", currentItem.c_str(), ImGuiComboFlags_NoArrowButton)) {
+				if (ImGui::BeginCombo("Select a texture", selectedTexture .c_str(), ImGuiComboFlags_NoArrowButton)) {
 					for (auto& texture : textures) {
 
-						bool isSelected = (currentItem == texture);
+						bool isSelected = (selectedTexture == texture);
 						if (ImGui::Selectable(texture.c_str(), isSelected)) {
-							currentItem = texture;
-							renderer.cloth->loadTexture(("textures/" + currentItem).c_str());
+							selectedTexture = texture;
+							renderer.cloth->loadTexture(("textures/" + selectedTexture).c_str());
 						}
 						if (isSelected) {
 							ImGui::SetItemDefaultFocus();
@@ -189,7 +193,7 @@ void GUI::render()
 		else if (selectedObjectType == CLOTH) {
 			// add guizmo to the middle particle of the cloth. 
 			// Make it look like it's at the center of the cloth 
-			objectPtr = &engine.particles[engine.particles.size() / 2];
+			objectPtr = &engine.particles[engine.ourSpringHandler.center];
 		}
 		if (objectPtr)
 		{
@@ -208,15 +212,15 @@ void GUI::render()
 			mat4 projection = renderer.proj;
 			ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
 			glm::mat4 transform = glm::translate(glm::mat4(1.0f), position);
-			ImGuizmo::Manipulate(value_ptr(view), value_ptr(projection), ImGuizmo::OPERATION::TRANSLATE,
+			ImGuizmo::Manipulate(value_ptr(view), value_ptr(projection), rotationMode ? ImGuizmo::OPERATION::ROTATE : ImGuizmo::OPERATION::TRANSLATE,
 				ImGuizmo::MODE::WORLD, value_ptr(transform));
 			//ImGuizmo::DrawCubes(value_ptr(view), value_ptr(projection), value_ptr(transform), 1);
 
 			if (ImGuizmo::IsUsing()) {
 				glm::vec3 newPosition;
-				glm::vec3 dummyRotation;
+				glm::vec3 rotation;
 				glm::vec3 dummyScale;
-				ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), glm::value_ptr(newPosition), glm::value_ptr(dummyRotation), glm::value_ptr(dummyScale));
+				ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), glm::value_ptr(newPosition), glm::value_ptr(rotation), glm::value_ptr(dummyScale));
 				if (selectedObjectType == PARTICLE) {
 					static_cast<particle*>(objectPtr)->pos = newPosition;
 				}
@@ -224,9 +228,13 @@ void GUI::render()
 					static_cast<pointLight*>(objectPtr)->pos = newPosition;
 				}
 				else if (selectedObjectType == CLOTH) {
-					vec3 trans = newPosition - position;
-					engine.ourSpringHandler.translate(trans);
-					//static_cast<particle*>(objectPtr)->pos += trans;
+					if (rotationMode) {
+						engine.ourSpringHandler.rotate(rotation);
+					}
+					else {
+						vec3 trans = newPosition - position;
+						engine.ourSpringHandler.translate(trans);
+					}
 				}
 			}
 		}
