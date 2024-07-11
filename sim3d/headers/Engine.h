@@ -7,9 +7,8 @@
 #include "SpacePartition.h"
 #include "SpringHandler.h"
 
-using namespace glm;
 
-vec3 randomVec3(vec3 min, vec3 max);
+vec3 randomVec3(glm::vec3 min, glm::vec3 max);
 
 class Engine {
 public:
@@ -18,7 +17,7 @@ public:
 	SpringHandler ourSpringHandler;
 
 	glm::vec3 globalAcc;
-	glm::vec3 walldiagonal1 = vec3(0); glm::vec3 walldiagonal2 = vec3(0);
+	glm::vec3 walldiagonal1 = glm::vec3(0); glm::vec3 walldiagonal2 = glm::vec3(0);
 	
 	bool pause;
 	bool useThreading;
@@ -33,7 +32,7 @@ public:
 	int m_NumThreads;
 
 	Engine();
-	Engine(const vec3& min,const vec3& max);
+	Engine(const glm::vec3& min,const glm::vec3& max);
 	void setWall(glm::vec3 diag1, glm::vec3 diag2);
 	void updateall(float dt);
 	void runSubsteps(int numstep, float dt);
@@ -42,4 +41,5 @@ public:
 	void createParticles(int numParticles, float size, float mass, glm::vec3 maxVel, bool randVelocity);
 	void createParticle(float size, float mass, glm::vec3 maxVel, bool randVelocity);
 	void setSpringHandler(int width, int height, float size, float mass);
+	void removeSpringHandler();
 };

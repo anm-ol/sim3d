@@ -30,6 +30,7 @@ class ClothRenderer
 public:
 	unsigned int VAO, VBO, textureID;
 	int num_x, num_y;
+	float ambient;
 	Shader shader;
 	std::vector<float> vertices;
 

@@ -105,6 +105,16 @@ void Engine::setSpringHandler(int width, int height, float size, float mass)
 		ourSpringHandler.initSprings();
 	}
 }
+
+void Engine::removeSpringHandler() {
+	int size = ourSpringHandler.particleIDs.size();
+	for (int index = size - 1; index >= 0; index--)
+	{
+		auto ID = ourSpringHandler.particleIDs[index];
+		particles.erase(particles.begin() + ID);
+	}
+	ourSpringHandler.isInit = false;
+}
 // both mass and size are fixed. may make them random later!
 // need to optimize this part
 void Engine::createParticle(float size, float mass, vec3 maxVel, bool randVelocity)

@@ -133,7 +133,7 @@ void ClothRenderer::generateTexMesh()
 			u3 = (float)x / num_x;
 			v3 = (float)y / num_y + 1.0/num_y;
 
-			normal = normalize(glm::cross(vertex2 - vertex1, vertex3));
+			normal = normalize(glm::cross(vertex2 - vertex1, vertex3 - vertex1));
 			vert1.pos = vertex1; vert1.normal = normal; vert1.uv = vec2(u1, v1);
 			vert2.pos = vertex2; vert2.normal = normal; vert2.uv = vec2(u2, v2);
 			vert3.pos = vertex3; vert3.normal = normal; vert3.uv = vec2(u3, v3);
@@ -154,7 +154,7 @@ void ClothRenderer::generateTexMesh()
 			u3 = (float)x / num_x + 1.0 / num_x;
 			v3 = (float)y / num_y + 1.0 / num_y;
 
-			normal = normalize(glm::cross(vertex2 - vertex1, vertex3));
+			normal = -normalize(glm::cross(vertex2 - vertex1, vertex3 - vertex1));
 			vert1.pos = vertex1; vert1.normal = normal; vert1.uv = vec2(u1, v1);
 			vert2.pos = vertex2; vert2.normal = normal; vert2.uv = vec2(u2, v2);
 			vert3.pos = vertex3; vert3.normal = normal; vert3.uv = vec2(u3, v3);
@@ -169,7 +169,7 @@ void ClothRenderer::generateTexMesh()
 
 void ClothRenderer::setUpdatedMesh()
 {
-	vec3 v1, v2, v3;
+	vec3 v1, v2, v3, normal;
 	int index, vertexindex = 0;
 	for (int y = 0; y < num_y - 1; y++)
 	{
@@ -182,18 +182,26 @@ void ClothRenderer::setUpdatedMesh()
 			v1 = ourhandler.particlePositions[index];
 			v2 = ourhandler.particlePositions[index + 1];
 			v3 = ourhandler.particlePositions[index + num_x];
+			normal = glm::cross(v2 - v1, v3 - v1);
 			setVertex(vertices, v1, vertexindex);
+			setVertex(vertices, normal, vertexindex + 3);
 			setVertex(vertices, v2, vertexindex + offset);
+			setVertex(vertices, normal, vertexindex + offset + 3);
 			setVertex(vertices, v3, vertexindex + 2 * offset);
+			setVertex(vertices, normal, vertexindex + 2*offset + 3);
 			vertexindex += 3 * offset;
 			
 			//triangle 2
 			v1 = ourhandler.particlePositions[index + 1];
 			v2 = ourhandler.particlePositions[index + num_x];
-			v3 = ourhandler.particlePositions[index + num_x + 1];
+			v3 = ourhandler.particlePositions[index + num_x + 1]; 
+			normal = -glm::cross(v2 - v1, v3 - v1);
 			setVertex(vertices, v1, vertexindex);
+			setVertex(vertices, normal, vertexindex + 3);
 			setVertex(vertices, v2, vertexindex + offset);
+			setVertex(vertices, normal, vertexindex + offset + 3);
 			setVertex(vertices, v3, vertexindex + 2 * offset);
+			setVertex(vertices, normal, vertexindex + 2 * offset + 3);
 			vertexindex += 3 * offset;
 		}
 	}
