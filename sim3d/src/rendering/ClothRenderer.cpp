@@ -139,9 +139,6 @@ void ClothRenderer::generateTexMesh()
 			vert3.pos = vertex3; vert3.normal = normal; vert3.uv = vec2(u3, v3);
 
 			vert1.pushVertex(vertices); vert2.pushVertex(vertices); vert3.pushVertex(vertices);
-			//pushVec3(vertices, vertex1); vertices.push_back(u1); vertices.push_back(v1);
-			//pushVec3(vertices, vertex2); vertices.push_back(u2); vertices.push_back(v2);
-			//pushVec3(vertices, vertex3); vertices.push_back(u3); vertices.push_back(v3);
 
 			//triangle 2
 			vertex1 = ourhandler.particlePositions[index + 1];
@@ -160,9 +157,6 @@ void ClothRenderer::generateTexMesh()
 			vert3.pos = vertex3; vert3.normal = normal; vert3.uv = vec2(u3, v3);
 
 			vert1.pushVertex(vertices); vert2.pushVertex(vertices); vert3.pushVertex(vertices);
-			//pushVec3(vertices, vertex1); vertices.push_back(u1); vertices.push_back(v1);
-			//pushVec3(vertices, vertex2); vertices.push_back(u2); vertices.push_back(v2);
-			//pushVec3(vertices, vertex3); vertices.push_back(u3); vertices.push_back(v3);
 		}
 	}
 }
