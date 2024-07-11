@@ -15,7 +15,7 @@ int main() {
 	//initialising engine
 	Engine engine(min,max);
 	engine.setSpringHandler(15, 15, 0.5, 5);
-	//init rendere
+	//init renderer
 	Renderer renderer = Renderer(engine, 1920/1.5, 1080/1.5);
 	renderer.camera.Position = vec3(0, 0, 50);
 	renderer.showcloth = true;

@@ -49,7 +49,7 @@ cd sim3d
 If you haven't installed vcpkg yet, follow these steps:
 
 ```sh
-git clone https://github.com/microsoft/vcpkg.git
+git submodule add https://github.com/microsoft/vcpkg.git
 cd vcpkg
 .\bootstrap-vcpkg.bat
 .\vcpkg integrate install

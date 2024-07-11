@@ -62,6 +62,9 @@ void GUI::render()
 			ImGui::SameLine();
 			ImGui::Checkbox("Rotation mode", &rotationMode);
 		}
+		else {
+			rotationMode = false;
+		}
 
 		ImGui::InputInt("Select Object ID:", &renderer.selectedObject);
 
