@@ -1,6 +1,8 @@
 #include "SpringHandler.h"
 #include "Engine.h"
-
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/transform.hpp>
+#include <glm/gtx/euler_angles.hpp>
 using namespace glm;
 
 // width and height refers to num particles in x and y axes respectively
@@ -94,23 +96,22 @@ void SpringHandler::updateForce()
 
 // used for translating the entire cloth
 void SpringHandler::translate(vec3 translate) {
-    for (int i : particleIDs) {
-        auto ID = particleIDs[i];
+    for (int ID : particleIDs) {
         auto& p = (*targetVector)[ID];
         
         p.pos += translate;
-        particlePositions[i] = p.pos;
+        particlePositions[ID] = p.pos;
     }
 }
 
-void SpringHandler::rotate(vec3 rotation) {
-    for (int i : particleIDs) {
-        auto ID = particleIDs[i];
+void SpringHandler::rotatecloth(vec3 rotation) {
+    rotation = radians(rotation);
+    for (auto ID : particleIDs) {
         auto& p = (*targetVector)[ID];
-
         vec3 centerPos = particlePositions[center];
-        // Rotate around particle's current position
-        p.pos += rotation * (p.pos - centerPos);
-        particlePositions[i] = p.pos;
+        glm::mat4 rotationMatrix = glm::yawPitchRoll(rotation.y, rotation.x, rotation.z);
+        vec3 rotatedPos = vec3(rotationMatrix * vec4(p.pos - centerPos, 0.0f));
+        p.pos = centerPos + rotatedPos;
+        particlePositions[ID] = p.pos;
     }
 }

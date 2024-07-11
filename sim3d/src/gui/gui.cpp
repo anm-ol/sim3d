@@ -229,9 +229,9 @@ void GUI::render()
 				}
 				else if (selectedObjectType == CLOTH) {
 					if (rotationMode) {
-						engine.ourSpringHandler.rotate(rotation);
+						engine.ourSpringHandler.rotatecloth(rotation);
 					}
-					else {
+					else{
 						vec3 trans = newPosition - position;
 						engine.ourSpringHandler.translate(trans);
 					}
