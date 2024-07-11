@@ -193,9 +193,10 @@ void GUI::render()
 		{
 			if (selectedObjectType == PARTICLE || selectedObjectType == CLOTH)
 				position = static_cast<particle*>(objectPtr)->pos;
-			else if (selectedObjectType == LIGHT)
+			else if (selectedObjectType == LIGHT) {
 				position = static_cast<pointLight*>(objectPtr)->pos;
-
+				showLightMenu(*static_cast<pointLight*>(objectPtr));
+			}
 			// Now you can use the position variable
 
 		// Now you can use the position variable
@@ -233,6 +234,11 @@ void GUI::render()
 			}
 		}
 	}
+	pointLight p = pointLight();
+	if (renderer.useSelect)
+	{
+		//showLightMenu(p);
+	}
 	ImGui::End();
 	// Render dear imgui into screen
 	ImGui::Render();
@@ -240,6 +246,20 @@ void GUI::render()
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
+void GUI::showLightMenu(pointLight& selectedLight)
+{
+	// getting the 2d position of light on screen
+	vec2 screenPos = vec2(renderer.view * renderer.proj * vec4(selectedLight.pos, 0.0));
+	ImGui::SetNextWindowSize(ImVec2(screenPos.x +50, screenPos.y +50), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowPos(ImVec2(100,100), ImGuiCond_FirstUseEver);
+	ImGui::PushItemWidth(ImGui::GetFontSize() * -6);
+	ImGui::Begin("Light Settings");
+
+	ImGui::ColorEdit3("Color", &selectedLight.color[0]);
+	ImGui::DragFloat3("Position", &selectedLight.pos[0]);
+	ImGui::InputFloat("Attenuation", &selectedLight.attenuation);
+	ImGui::End();
+}
 
 void GUI::shutdown()
 {
