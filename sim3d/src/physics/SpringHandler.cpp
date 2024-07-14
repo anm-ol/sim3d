@@ -23,7 +23,7 @@ void SpringHandler::initVertices(Engine& engine, vec3 startPos, float spacing) {
     unsigned int total_num = num_x * num_y;
     m_spacing = spacing;
     m_startPos = startPos;
-    center = total_num / 2;
+    center = total_num / 2 + num_x /2;
 	particleIDs.reserve(total_num);
     targetVector->reserve(total_num);
 

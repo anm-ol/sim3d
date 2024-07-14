@@ -134,7 +134,8 @@ void GUI::render()
 			rotationMode = false;
 		}
 
-		ImGui::InputInt("Select Object ID:", &renderer.selectedObject);
+		// if selected type id of cloth, we don't need this input
+		if(selectedObjectType != CLOTH) ImGui::InputInt("Select Object ID:", &renderer.selectedObject);
 
 		// add pivots only for particles and check index range
 		if (selectedObjectType == PARTICLE && renderer.selectedObject >= 0 && renderer.selectedObject < engine.particles.size()) {
