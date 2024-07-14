@@ -65,19 +65,36 @@ Use vcpkg to install ImGuizmo:
 
 ### 5. Build the Project
 
-Open the project in Visual Studio and build it, ensuring that your project is configured to use the vcpkg toolchain file.
+Ensuring that your project is configured to use the vcpkg toolchain file, you can either build it using visual studio, or MSbuild
 
-## Usage
+## Option 1 : Build in Visual Studio
 
 To run the simulation:
 1. Compile and run the `main.cpp` file.
-2. Set the engine state parameters (number of particles, their positions, wall positions, velocities, gravity, etc.) directly in the `main.cpp` file or use the scene editor.
-3. Use the following keyboard controls during simulation:
+2. Set the engine state parameters (number of particles, their positions, wall positions, velocities, gravity, etc.) directly in the `main.cpp` file or use the scene editor. 
+
+## Option 2 : Build using MSbuild
+
+1. Install [Visual Studio Build Tools for C++](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
+2. Open "Developer Command prompt for VS"
+3. Run these commands
+```sh
+msbuild path\to\sim3d\sim3d.sln /p:Configuration=Release
+cd path\to\sim3d
+copy .\x64\Release\sim3d.exe .\sim3d\
+.\sim3d\sim3d.exe
+```
+
+## Usage
+
+Use the following keyboard controls during simulation:
    - **WASD**: Camera movement
    - **Left Shift**: Toggle cursor visibility to interact with the GUI
    - **Space**: Move camera up
    - **Left Ctrl**: Move camera down
    - **Enter**: Play/pause simulation
+   - If you are in selection mode, you can use the arrow keys to select the object, and more it around with gizmos
+
 
 ## Dependencies
 
