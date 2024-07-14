@@ -20,19 +20,23 @@ ClothRenderer::ClothRenderer(SpringHandler &handler, Shader shader)
 	//generating buffers
 	glGenBuffers(1, &VBO);
 	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &EBO);
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	
 	//setting buffer data
 	generateTexMesh();
 	loadTexture("textures/paint.jpg");
 
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), nullptr, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, tempvert.size() * sizeof(vertex), nullptr, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), &indices[0], GL_STATIC_DRAW);
+	
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, offset * sizeof(GLfloat), (void*)0);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, offset * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, offset * sizeof(GLfloat), (void*)((offset - 2) * sizeof(GLfloat)));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, offset * sizeof(GLfloat), (void*)((6) * sizeof(GLfloat)));
 	glEnableVertexAttribArray(2);
 
 	glBindVertexArray(0);
@@ -50,13 +54,12 @@ void ClothRenderer::render(vec3 &cameraPos, mat4& view, mat4& projection)
 	glBindTexture(GL_TEXTURE_2D, textureID);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(GLfloat), &vertices[0]);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, tempvert.size() * sizeof(vertex), &tempvert[0]);
 
 	shader.setMatrix4f("view", view);
 	shader.setMatrix4f("projection", projection);
 	shader.setVec3f("cameraPos", cameraPos);
-	glDrawArrays(GL_TRIANGLES, 0, vertices.size() * 5 / 3);
-
+	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 }
 
@@ -112,15 +115,28 @@ void ClothRenderer::generateTexMesh()
 	vertices.clear();
 	vec3 vertex1, vertex2, vertex3;
 	vec3 normal;
-	vertex vert1, vert2, vert3;
 	float u1, u2, u3, v1, v2, v3;
 	
+	for (int y = 0; y < num_y; y++)
+	{
+		for (int x = 0; x < num_x; x++)
+		{
+			int index = y * num_x + x;
+			auto ID = ourhandler.particleIDs[index];
+			vertex temp;
+			temp.pos = ourhandler.particlePositions[index];
+			temp.uv = vec2((float)x / num_x, (float)y / num_y);
+			temp.normal = vec3(0);
+			tempvert.push_back(temp);
+		}
+	}
 	for (int y = 0; y < num_y - 1; y++)
 	{
 		for (int x = 0; x < num_x - 1; x++)
 		{
 			int index = y * num_x + x;
 			auto ID = ourhandler.particleIDs[index];
+
 			//triangle 1
 			vertex1 = ourhandler.particlePositions[index];
 			vertex2 = ourhandler.particlePositions[index + 1];
@@ -134,19 +150,18 @@ void ClothRenderer::generateTexMesh()
 			v3 = (float)y / num_y + 1.0/num_y;
 
 			normal = normalize(glm::cross(vertex2 - vertex1, vertex3 - vertex1));
-			vert1.pos = vertex1; vert1.normal = normal; vert1.uv = vec2(u1, v1);
-			vert2.pos = vertex2; vert2.normal = normal; vert2.uv = vec2(u2, v2);
-			vert3.pos = vertex3; vert3.normal = normal; vert3.uv = vec2(u3, v3);
 
-			vert1.pushVertex(vertices); vert2.pushVertex(vertices); vert3.pushVertex(vertices);
-			//pushVec3(vertices, vertex1); vertices.push_back(u1); vertices.push_back(v1);
-			//pushVec3(vertices, vertex2); vertices.push_back(u2); vertices.push_back(v2);
-			//pushVec3(vertices, vertex3); vertices.push_back(u3); vertices.push_back(v3);
+			indices.push_back(index);
+			tempvert[index].normal += normal;
+			indices.push_back(index + 1);
+			tempvert[index + 1].normal += normal;
+			indices.push_back(index + num_x);
+			tempvert[index + num_x].normal += normal;
 
 			//triangle 2
 			vertex1 = ourhandler.particlePositions[index + 1];
 			vertex2 = ourhandler.particlePositions[index + num_x];
-			vertex3 = ourhandler.particlePositions[index + num_x + 1]; 
+			vertex3 = ourhandler.particlePositions[index + num_x + 1];
 			u1 = (float)x / num_x + 1.0 / num_x;
 			v1 = (float)y / num_y;
 			u2 = (float)x / num_x;
@@ -155,14 +170,13 @@ void ClothRenderer::generateTexMesh()
 			v3 = (float)y / num_y + 1.0 / num_y;
 
 			normal = -normalize(glm::cross(vertex2 - vertex1, vertex3 - vertex1));
-			vert1.pos = vertex1; vert1.normal = normal; vert1.uv = vec2(u1, v1);
-			vert2.pos = vertex2; vert2.normal = normal; vert2.uv = vec2(u2, v2);
-			vert3.pos = vertex3; vert3.normal = normal; vert3.uv = vec2(u3, v3);
-
-			vert1.pushVertex(vertices); vert2.pushVertex(vertices); vert3.pushVertex(vertices);
-			//pushVec3(vertices, vertex1); vertices.push_back(u1); vertices.push_back(v1);
-			//pushVec3(vertices, vertex2); vertices.push_back(u2); vertices.push_back(v2);
-			//pushVec3(vertices, vertex3); vertices.push_back(u3); vertices.push_back(v3);
+			
+			indices.push_back(index + 1);
+			tempvert[index + 1].normal += normal;
+			indices.push_back(index + num_x);
+			tempvert[index + num_x].normal += normal;
+			indices.push_back(index + num_x + 1);
+			tempvert[index + num_x + 1].normal += normal;
 		}
 	}
 }
@@ -171,38 +185,38 @@ void ClothRenderer::setUpdatedMesh()
 {
 	vec3 v1, v2, v3, normal;
 	int index, vertexindex = 0;
+	for (int y = 0; y < num_y; y++)
+	{
+		for (int x = 0; x < num_x; x++)
+		{
+			index = y * num_x + x;
+			tempvert[index].pos = ourhandler.particlePositions[index];
+			tempvert[index].normal = vec3(0);
+		}
+	}
 	for (int y = 0; y < num_y - 1; y++)
 	{
 		for (int x = 0; x < num_x - 1; x++)
 		{
 			index = y * num_x + x;
-			//offset between consecutive vertex data, 6 is number of vertices per quad
-			auto ID = ourhandler.particleIDs[index];
 			//triangle 1
 			v1 = ourhandler.particlePositions[index];
 			v2 = ourhandler.particlePositions[index + 1];
 			v3 = ourhandler.particlePositions[index + num_x];
 			normal = glm::cross(v2 - v1, v3 - v1);
-			setVertex(vertices, v1, vertexindex);
-			setVertex(vertices, normal, vertexindex + 3);
-			setVertex(vertices, v2, vertexindex + offset);
-			setVertex(vertices, normal, vertexindex + offset + 3);
-			setVertex(vertices, v3, vertexindex + 2 * offset);
-			setVertex(vertices, normal, vertexindex + 2*offset + 3);
-			vertexindex += 3 * offset;
+			tempvert[index].normal += normal;
+			tempvert[index + 1].normal += normal;
+			tempvert[index + num_x].normal += normal;
+
 			
 			//triangle 2
 			v1 = ourhandler.particlePositions[index + 1];
 			v2 = ourhandler.particlePositions[index + num_x];
 			v3 = ourhandler.particlePositions[index + num_x + 1]; 
 			normal = -glm::cross(v2 - v1, v3 - v1);
-			setVertex(vertices, v1, vertexindex);
-			setVertex(vertices, normal, vertexindex + 3);
-			setVertex(vertices, v2, vertexindex + offset);
-			setVertex(vertices, normal, vertexindex + offset + 3);
-			setVertex(vertices, v3, vertexindex + 2 * offset);
-			setVertex(vertices, normal, vertexindex + 2 * offset + 3);
-			vertexindex += 3 * offset;
+			tempvert[index + 1].normal += normal;
+			tempvert[index + num_x].normal += normal;
+			tempvert[index + num_x + 1].normal += normal;
 		}
 	}
 }

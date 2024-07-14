@@ -12,6 +12,7 @@
 #include <filesystem>
 
 class Renderer;
+struct pointLight;
 
 class GUI
 {
@@ -22,11 +23,14 @@ public:
 	ImGuiIO* ptrio;
 
 	float width, height;
+
 	GUI(Engine& engine, Renderer& renderer);
 	void InitFrame();
 	void render();
 	void shutdown();
 	ImVec2 getWindowSize();
+	void showLightMenu(pointLight& selectedLight);
+
 	std::vector<std::string> textureNames;
 	bool openpopup = false;
 	bool randVel;

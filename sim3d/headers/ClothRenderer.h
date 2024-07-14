@@ -28,11 +28,13 @@ struct vertex {
 class ClothRenderer
 {
 public:
-	unsigned int VAO, VBO, textureID;
+	unsigned int VAO, VBO, EBO, textureID;
 	int num_x, num_y;
 	float ambient;
 	Shader shader;
 	std::vector<float> vertices;
+	std::vector<vertex> tempvert;
+	std::vector<unsigned int> indices;
 
 	SpringHandler& ourhandler;
 	ClothRenderer(SpringHandler &ourhandler, Shader shader);

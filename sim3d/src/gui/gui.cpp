@@ -51,6 +51,74 @@ void GUI::render()
 	ImGui::PushItemWidth(ImGui::GetFontSize() * -12);
 	ImGui::Begin("Settings", NULL, window_flags);
 	// Other ImGui elements (e.g., particle size, max velocity, etc.)ImGui::Text("Frame rate: %.1f FPS", ptrio->Framerate); ImGui::SameLine(0,30);
+	// Menu bar for Simulation Options
+	if (ImGui::CollapsingHeader("Simulation Options"))
+	{
+
+		ImGui::Checkbox("Pause Sim3D", &engine.pause); ImGui::SameLine();
+		ImGui::Checkbox("Use Multi-threading", &engine.useThreading);
+		ImGui::Checkbox("Use Space-partitioning", &engine.usePartition);
+	}
+	if (ImGui::CollapsingHeader("Engine Settings"))
+	{
+		ImGui::SliderInt("Number of substeps", &engine.NumSteps, 1, 30);
+		ImGui::InputFloat3("Global Acceleration", &engine.globalAcc.x);
+		ImGui::SliderFloat("Wall Elasticity", &engine.wallElasticity, 0.0f, 1.0f);
+		ImGui::SliderFloat("Particle Elasticity", &engine.particleElasticity, 0.0f, 1.0f);
+		ImGui::SliderFloat("Friction", &engine.friction, 0.0f, 1.0f);
+		if (engine.ourSpringHandler.isInit)
+		{
+			if (ImGui::Button("Remove Cloth"))
+			{
+				engine.removeSpringHandler();
+				engine.createParticle(1, 1, vec3(0), false);
+			}
+		}
+	}
+	if (ImGui::CollapsingHeader("Renderer Settings"))
+	{
+		//Only show cloth related settings if renderer.cloth pointer != NULL
+		if (renderer.cloth)
+		{
+			std::string path = std::filesystem::current_path().string() + "/textures/";
+			std::vector<std::string> textures;
+
+			for (const auto& entry : std::filesystem::directory_iterator(path)) {
+				textures.push_back(entry.path().filename().string());
+			}
+
+			if (!textures.empty() && selectedTexture.empty()) {
+				selectedTexture = textures[0];
+			}
+
+			if (engine.ourSpringHandler.isInit) {
+				if (ImGui::BeginCombo("Select a texture", selectedTexture.c_str(), ImGuiComboFlags_NoArrowButton)) {
+					for (auto& texture : textures) {
+
+						bool isSelected = (selectedTexture == texture);
+						if (ImGui::Selectable(texture.c_str(), isSelected)) {
+							selectedTexture = texture;
+							renderer.cloth->loadTexture(("textures/" + selectedTexture).c_str());
+						}
+						if (isSelected) {
+							ImGui::SetItemDefaultFocus();
+						}
+					}
+					ImGui::EndCombo();
+				}
+			}
+
+			// toggle springs and cloth option must only be visible when cloth is being rendered 
+			if (engine.ourSpringHandler.isInit) {
+				ImGui::Checkbox("Show Cloth", &renderer.showcloth); ImGui::SameLine();
+				ImGui::Checkbox("Show springs", &renderer.showsprings);
+
+			}
+		}
+		ImGui::Checkbox("Show particles", &renderer.showparticles); ImGui::SameLine();
+		ImGui::Checkbox("Show Lights", &renderer.showLights);
+		ImGui::Separator();
+	}
 	ImGui::Text("Number of Particles: %i", engine.particles.size());
 	ImGui::Checkbox("Selection Mode", &renderer.useSelect);
 	if (renderer.useSelect)
@@ -66,7 +134,8 @@ void GUI::render()
 			rotationMode = false;
 		}
 
-		ImGui::InputInt("Select Object ID:", &renderer.selectedObject);
+		// if selected type id of cloth, we don't need this input
+		if(selectedObjectType != CLOTH) ImGui::InputInt("Select Object ID:", &renderer.selectedObject);
 
 		// add pivots only for particles and check index range
 		if (selectedObjectType == PARTICLE && renderer.selectedObject >= 0 && renderer.selectedObject < engine.particles.size()) {
@@ -88,88 +157,11 @@ void GUI::render()
 	}
 	ImGui::Text("Frame rate: %.1f FPS", ptrio->Framerate);
 
-	// Menu bar for Simulation Options
-	if (ImGui::BeginMenuBar())
-	{
-		if (ImGui::BeginMenu("Simulation Options"))
-		{
-			ImGui::Checkbox("Pause Sim3D", &engine.pause);
-			ImGui::Checkbox("Use Multi-threading", &engine.useThreading);
-			ImGui::Checkbox("Use Space-partitioning", &engine.usePartition);
-			ImGui::EndMenu();
-		}
-		ImGui::EndMenuBar();
-	}
+	
 
 	// Menu bar for Particle Settings
-	if (ImGui::BeginMenuBar())
-	{
-		if (ImGui::BeginMenu("Engine Settings"))
-		{
-			//ImGui::SliderInt("Number of Threads", &engine.m_NumThreads, 1, 12);
-			ImGui::SliderInt("Number of substeps", &engine.NumSteps, 1, 30);
-			ImGui::InputFloat3("Global Acceleration", &engine.globalAcc.x);
-			ImGui::SliderFloat("Wall Elasticity", &engine.wallElasticity, 0.0f, 1.0f);
-			ImGui::SliderFloat("Particle Elasticity", &engine.particleElasticity, 0.0f, 1.0f);
-			ImGui::SliderFloat("Friction", &engine.friction, 0.0f, 1.0f);
-			if (engine.ourSpringHandler.isInit)
-			{
-				if (ImGui::Button("Remove Cloth"))
-				{
-					engine.removeSpringHandler();
-					engine.createParticle(1, 1, vec3(0), false);
-				}
-			}
-			ImGui::EndMenu();
-		}
-		ImGui::EndMenuBar();
-	}
-	if (ImGui::BeginMenuBar())
-	{
-		if (ImGui::BeginMenu("Renderer settings")) {
-
-			std::string path = std::filesystem::current_path().string() + "/textures/";
-			std::vector<std::string> textures;
-
-			for (const auto& entry : std::filesystem::directory_iterator(path)) {
-				textures.push_back(entry.path().filename().string());
-			}
-
-			if (!textures.empty() && selectedTexture.empty()) {
-				selectedTexture = textures[0];
-			}
-
-			if (engine.ourSpringHandler.isInit) {
-				if (ImGui::BeginCombo("Select a texture", selectedTexture .c_str(), ImGuiComboFlags_NoArrowButton)) {
-					for (auto& texture : textures) {
-
-						bool isSelected = (selectedTexture == texture);
-						if (ImGui::Selectable(texture.c_str(), isSelected)) {
-							selectedTexture = texture;
-							renderer.cloth->loadTexture(("textures/" + selectedTexture).c_str());
-						}
-						if (isSelected) {
-							ImGui::SetItemDefaultFocus();
-						}
-					}
-					ImGui::EndCombo();
-				}
-			}
-
-			// toggle springs and cloth option must only be visible when cloth is being rendered 
-			if (engine.ourSpringHandler.isInit) {
-				ImGui::Checkbox("Show Cloth", &renderer.showcloth);
-				ImGui::Checkbox("Show springs", &renderer.showsprings);
-
-			}
-			ImGui::Checkbox("Show particles", &renderer.showparticles);
-			ImGui::Checkbox("Show Lights", &renderer.showLights);
-			ImGui::EndMenu();
-		}
-		ImGui::EndMenuBar();
-	}
 	
-	ImGui::End();
+	
 	
 	//guizmos
 	if (renderer.useSelect)
@@ -202,9 +194,10 @@ void GUI::render()
 		{
 			if (selectedObjectType == PARTICLE || selectedObjectType == CLOTH)
 				position = static_cast<particle*>(objectPtr)->pos;
-			else if (selectedObjectType == LIGHT)
+			else if (selectedObjectType == LIGHT) {
 				position = static_cast<pointLight*>(objectPtr)->pos;
-
+				showLightMenu(*static_cast<pointLight*>(objectPtr));
+			}
 			// Now you can use the position variable
 
 		// Now you can use the position variable
@@ -242,12 +235,32 @@ void GUI::render()
 			}
 		}
 	}
+	pointLight p = pointLight();
+	if (renderer.useSelect)
+	{
+		//showLightMenu(p);
+	}
+	ImGui::End();
 	// Render dear imgui into screen
 	ImGui::Render();
 
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
+void GUI::showLightMenu(pointLight& selectedLight)
+{
+	// getting the 2d position of light on screen
+	vec2 screenPos = vec2(renderer.view * renderer.proj * vec4(selectedLight.pos, 0.0));
+	ImGui::SetNextWindowSize(ImVec2(screenPos.x +50, screenPos.y +50), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowPos(ImVec2(100,100), ImGuiCond_FirstUseEver);
+	ImGui::PushItemWidth(ImGui::GetFontSize() * -6);
+	ImGui::Begin("Light Settings");
+
+	ImGui::ColorEdit3("Color", &selectedLight.color[0]);
+	ImGui::DragFloat3("Position", &selectedLight.pos[0]);
+	ImGui::InputFloat("Attenuation", &selectedLight.attenuation);
+	ImGui::End();
+}
 
 void GUI::shutdown()
 {

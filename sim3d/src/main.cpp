@@ -14,7 +14,7 @@ int main() {
 	vec3 max = vec3(30.0f);
 	//initialising engine
 	Engine engine(min,max);
-	engine.setSpringHandler(15, 15, 0.5, 5);
+	engine.setSpringHandler(30, 30, .25, 5);
 	//init renderer
 	Renderer renderer = Renderer(engine, 1920/1.5, 1080/1.5);
 	renderer.camera.Position = vec3(0, 0, 50);
